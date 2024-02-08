@@ -1,11 +1,10 @@
-// create a new scene
 let game = new Phaser.Scene('Game');
 
 game.init = function () {
    this.booms_display = 3;
-   this.ySpacingRange = [300, 400];
+   this.ySpacingRange = [250, 350];
    this.boomGapRange = [80, 140];
-   this.boom_length_min = 70;
+   this.boom_length_min = 50;
    this.displayWidth = this.sys.config.width;
    this.displayHeight = this.sys.config.height;
    this.fontSize = 16;
@@ -21,10 +20,6 @@ game.create = function () {
    this.cameras.main.setBackgroundColor(0x0000ff);
 
    player.create(this);
-   //console.log(`Health: ${player.health}`);
-
-   // player.boat = this.physics.add.sprite(this.start_x, this.start_y, 'boat')
-   //    .setDrag(boatSidewayDrag);
 
    this.makeBooms();
    this.checkIfReachedPier();
@@ -38,7 +33,6 @@ game.create = function () {
    this.physics.add.collider(player.boat, this.booms, this.boomImpact, null, this);
    // this.add.text(50, 620, `Past record: ${bestScore || 0}`, this.fontOptions)
    //    .setOrigin(0);
-   //console.log(this.booms);
 };
 
 game.update = function () {
@@ -86,11 +80,13 @@ game.makeHealthDisplay = function () {
    let y = displayHeight - 200;
    this.healthDisplay = this.add.text(x, y, `Health: ${player.health}`, { fontSize: '24px', fill: '#fff' });
 };
+
 game.makeFuelDisplay = function () {
    let x = 40;
    let y = displayHeight - 160;
    this.fuelDisplay = this.add.text(x, y, `Fuel: ${player.fuel}`, { fontSize: '24px', fill: '#fff' });
 };
+
 game.updateHealth = function (damage) {
    player.health -= damage;
    this.healthDisplay.setText(`Health: ${player.health}`);
@@ -117,7 +113,6 @@ game.placeBoom = function (leftBoom, rightBoom) {
    let gapSize = Phaser.Math.Between(...this.boomGapRange);
    // left side of gap's X coordinate i.e. right edge of left boom
    let gapLeftMin = this.boom_length_min;
-   // this.displayWidth NaN why?
    let gapLeftMax = 360 - gapSize - this.boom_length_min;
    let gapLeftRange = [gapLeftMin, gapLeftMax];
    let xGapLeft = Phaser.Math.Between(...gapLeftRange);
@@ -125,7 +120,7 @@ game.placeBoom = function (leftBoom, rightBoom) {
    rightBoom.x = xGapLeft + gapSize;
 
    let ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-   let yPrevious = this.getHighestBoom();
+   let yPrevious = this.getUsedBoom();
    let yBoom = yPrevious + ySpacing;
    leftBoom.y = yBoom;
    rightBoom.y = yBoom;
@@ -149,7 +144,7 @@ game.recycleBoom = function () {
    });
 };
 
-game.getHighestBoom = function () {
+game.getUsedBoom = function () {
    let xHigh = 0;
    this.booms.getChildren().forEach(boom => {
       xHigh = Math.max(boom.y, xHigh);
