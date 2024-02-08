@@ -11,7 +11,7 @@ game.init = function () {
    this.lineHeight = 70;
    this.fontOptions = { fontSize: `${this.fontSize}px`, fill: '#999' };
    this.boomsPassed = 0;
-   this.boomsToGoal = 7;
+   this.boomsToGoal = 1;
    this.boomsPassedMax = localStorage.getItem('boomsPassedMax');
    this.pierPlaced = false;
 };
@@ -22,7 +22,11 @@ game.create = function () {
    player.create(this);
 
    this.makeBooms();
-   this.checkIfReachedPier();
+
+   if (this.checkIfReachedPier()) {
+      this.makePier();
+      this.pierPlaced = true;
+   }
 
    this.makeProgressDisplay();
    this.makeHealthDisplay();
@@ -44,11 +48,11 @@ game.update = function () {
       player.boat.setVelocityX(player.sideway_speed);
    }
    else if (this.cursors.up.isDown || this.cursors.down.isDown) {
-      this.booms.setVelocityY(-1 * riverSpeed / 4);
+      this.booms.setVelocityY(riverSpeed / 4);
       player.boat.setTint(0x00ff00);
    }
    else {
-      this.booms.setVelocityY(-1 * riverSpeed);
+      this.booms.setVelocityY(riverSpeed);
       player.boat.setTint(0xffffff);
    }
 
@@ -65,7 +69,7 @@ game.update = function () {
 
 game.makeProgressDisplay = function () {
    let x = 40;
-   let y = displayHeight - 120;
+   let y = 40;
    let yLineSpacing = 32;
    this.score = 0;
    this.progressDisplay = this.add.text(x, y, `Navigated: ${this.boomsPassed}`, { fontSize: '24px', fill: '#fff' });
@@ -77,13 +81,13 @@ game.makeProgressDisplay = function () {
 
 game.makeHealthDisplay = function () {
    let x = 40;
-   let y = displayHeight - 200;
+   let y = 80;
    this.healthDisplay = this.add.text(x, y, `Health: ${player.health}`, { fontSize: '24px', fill: '#fff' });
 };
 
 game.makeFuelDisplay = function () {
    let x = 40;
-   let y = displayHeight - 160;
+   let y = 120;
    this.fuelDisplay = this.add.text(x, y, `Fuel: ${player.fuel}`, { fontSize: '24px', fill: '#fff' });
 };
 
@@ -120,36 +124,40 @@ game.placeBoom = function (leftBoom, rightBoom) {
    rightBoom.x = xGapLeft + gapSize;
 
    let ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-   let yPrevious = this.getUsedBoom();
-   let yBoom = yPrevious + ySpacing;
+   let yPrevious = this.getPreviousBoom();
+   let yBoom = yPrevious - ySpacing;
    leftBoom.y = yBoom;
    rightBoom.y = yBoom;
+   console.log(yPrevious, ySpacing, yBoom);
 };
 
 game.recycleBoom = function () {
    //if (this.pierPlaced) return; // does the run carry on after pier?
    let tempBooms = [];
    this.booms.getChildren().forEach(boom => {
-      if (boom.getBounds().bottom < 0) {
+      if (boom.getBounds().top > displayHeight) {
          tempBooms.push(boom);
          if (tempBooms.length === 2) {
             this.placeBoom(...tempBooms);
             this.trackProgress();
             this.saveBestScore();
             if (!this.pierPlaced) {
-               this.checkIfReachedPier();
+               if (this.checkIfReachedPier()) {
+                  this.makePier();
+                  this.pierPlaced = true;
+               }
             }
          }
       }
    });
 };
 
-game.getUsedBoom = function () {
-   let xHigh = 0;
+game.getPreviousBoom = function () {
+   let yPrevious = 800;
    this.booms.getChildren().forEach(boom => {
-      xHigh = Math.max(boom.y, xHigh);
+      yPrevious = Math.min(boom.y, yPrevious);
    });
-   return xHigh;
+   return yPrevious;
 };
 
 game.trackProgress = function () {
@@ -177,7 +185,7 @@ game.levelOver = function () {
    this.physics.pause();
    player.boat.setTint(0xff0000);
    this.saveBestScore();
-   let y = player.boat.y + player.boat.height;
+   let y = player.boat.y - player.boat.height;
    this.pet = this.add.sprite(player.boat.x - 2, y, 'pet', 0);
    this.pet.play('faces');
    let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', fill: '#ffffff' })
@@ -195,13 +203,12 @@ game.levelOver = function () {
 
 game.checkIfReachedPier = function () {
    if (!this.pierPlaced && this.boomsPassed >= this.boomsToGoal) {
-      this.makePier();
-      this.pierPlaced = true;
+      return true;
    }
 };
 
 game.makePier = function () {
-   this.pier = this.physics.add.sprite(180, 720, 'pier')
+   this.pier = this.physics.add.sprite(displayWidth / 2, -40, 'pier')
       .setScale(0.8);
    this.pier.setVelocityY(-1 * riverSpeed);
    this.physics.add.collider(player.boat, this.pier, this.levelOver, null, this);
