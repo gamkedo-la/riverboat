@@ -47,13 +47,23 @@ game.update = function () {
    else if (this.cursors.right.isDown) {
       player.boat.setVelocityX(player.sideway_speed);
    }
-   else if (this.cursors.up.isDown || this.cursors.down.isDown) {
-      this.booms.setVelocityY(riverSpeed / 4);
+   else if (this.cursors.up.isDown && player.boat.y > player.boat.height) {
+      player.boat.setVelocityY(player.forward_speed);
+      player.boat.setTint(0xffa500);
+   }
+   else if (this.cursors.down.isDown) {
+      //this.booms.setVelocityY(riverSpeed / 4);
+      this.booms.setVelocityY(riverSpeed - player.backward_speed);
       player.boat.setTint(0x00ff00);
    }
    else {
       this.booms.setVelocityY(riverSpeed);
       player.boat.setTint(0xffffff);
+      if (player.boat.y < player.start_y) {
+         player.boat.setVelocityY(-1.1 * player.forward_speed);
+      } else {
+         player.boat.setVelocityY(0);
+      }
    }
 
    this.recycleBoom();
