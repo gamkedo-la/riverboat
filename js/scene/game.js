@@ -34,7 +34,7 @@ game.create = function () {
 
    this.cursors = this.input.keyboard.createCursorKeys();
 
-   this.physics.add.collider(player.boat, this.booms, this.boomImpact, null, this);
+   this.physics.add.collider(player.boat, this.booms, this.boomImpact, null, this.scene);
    // this.add.text(50, 620, `Past record: ${bestScore || 0}`, this.fontOptions)
    //    .setOrigin(0);
 };
@@ -104,6 +104,7 @@ game.makeFuelDisplay = function () {
 game.updateHealth = function (damage) {
    player.health -= damage;
    this.healthDisplay.setText(`Health: ${player.health}`);
+   console.log(`Health: ${player.health}`);
 };
 
 game.makeBooms = function () {
@@ -113,10 +114,12 @@ game.makeBooms = function () {
          .setImmovable(true)
          .setOrigin(1, 0)
          .setScale(0.7);
+      leftBoom.damage = 2;
       let rightBoom = this.booms.create(0, 0, 'boom')
          .setImmovable(true)
          .setOrigin(0, 0)
          .setScale(0.7);
+      rightBoom.damage = 2;
       this.placeBoom(leftBoom, rightBoom);
    }
    this.booms.setVelocityY(-1 * riverSpeed);
@@ -138,7 +141,7 @@ game.placeBoom = function (leftBoom, rightBoom) {
    let yBoom = yPrevious - ySpacing;
    leftBoom.y = yBoom;
    rightBoom.y = yBoom;
-   console.log(yPrevious, ySpacing, yBoom);
+   // console.log(yPrevious, ySpacing, yBoom);
 };
 
 game.recycleBoom = function () {
@@ -183,11 +186,15 @@ game.saveBestScore = function () {
    }
 };
 
-game.boomImpact = function () {
-   this.updateHealth(2);
-   console.log(`Health: ${player.health}`);
-   if (player.health <= 0) {
-      this.levelOver();
+game.boomImpact = function (boat, boom) {
+   console.log(this);
+   this.booms.setVelocityY(0);
+   if (!boom.hit) {
+      boom.hit = true;
+      this.updateHealth(boom.damage);
+      if (player.health <= 0) {
+         this.levelOver();
+      }
    }
 };
 
