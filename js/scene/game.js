@@ -29,12 +29,14 @@ game.create = function () {
    }
 
    this.makeProgressDisplay();
-   this.makeHealthDisplay();
+   // this.makeHealthDisplay();
    this.makeFuelDisplay();
 
    this.cursors = this.input.keyboard.createCursorKeys();
 
-   this.physics.add.collider(player.boat, this.booms, this.boomImpact, null, this.scene);
+   this.physics.add.collider(player.boat, this.booms, this.levelOver, null, this);
+   // this.physics.add.collider(player.boat, this.booms, this.boomImpact, null, this);
+
    // this.add.text(50, 620, `Past record: ${bestScore || 0}`, this.fontOptions)
    //    .setOrigin(0);
 };
@@ -49,12 +51,12 @@ game.update = function () {
    }
    else if (this.cursors.up.isDown && player.boat.y > player.boat.height) {
       player.boat.setVelocityY(player.forward_speed);
-      player.boat.setTint(0xffa500);
+      player.boat.setTint(0xffb38a);
    }
    else if (this.cursors.down.isDown) {
       //this.booms.setVelocityY(riverSpeed / 4);
       this.booms.setVelocityY(riverSpeed - player.backward_speed);
-      player.boat.setTint(0x00ff00);
+      player.boat.setTint(0xbae946);
    }
    else {
       this.booms.setVelocityY(riverSpeed);
@@ -82,7 +84,7 @@ game.makeProgressDisplay = function () {
    let y = 40;
    let yLineSpacing = 32;
    this.score = 0;
-   this.progressDisplay = this.add.text(x, y, `Navigated: ${this.boomsPassed}`, { fontSize: '24px', fill: '#fff' });
+   this.progressDisplay = this.add.text(x, y, `Passed: ${this.boomsPassed}`, { fontSize: '24px', fill: '#fff' });
    y += yLineSpacing;
    // get and display best past score
    // let boomsPassedMax = localStorage.getItem('boomsPassedMax');
@@ -90,14 +92,15 @@ game.makeProgressDisplay = function () {
 };
 
 game.makeHealthDisplay = function () {
+   // console.log('health', this);
    let x = 40;
-   let y = 80;
+   let y = 120;
    this.healthDisplay = this.add.text(x, y, `Health: ${player.health}`, { fontSize: '24px', fill: '#fff' });
 };
 
 game.makeFuelDisplay = function () {
    let x = 40;
-   let y = 120;
+   let y = 80;
    this.fuelDisplay = this.add.text(x, y, `Fuel: ${player.fuel}`, { fontSize: '24px', fill: '#fff' });
 };
 
@@ -122,7 +125,8 @@ game.makeBooms = function () {
       rightBoom.damage = 2;
       this.placeBoom(leftBoom, rightBoom);
    }
-   this.booms.setVelocityY(-1 * riverSpeed);
+   //this.booms.setVelocityY(-1 * riverSpeed);
+   this.setBoomSpeed(-1 * riverSpeed);
 };
 
 game.placeBoom = function (leftBoom, rightBoom) {
@@ -175,7 +179,7 @@ game.getPreviousBoom = function () {
 
 game.trackProgress = function () {
    this.boomsPassed += 1;
-   this.progressDisplay.setText(`Navigated: ${this.boomsPassed}`);
+   this.progressDisplay.setText(`Passed: ${this.boomsPassed}`);
 };
 
 game.saveBestScore = function () {
@@ -187,9 +191,11 @@ game.saveBestScore = function () {
 };
 
 game.boomImpact = function (boat, boom) {
-   console.log(this);
-   this.booms.setVelocityY(0);
+   //console.log(this);
+   // debugger;
+   this.setBoomSpeed(0); // doesnt help, boat pushed down by boom
    if (!boom.hit) {
+      console.log('Boom Hit');
       boom.hit = true;
       this.updateHealth(boom.damage);
       if (player.health <= 0) {
@@ -198,9 +204,15 @@ game.boomImpact = function (boat, boom) {
    }
 };
 
+game.setBoomSpeed = function (speed) {
+   this.booms.children.iterate((boom) => {
+      boom.setVelocityY(speed);
+   });
+};
+
 game.levelOver = function () {
-   this.physics.pause();
    player.boat.setTint(0xff0000);
+   this.physics.pause();
    this.saveBestScore();
    let y = player.boat.y - player.boat.height;
    this.pet = this.add.sprite(player.boat.x - 2, y, 'pet', 0);
