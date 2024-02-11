@@ -3,6 +3,8 @@ let home = new Phaser.Scene('Home');
 home.init = function () {
    this.menu = [
       { scene: 'Game', text: 'Play' },
+      { scene: 'Credits', text: 'Credits' },
+
    ];
 };
 
@@ -34,8 +36,11 @@ home.create = function () {
    this.buttonPlay.on('pointerdown', () => this.scene.start('Game'));
 
    top += 75;
-   let buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '32px Arial', fill: '#ffffff' })
-      .setOrigin(0.5);
+   this.buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '32px Arial', fill: '#ffffff' })
+      .setOrigin(0.5)
+      .setInteractive();
+
+   this.buttonCredits.on('pointerdown', () => this.scene.start('Credits'));
 };
 
 home.makeMenu = function (menu) {

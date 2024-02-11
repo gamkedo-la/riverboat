@@ -37,9 +37,9 @@ setup.preload = function () {
    });
 
    // test progress bar
-   // for (let i = 0; i < 200; i++) {
-   //    this.load.image('river' + i, 'public/art/river_0_360x640.png');
-   // }
+   for (let i = 0; i < 100; i++) {
+      this.load.image('river' + i, 'public/art/river_0_360x640.png');
+   }
 
    this.load.image('river', 'public/art/river_0_360x640.png');
    this.load.image('boat', 'public/art/boat_30x65.png');

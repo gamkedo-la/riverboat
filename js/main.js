@@ -3,7 +3,7 @@ const config = {
    type: Phaser.AUTO,
    width: 360,
    height: 600,
-   scene: [boot, setup, home, game],
+   scene: [boot, setup, home, game, credits],
    title: 'Virtual Pet',
    pixelArt: true,
    roundPixels: true,
