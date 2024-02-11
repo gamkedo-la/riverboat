@@ -1,5 +1,5 @@
 // our game's configuration
-let config = {
+const config = {
    type: Phaser.AUTO,
    width: 360,
    height: 600,

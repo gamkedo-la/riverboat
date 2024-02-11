@@ -29,34 +29,32 @@ game.create = function () {
    }
 
    this.makeProgressDisplay();
-   // this.makeHealthDisplay();
    this.makeFuelDisplay();
 
    this.cursors = this.input.keyboard.createCursorKeys();
 
    this.physics.add.collider(player.boat, this.booms, this.levelOver, null, this);
-   // this.physics.add.collider(player.boat, this.booms, this.boomImpact, null, this);
-
-   // this.add.text(50, 620, `Past record: ${bestScore || 0}`, this.fontOptions)
-   //    .setOrigin(0);
 };
 
 game.update = function () {
    // arrow keys control
    if (this.cursors.left.isDown) {
       player.boat.setVelocityX(-1 * player.sideway_speed);
+      player.useFuel(1);
    }
    else if (this.cursors.right.isDown) {
       player.boat.setVelocityX(player.sideway_speed);
+      player.useFuel(1);
    }
    else if (this.cursors.up.isDown && player.boat.y > player.boat.height) {
       player.boat.setVelocityY(player.forward_speed);
       player.boat.setTint(0xffb38a);
+      player.useFuel(3);
    }
    else if (this.cursors.down.isDown) {
-      //this.booms.setVelocityY(riverSpeed / 4);
       this.booms.setVelocityY(riverSpeed - player.backward_speed);
       player.boat.setTint(0xbae946);
+      player.useFuel(2);
    }
    else {
       this.booms.setVelocityY(riverSpeed);
@@ -67,6 +65,7 @@ game.update = function () {
          player.boat.setVelocityY(0);
       }
    }
+   this.updateFuelDisplay();
 
    this.recycleBoom();
 
@@ -86,16 +85,6 @@ game.makeProgressDisplay = function () {
    this.score = 0;
    this.progressDisplay = this.add.text(x, y, `Passed: ${this.boomsPassed}`, { fontSize: '24px', fill: '#fff' });
    y += yLineSpacing;
-   // get and display best past score
-   // let boomsPassedMax = localStorage.getItem('boomsPassedMax');
-   // this.maxProgressDisplay = this.add.text(x, y, `Previous best: ${boomsPassedMax || 0}`, { fontSize: '16px', fill: '#aaa' });
-};
-
-game.makeHealthDisplay = function () {
-   // console.log('health', this);
-   let x = 40;
-   let y = 120;
-   this.healthDisplay = this.add.text(x, y, `Health: ${player.health}`, { fontSize: '24px', fill: '#fff' });
 };
 
 game.makeFuelDisplay = function () {
@@ -104,10 +93,8 @@ game.makeFuelDisplay = function () {
    this.fuelDisplay = this.add.text(x, y, `Fuel: ${player.fuel}`, { fontSize: '24px', fill: '#fff' });
 };
 
-game.updateHealth = function (damage) {
-   player.health -= damage;
-   this.healthDisplay.setText(`Health: ${player.health}`);
-   console.log(`Health: ${player.health}`);
+game.updateFuelDisplay = function () {
+   this.fuelDisplay.setText(`Fuel: ${player.fuel}`);
 };
 
 game.makeBooms = function () {
@@ -125,7 +112,6 @@ game.makeBooms = function () {
       rightBoom.damage = 2;
       this.placeBoom(leftBoom, rightBoom);
    }
-   //this.booms.setVelocityY(-1 * riverSpeed);
    this.setBoomSpeed(-1 * riverSpeed);
 };
 
@@ -192,7 +178,6 @@ game.saveBestScore = function () {
 
 game.boomImpact = function (boat, boom) {
    //console.log(this);
-   // debugger;
    this.setBoomSpeed(0); // doesnt help, boat pushed down by boom
    if (!boom.hit) {
       console.log('Boom Hit');
