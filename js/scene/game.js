@@ -34,6 +34,8 @@ game.create = function () {
    this.cursors = this.input.keyboard.createCursorKeys();
 
    this.physics.add.collider(player.boat, this.booms, this.levelOver, null, this);
+
+   this.input.keyboard.on('keyup', this.anyKey, this);
 };
 
 game.update = function () {
@@ -230,5 +232,11 @@ game.makePier = function () {
 };
 
 game.resetGame = function () {
+};
 
+game.anyKey = function (event) {
+   let code = event.keyCode;
+   if (code === Phaser.Input.Keyboard.KeyCodes.ESC) {
+      this.scene.start('Home');;
+   }
 };
