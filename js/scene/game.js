@@ -96,7 +96,9 @@ game.makeFuelDisplay = function () {
 };
 
 game.updateFuelDisplay = function () {
-   this.fuelDisplay.setText(`Fuel: ${player.fuel}`);
+   if (player.fuel) {
+      this.fuelDisplay.setText(`Fuel: ${player.fuel}`);
+   }
 };
 
 game.makeBooms = function () {
@@ -115,6 +117,10 @@ game.makeBooms = function () {
       this.placeBoom(leftBoom, rightBoom);
    }
    this.setBoomSpeed(-1 * riverSpeed);
+
+   this.booms.children.iterate(function (boom) {
+      boom.y += 200; // move early obstacles into view
+   });
 };
 
 game.placeBoom = function (leftBoom, rightBoom) {
@@ -128,12 +134,12 @@ game.placeBoom = function (leftBoom, rightBoom) {
    leftBoom.x = xGapLeft;
    rightBoom.x = xGapLeft + gapSize;
 
-   let ySpacing = Phaser.Math.Between(...this.ySpacingRange);
    let yPrevious = this.getPreviousBoom();
+   let ySpacing = Phaser.Math.Between(...this.ySpacingRange);
    let yBoom = yPrevious - ySpacing;
    leftBoom.y = yBoom;
    rightBoom.y = yBoom;
-   // console.log(yPrevious, ySpacing, yBoom);
+   console.log(yPrevious);
 };
 
 game.recycleBoom = function () {

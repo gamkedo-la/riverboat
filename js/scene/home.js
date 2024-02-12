@@ -1,4 +1,4 @@
-let home = new Phaser.Scene('Home');
+const home = new Phaser.Scene('Home');
 
 home.init = function () {
    this.menu = [

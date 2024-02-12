@@ -1,4 +1,4 @@
-let setup = new Phaser.Scene('Setup');
+const setup = new Phaser.Scene('Setup');
 
 setup.init = function () {
    this.sys.game.config.gameCentre = [180, 320];

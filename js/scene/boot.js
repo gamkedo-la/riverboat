@@ -1,4 +1,4 @@
-let boot = new Phaser.Scene('Boot');
+const boot = new Phaser.Scene('Boot');
 
 boot.preload = function () {
    this.load.image('logo', 'public/art/logo_hometeam.png');
