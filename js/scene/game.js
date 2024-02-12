@@ -14,6 +14,7 @@ game.init = function () {
    this.boomsToGoal = 1;
    this.boomsPassedMax = localStorage.getItem('boomsPassedMax');
    this.pierPlaced = false;
+   this.levelOver = false;
 };
 
 game.create = function () {
@@ -33,12 +34,13 @@ game.create = function () {
 
    this.cursors = this.input.keyboard.createCursorKeys();
 
-   this.physics.add.collider(player.boat, this.booms, this.levelOver, null, this);
+   this.physics.add.collider(player.boat, this.booms, this.endLevel, null, this);
 
    this.input.keyboard.on('keyup', this.anyKey, this);
 };
 
 game.update = function () {
+   if (this.levelOver) return;
    // arrow keys control
    if (this.cursors.left.isDown) {
       player.boat.setVelocityX(-1 * player.sideway_speed);
@@ -62,7 +64,7 @@ game.update = function () {
       this.booms.setVelocityY(riverSpeed);
       player.boat.setTint(0xffffff);
       if (player.boat.y < player.start_y) {
-         player.boat.setVelocityY(-1.1 * player.forward_speed);
+         player.boat.setVelocityY(-1 * player.forward_speed);
       } else {
          player.boat.setVelocityY(0);
       }
@@ -139,7 +141,6 @@ game.placeBoom = function (leftBoom, rightBoom) {
    let yBoom = yPrevious - ySpacing;
    leftBoom.y = yBoom;
    rightBoom.y = yBoom;
-   console.log(yPrevious);
 };
 
 game.recycleBoom = function () {
@@ -192,7 +193,7 @@ game.boomImpact = function (boat, boom) {
       boom.hit = true;
       this.updateHealth(boom.damage);
       if (player.health <= 0) {
-         this.levelOver();
+         this.endLevel();
       }
    }
 };
@@ -203,20 +204,31 @@ game.setBoomSpeed = function (speed) {
    });
 };
 
-game.levelOver = function () {
+game.endLevel = function () {
+   this.levelOver = true;
    player.boat.setTint(0xff0000);
    this.physics.pause();
-   this.saveBestScore();
-   let y = player.boat.y - player.boat.height;
-   this.pet = this.add.sprite(player.boat.x - 2, y, 'pet', 0);
-   this.pet.play('faces');
+   //this.saveBestScore();
+
    let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', fill: '#ffffff' })
       .setOrigin(0.5);
-   player.health = this.initialHealth;
-   player.fuel = this.initialFuel;
+
    this.time.addEvent({
-      delay: 2000,
+      delay: 1000,
       callback: () => {
+         let y = player.boat.y - player.boat.height / 2;
+         this.explosion = this.add.sprite(player.boat.x - 2, y, 'pet', 0);
+         this.explosion.play('faces');
+      },
+      loop: false
+   });
+
+   this.time.addEvent({
+      delay: 2500,
+      callback: () => {
+         player.health = this.initialHealth;
+         player.fuel = this.initialFuel;
+         this.levelOver = false;
          this.scene.restart();
       },
       loop: false
@@ -233,7 +245,7 @@ game.makePier = function () {
    this.pier = this.physics.add.sprite(displayWidth / 2, -40, 'pier')
       .setScale(0.8);
    this.pier.setVelocityY(-1 * riverSpeed);
-   this.physics.add.collider(player.boat, this.pier, this.levelOver, null, this);
+   this.physics.add.collider(player.boat, this.pier, this.endLevel, null, this);
    this.pierPlaced = true;
 };
 
