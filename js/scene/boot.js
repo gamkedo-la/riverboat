@@ -1,9 +1,13 @@
-const boot = new Phaser.Scene('Boot');
+class Boot extends Phaser.Scene {
+   constructor() {
+      super('Boot');
+   }
 
-boot.preload = function () {
-   this.load.image('logo', 'public/art/logo_hometeam.png');
-};
+   preload() {
+      this.load.image('logo', 'public/art/logo_hometeam.png');
+   };
 
-boot.create = function () {
-   this.scene.start('Setup');
-};
+   create() {
+      this.scene.start('Setup');
+   };
+}

@@ -3,7 +3,7 @@ const config = {
    type: Phaser.AUTO,
    width: 360,
    height: 600,
-   scene: [boot, setup, home, game, credits],
+   scene: [Boot, Setup, Home, game, credits],
    title: 'Riverboat',
    pixelArt: true,
    roundPixels: true,
@@ -18,4 +18,4 @@ const config = {
 };
 
 // create the game, and pass it the configuration
-let riverGame = new Phaser.Game(config);
+let riverboat = new Phaser.Game(config);
