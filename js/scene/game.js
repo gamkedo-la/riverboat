@@ -50,16 +50,20 @@ game.update = function () {
       player.boat.setVelocityX(player.sideway_speed);
       player.useFuel(1);
    }
-   else if (this.cursors.up.isDown && player.boat.y > player.boat.height) {
+
+   if (this.cursors.up.isDown && player.boat.y > player.boat.height) {
       player.boat.setVelocityY(player.forward_speed);
       player.boat.setTint(0xffb38a);
       player.useFuel(3);
+      console.log('up key');
    }
    else if (this.cursors.down.isDown) {
       this.booms.setVelocityY(riverSpeed - player.backward_speed);
       player.boat.setTint(0xbae946);
       player.useFuel(2);
+      console.log('down key');
    }
+   // neither up nor down is pressed
    else {
       this.booms.setVelocityY(riverSpeed);
       player.boat.setTint(0xffffff);

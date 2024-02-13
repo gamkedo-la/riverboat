@@ -4,7 +4,7 @@ const config = {
    width: 360,
    height: 600,
    scene: [boot, setup, home, game, credits],
-   title: 'Virtual Pet',
+   title: 'Riverboat',
    pixelArt: true,
    roundPixels: true,
    backgroundColor: 'ffffff',
