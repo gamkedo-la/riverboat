@@ -11,7 +11,7 @@ game.init = function () {
    this.lineHeight = 70;
    this.fontOptions = { fontSize: `${this.fontSize}px`, fill: '#999' };
    this.boomsPassed = 0;
-   this.boomsToGoal = 1;
+   this.boomsToGoal = 7;
    this.boomsPassedMax = localStorage.getItem('boomsPassedMax');
    this.pierPlaced = false;
    this.levelOver = false;
@@ -73,6 +73,7 @@ game.update = function () {
          player.boat.setVelocityY(0);
       }
    }
+
    this.updateFuelDisplay();
 
    this.recycleBoom();
@@ -250,7 +251,7 @@ game.checkIfReachedPier = function () {
 game.makePier = function () {
    this.pier = this.physics.add.sprite(displayWidth / 2, -40, 'pier')
       .setScale(0.8);
-   this.pier.setVelocityY(-1 * riverSpeed);
+   this.pier.setVelocityY(riverSpeed);
    this.physics.add.collider(player.boat, this.pier, this.endLevel, null, this);
    this.pierPlaced = true;
 };
