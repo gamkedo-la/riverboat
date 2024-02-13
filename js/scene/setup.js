@@ -46,7 +46,7 @@ setup.preload = function () {
    this.load.image('boom', 'public/art/boom_480x50.png');
    this.load.image('pier', 'public/art/goal.png');
 
-   this.load.spritesheet('pet', 'public/art/explode.png', {
+   this.load.spritesheet('orange', 'public/art/oranges.png', {
       frameWidth: 97,
       frameHeight: 83,
       spacing: 1,
@@ -56,8 +56,8 @@ setup.preload = function () {
 
 setup.create = function () {
    this.anims.create({
-      key: 'faces',
-      frames: this.anims.generateFrameNames('pet', { frames: [1, 2, 3] }),
+      key: 'explode',
+      frames: this.anims.generateFrameNames('orange', { frames: [1, 2, 3] }),
       frameRate: 7,
       yoyo: true,
       repeat: 1

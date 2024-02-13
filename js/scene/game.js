@@ -121,7 +121,8 @@ game.makeBooms = function () {
    this.setBoomSpeed(-1 * riverSpeed);
 
    this.booms.children.iterate(function (boom) {
-      boom.y += 200; // move early obstacles into view
+      // boom.y += 200; // move early obstacles into view
+      boom.y += 600; // too low, for quick testing
    });
 };
 
@@ -216,9 +217,10 @@ game.endLevel = function () {
    this.time.addEvent({
       delay: 1000,
       callback: () => {
-         let y = player.boat.y - player.boat.height / 2;
-         this.explosion = this.add.sprite(player.boat.x - 2, y, 'pet', 0);
-         this.explosion.play('faces');
+         let x = player.boat.x - 2;
+         let y = player.boat.y - 10;
+         this.explosion = this.add.sprite(x, y, 'orange', 0);
+         this.explosion.play('explode');
       },
       loop: false
    });
