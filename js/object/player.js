@@ -9,8 +9,9 @@ class Player extends Phaser.Physics.Arcade.Image {
       this.start_fuel = 1000;
       this.sideway_speed = 30;
       this.sideway_drag = 35;
-      this.forward_speed = -40;
-      this.backward_speed = 40;
+      this.forward_speed = 40;
+      this.backward_speed = -40;
+      this.rateOfReturnToStation = 0.5;
       this.setImmovable(false);
       this.health = this.start_health;
       this.fuel = this.start_fuel;
@@ -31,25 +32,36 @@ class Player extends Phaser.Physics.Arcade.Image {
       }
 
       if (cursors.up.isDown && this.body.y > this.body.height) {
-         this.body.setVelocityY(this.forward_speed);
+         this.body.setVelocityY(-this.forward_speed);
          this.setTint(0xffb38a);
          this.useFuel(3);
          // console.log('up key');
       }
       else if (cursors.down.isDown) {
          this.scene.booms.setVelocityY(riverSpeed / 4);
+         if (this.pierPlaced) {
+            this.scene.pier.setVelocityY(riverSpeed / 4);
+         }
          this.setTint(0xbae946);
          this.useFuel(2);
       }
       // neither up nor down is pressed
       else {
-         this.scene.booms.setVelocityY(riverSpeed);
          this.setTint(0xffffff);
+         // if boat is above its default position
          if (this.y < this.start_y) {
-            this.body.setVelocityY(-1 * this.forward_speed);
-         } else {
-            // debugger;
+            this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
+            this.scene.booms.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
+            if (this.scene.pierPlaced) {
+               this.scene.pier.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
+            }
+         } // boat is at bottom of playarea
+         else {
             this.body.setVelocityY(0);
+            this.scene.booms.setVelocityY(riverSpeed);
+            if (this.scene.pierPlaced) {
+               this.scene.pier.setVelocityY(riverSpeed);
+            }
          }
       }
 

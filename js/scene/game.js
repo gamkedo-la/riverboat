@@ -7,14 +7,14 @@ class Game extends Phaser.Scene {
       this.booms_display = 3;
       this.ySpacingRange = [250, 350];
       this.boomGapRange = [80, 140];
-      this.boom_length_min = 50;
+      this.boom_length_min = 50; // 50 normal, 100 for easy path
       this.displayWidth = this.sys.config.width;
       this.displayHeight = this.sys.config.height;
       this.fontSize = 16;
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, fill: '#999' };
       this.boomsPassed = 0;
-      this.boomsToGoal = 7;
+      this.boomsToGoal = 7; // 0 or 1 if testing pier
       this.boomsPassedMax = localStorage.getItem('boomsPassedMax');
       this.pierPlaced = false;
       this.levelOver = false;
@@ -158,6 +158,7 @@ class Game extends Phaser.Scene {
       }
    };
 
+   // if player health, but multiple hits on impact is a problem
    boomImpact(boat, boom) {
       //console.log(this);
       this.setBoomSpeed(0); // doesnt help, boat pushed down by boom
@@ -217,7 +218,7 @@ class Game extends Phaser.Scene {
       this.pier = this.physics.add.sprite(displayWidth / 2, -40, 'pier')
          .setScale(0.8);
       this.pier.setVelocityY(riverSpeed);
-      this.physics.add.collider(this.player.boat, this.pier, this.endLevel, null, this);
+      this.physics.add.collider(this.player, this.pier, this.endLevel, null, this);
       this.pierPlaced = true;
    };
 
