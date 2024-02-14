@@ -34,13 +34,12 @@ class Player extends Phaser.Physics.Arcade.Image {
          this.body.setVelocityY(this.forward_speed);
          this.setTint(0xffb38a);
          this.useFuel(3);
-         console.log('up key');
+         // console.log('up key');
       }
       else if (cursors.down.isDown) {
          this.scene.booms.setVelocityY(riverSpeed / 4);
          this.setTint(0xbae946);
          this.useFuel(2);
-         console.log('down key');
       }
       // neither up nor down is pressed
       else {

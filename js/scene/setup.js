@@ -65,7 +65,7 @@ class Setup extends Phaser.Scene {
          yoyo: true,
          repeat: 1
       });
-      this.scene.start('Home');
+      this.scene.start('Game');
    };
 
 }

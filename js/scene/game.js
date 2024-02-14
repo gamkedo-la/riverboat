@@ -26,7 +26,6 @@ class Game extends Phaser.Scene {
       const start_x = displayWidth / 2;
       const start_y = displayHeight - 90;
       this.player = new Player(this, start_x, start_y, 'boat');
-      console.log(this.player.fuel);
 
       this.makeBooms();
 
@@ -184,9 +183,6 @@ class Game extends Phaser.Scene {
       this.physics.pause();
       //this.saveBestScore();
 
-      let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', fill: '#ffffff' })
-         .setOrigin(0.5);
-
       this.time.addEvent({
          delay: 1000,
          callback: () => {
@@ -194,6 +190,7 @@ class Game extends Phaser.Scene {
             let y = this.player.y - 10;
             this.explosion = this.add.sprite(x, y, 'orange', 0);
             this.explosion.play('explode');
+            let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', fill: '#ffffff' }).setOrigin(0.5);
          },
          loop: false
       });
