@@ -23,7 +23,10 @@ class Game extends Phaser.Scene {
    create() {
       this.cameras.main.setBackgroundColor(0x0000ff);
 
-      player.create(this);
+      const start_x = displayWidth / 2;
+      const start_y = displayHeight - 90;
+      this.player = new Player(this, start_x, start_y, 'boat');
+      console.log(this.player.fuel);
 
       this.makeBooms();
 
@@ -37,57 +40,19 @@ class Game extends Phaser.Scene {
 
       this.cursors = this.input.keyboard.createCursorKeys();
 
-      this.physics.add.collider(player.boat, this.booms, this.endLevel, null, this);
+      this.physics.add.collider(this.player, this.booms, this.endLevel, null, this);
 
       this.input.keyboard.on('keyup', this.anyKey, this);
    };
 
    update() {
       if (this.levelOver) return;
-      // arrow keys control
-      if (this.cursors.left.isDown) {
-         player.boat.setVelocityX(-1 * player.sideway_speed);
-         player.useFuel(1);
-      }
-      else if (this.cursors.right.isDown) {
-         player.boat.setVelocityX(player.sideway_speed);
-         player.useFuel(1);
-      }
 
-      if (this.cursors.up.isDown && player.boat.y > player.boat.height) {
-         player.boat.setVelocityY(player.forward_speed);
-         player.boat.setTint(0xffb38a);
-         player.useFuel(3);
-         console.log('up key');
-      }
-      else if (this.cursors.down.isDown) {
-         this.booms.setVelocityY(riverSpeed / 4);
-         player.boat.setTint(0xbae946);
-         player.useFuel(2);
-         console.log('down key');
-      }
-      // neither up nor down is pressed
-      else {
-         this.booms.setVelocityY(riverSpeed);
-         player.boat.setTint(0xffffff);
-         if (player.boat.y < player.start_y) {
-            player.boat.setVelocityY(-1 * player.forward_speed);
-         } else {
-            player.boat.setVelocityY(0);
-         }
-      }
+      this.player.update(this.cursors);
 
       this.updateFuelDisplay();
 
       this.recycleBoom();
-
-      // bounce off side of river
-      if (player.boat.x > 360 - player.boat.width / 2 && player.boat.body.velocity.x > 0) {
-         player.boat.body.velocity.x *= -1;
-      }
-      else if (player.boat.x < player.boat.width / 2 && player.boat.body.velocity.x < 0) {
-         player.boat.body.velocity.x *= -1;
-      }
    };
 
    makeProgressDisplay() {
@@ -102,12 +67,12 @@ class Game extends Phaser.Scene {
    makeFuelDisplay() {
       let x = 40;
       let y = 80;
-      this.fuelDisplay = this.add.text(x, y, `Fuel: ${player.fuel}`, { fontSize: '24px', fill: '#fff' });
+      this.fuelDisplay = this.add.text(x, y, `Fuel: ${this.player.fuel}`, { fontSize: '24px', fill: '#fff' });
    };
 
    updateFuelDisplay() {
-      if (player.fuel) {
-         this.fuelDisplay.setText(`Fuel: ${player.fuel}`);
+      if (this.player.fuel) {
+         this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
       }
    };
 
@@ -201,7 +166,7 @@ class Game extends Phaser.Scene {
          console.log('Boom Hit');
          boom.hit = true;
          this.updateHealth(boom.damage);
-         if (player.health <= 0) {
+         if (this.player.health <= 0) {
             this.endLevel();
          }
       }
@@ -215,7 +180,7 @@ class Game extends Phaser.Scene {
 
    endLevel() {
       this.levelOver = true;
-      player.boat.setTint(0xff0000);
+      this.player.setTint(0xff0000);
       this.physics.pause();
       //this.saveBestScore();
 
@@ -225,8 +190,8 @@ class Game extends Phaser.Scene {
       this.time.addEvent({
          delay: 1000,
          callback: () => {
-            let x = player.boat.x - 2;
-            let y = player.boat.y - 10;
+            let x = this.player.x - 2;
+            let y = this.player.y - 10;
             this.explosion = this.add.sprite(x, y, 'orange', 0);
             this.explosion.play('explode');
          },
@@ -236,8 +201,8 @@ class Game extends Phaser.Scene {
       this.time.addEvent({
          delay: 2500,
          callback: () => {
-            player.health = this.initialHealth;
-            player.fuel = this.initialFuel;
+            this.player.health = this.player.initialHealth;
+            this.player.fuel = this.player.initialFuel;
             this.levelOver = false;
             this.scene.restart();
          },
@@ -255,7 +220,7 @@ class Game extends Phaser.Scene {
       this.pier = this.physics.add.sprite(displayWidth / 2, -40, 'pier')
          .setScale(0.8);
       this.pier.setVelocityY(riverSpeed);
-      this.physics.add.collider(player.boat, this.pier, this.endLevel, null, this);
+      this.physics.add.collider(this.player.boat, this.pier, this.endLevel, null, this);
       this.pierPlaced = true;
    };
 
