@@ -14,6 +14,7 @@ class Player extends Phaser.Physics.Arcade.Image {
       this.rateOfReturnToStation = 0.5;
       this.setImmovable(false);
       this.health = this.start_health;
+      // could assignment be direct, since fuel & health never regained?
       this.fuel = this.start_fuel;
       this.setDrag(this.sideway_drag);
       this.setVelocity(0, 0);
@@ -48,20 +49,13 @@ class Player extends Phaser.Physics.Arcade.Image {
       // neither up nor down is pressed
       else {
          this.setTint(0xffffff);
-         // if boat is above its default position
          if (this.y < this.start_y) {
-            this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
-            this.scene.booms.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
-            if (this.scene.pierPlaced) {
-               this.scene.pier.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
-            }
-         } // boat is at bottom of playarea
+            // boat is above its default position
+            this.moveBackToStation();
+         }
          else {
-            this.body.setVelocityY(0);
-            this.scene.booms.setVelocityY(riverSpeed);
-            if (this.scene.pierPlaced) {
-               this.scene.pier.setVelocityY(riverSpeed);
-            }
+            // boat is at bottom of playarea
+            this.whenOnStation();
          }
       }
 
@@ -76,5 +70,25 @@ class Player extends Phaser.Physics.Arcade.Image {
 
    useFuel(usage) {
       this.fuel -= usage;
+   }
+
+   moveBackToStation() {
+      // player's on-screen location slowly return to bottom
+      this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
+      // river furniture Y change faster to maintain relative motion
+      this.scene.booms.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
+      if (this.scene.pierPlaced) {
+         this.scene.pier.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
+      }
+   }
+
+   whenOnStation() {
+      // player now on station at bottom of playarea, so...
+      this.body.setVelocityY(0);
+      // river furniture's relative motion needs no adjustment
+      this.scene.booms.setVelocityY(riverSpeed);
+      if (this.scene.pierPlaced) {
+         this.scene.pier.setVelocityY(riverSpeed);
+      }
    }
 }
