@@ -24,8 +24,9 @@ class Game extends Phaser.Scene {
       this.cameras.main.setBackgroundColor(0x0000ff);
 
       const start_x = displayWidth / 2;
-      const start_y = displayHeight - 90; // - this.player.height
-      this.player = new Player(this, start_x, start_y, 'boat', 0);
+      const start_y = displayHeight - 90;
+      this.player = new Player(this, start_x, start_y, 'boat');
+      console.log(this.player.fuel);
 
       this.makeBooms();
 

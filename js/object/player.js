@@ -1,9 +1,8 @@
 class Player extends Phaser.Physics.Arcade.Image {
-   constructor(scene, x, y, key, frame) {
-      super(scene, x, y, key, frame);
+   constructor(scene, x, y, key) {
+      super(scene, x, y, key);
       this.scene = scene;
       this.scene.physics.world.enable(this);
-      this.setImmovable(false);
       this.start_x = displayWidth / 2;
       this.start_y = displayHeight - 90;
       this.start_health = 10;
@@ -12,13 +11,12 @@ class Player extends Phaser.Physics.Arcade.Image {
       this.sideway_drag = 35;
       this.forward_speed = -40;
       this.backward_speed = 40;
-   }
-
-   create(scene) {
+      this.setImmovable(false);
       this.health = this.start_health;
       this.fuel = this.start_fuel;
       this.setDrag(this.sideway_drag);
       this.setVelocity(0, 0);
+      this.scene.add.existing(this);
    }
 
    update(cursors) {
