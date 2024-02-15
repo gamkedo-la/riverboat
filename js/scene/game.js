@@ -231,7 +231,11 @@ class Game extends Phaser.Scene {
    anyKey(event) {
       let code = event.keyCode;
       if (code === Phaser.Input.Keyboard.KeyCodes.ESC) {
-         this.scene.start('Home');;
+         this.scene.start('Home');
+      }
+      else if (code === Phaser.Input.Keyboard.KeyCodes.P) {
+         this.scene.pause('Game');
+         // cannot resume scene but good enough to stop motion and sounds while coding without having to close and later re-open browser tab.
       }
    };
 }

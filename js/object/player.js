@@ -25,10 +25,10 @@ class Player extends Phaser.Physics.Arcade.Image {
       } else {
          console.log('Fuel empty');
          this.setTint(0xffffff);
-         if (this.y < this.start_y) {
-            // boat is above its default position
-            this.moveBackToStation();
-         }
+         // if (this.y < this.start_y) {
+         //    // boat is above its default position
+         //    this.moveBackToStation();
+         // }
       }
 
       // bounce off side of river
