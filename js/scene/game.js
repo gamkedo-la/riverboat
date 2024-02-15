@@ -23,6 +23,8 @@ class Game extends Phaser.Scene {
    create() {
       this.cameras.main.setBackgroundColor(0x0000ff);
 
+      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
+
       let start_x = displayWidth / 2;
       let start_y = displayHeight - 90;
       this.player = new Player(this, start_x, start_y, 'boat');
@@ -181,6 +183,7 @@ class Game extends Phaser.Scene {
    endLevel() {
       this.levelOver = true;
       this.player.setTint(0xff0000);
+      this.boomCollideSound.play();
       this.physics.pause();
       //this.saveBestScore();
 
@@ -189,7 +192,7 @@ class Game extends Phaser.Scene {
          callback: () => {
             let x = this.player.x - 2;
             let y = this.player.y - 10;
-            this.explosion = this.add.sprite(x, y, 'orange', 0);
+            this.explosion = this.add.sprite(x, y, 'anim_placeholderExplosion', 0);
             this.explosion.play('explode');
             let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', fill: '#ffffff' }).setOrigin(0.5);
          },

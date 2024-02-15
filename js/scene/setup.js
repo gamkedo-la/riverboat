@@ -39,7 +39,7 @@ class Setup extends Phaser.Scene {
       });
 
       // test progress bar
-      for (let i = 0; i < 150; i++) {
+      for (let i = 0; i < 100; i++) {
          this.load.image('river' + i, 'public/art/river_0_360x640.png');
       }
 
@@ -49,18 +49,20 @@ class Setup extends Phaser.Scene {
       this.load.image('boom', 'public/art/boom_480x50.png');
       this.load.image('pier', 'public/art/goal.png');
 
-      this.load.spritesheet('orange', 'public/art/oranges.png', {
+      this.load.spritesheet('anim_placeholderExplosion', 'public/art/placeholderExplosion.png', {
          frameWidth: 97,
          frameHeight: 83,
          spacing: 1,
          margin: 1
       });
+
+      this.load.audio('snd_boomCollide', ['public/sound/collider_placeholder.mp3']);
    };
 
    create() {
       this.anims.create({
          key: 'explode',
-         frames: this.anims.generateFrameNames('orange', { frames: [1, 2, 3] }),
+         frames: this.anims.generateFrameNames('anim_placeholderExplosion', { frames: [1, 2, 3] }),
          frameRate: 7,
          yoyo: true,
          repeat: 1
