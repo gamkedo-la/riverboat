@@ -20,10 +20,15 @@ class Player extends Phaser.Physics.Arcade.Image {
 
    update(cursors) {
       // arrow keys control
-      if (this.fuel > 0) {
+      if (this.fuel > 4) {
          this.engineNavigation(cursors);
       } else {
          console.log('Fuel empty');
+         this.setTint(0xffffff);
+         if (this.y < this.start_y) {
+            // boat is above its default position
+            this.moveBackToStation();
+         }
       }
 
       // bounce off side of river
@@ -53,7 +58,7 @@ class Player extends Phaser.Physics.Arcade.Image {
       if (cursors.up.isDown && this.body.y > this.body.height) {
          this.body.setVelocityY(-this.forward_speed);
          this.setTint(0xffb38a);
-         this.useFuel(3);
+         this.useFuel(4);
          // console.log('up key');
       }
       else if (cursors.down.isDown) {
