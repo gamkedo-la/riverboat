@@ -34,15 +34,16 @@ class Home extends Phaser.Scene {
       this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play', { font: '32px Arial', fill: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
-
       this.buttonPlay.on('pointerdown', () => this.scene.start('Game'));
 
       top += 75;
       this.buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '32px Arial', fill: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
-
       this.buttonCredits.on('pointerdown', () => this.scene.start('Credits'));
+
+      top += 75;
+      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Scores', () => { console.log('Scores show'); });
    };
 
    makeMenu(menu) {

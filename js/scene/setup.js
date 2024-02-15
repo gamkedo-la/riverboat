@@ -39,7 +39,7 @@ class Setup extends Phaser.Scene {
       });
 
       // test progress bar
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 50; i++) {
          this.load.image('river' + i, 'public/art/river_0_360x640.png');
       }
 
@@ -48,6 +48,9 @@ class Setup extends Phaser.Scene {
       this.load.image('anim_turnBoat', 'public/art/boat_5.png');
       this.load.image('boom', 'public/art/boom_480x50.png');
       this.load.image('pier', 'public/art/goal.png');
+
+      this.load.image('placeholderButtonUp', 'public/art/placeholder_button_up.png');
+      this.load.image('placeholderButtonDown', 'public/art/placeholder_button_down.png');
 
       this.load.spritesheet('anim_placeholderExplosion', 'public/art/placeholderExplosion.png', {
          frameWidth: 97,
@@ -67,7 +70,7 @@ class Setup extends Phaser.Scene {
          yoyo: true,
          repeat: 1
       });
-      this.scene.start('Game');
+      this.scene.start('Home');
    };
 
 }
