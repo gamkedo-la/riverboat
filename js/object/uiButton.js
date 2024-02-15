@@ -19,17 +19,15 @@ class uiButton extends Phaser.GameObjects.Container {
       this.add(this.buttonText);
 
       this.button.on('pointerdown', () => {
-         console.log('pointer down');
          this.targetCallback();
       });
 
       this.button.on('pointerover', () => {
-         console.log('pointer over');
+         console.log('pointer over button');
          this.button.setTexture(this.hoverKey);
       });
 
       this.button.on('pointerout', () => {
-         console.log('pointer out');
          this.button.setTexture(this.key);
       });
    }

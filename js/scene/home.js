@@ -30,7 +30,7 @@ class Home extends Phaser.Scene {
       let top = 120 - text.height / 2 - margin;
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
 
-      top += 150;
+      top += 140;
       this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play', { font: '32px Arial', fill: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
@@ -42,8 +42,11 @@ class Home extends Phaser.Scene {
          .setInteractive();
       this.buttonCredits.on('pointerdown', () => this.scene.start('Credits'));
 
-      top += 75;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Scores', () => { console.log('Scores show'); });
+      top += 90;
+      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Scores', () => { console.log('pointer down -> show High Scores'); });
+
+      top += 125;
+      this.add.text(gameWidth / 2, top, 'ESCape key to return here', { font: '22px Arial', fill: '#ffffff' }).setOrigin(0.5);
    };
 
    makeMenu(menu) {
