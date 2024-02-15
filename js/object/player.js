@@ -1,28 +1,46 @@
 class Player extends Phaser.Physics.Arcade.Image {
    constructor(scene, x, y, key) {
       super(scene, x, y, key);
-      this.scene = scene;
-      this.scene.physics.world.enable(this);
-      this.start_x = displayWidth / 2;
-      this.start_y = displayHeight - 90;
-      this.start_health = 10;
-      this.start_fuel = 1000;
+      this.start_x = x;
+      this.start_y = y;
+      this.key = key; // name of texture
+      this.fuel = 1000;
       this.sideway_speed = 30;
       this.sideway_drag = 35;
       this.forward_speed = 40;
       this.backward_speed = -40;
       this.rateOfReturnToStation = 0.5;
+      scene.physics.world.enable(this);
       this.setImmovable(false);
-      this.health = this.start_health;
-      // could assignment be direct, since fuel & health never regained?
-      this.fuel = this.start_fuel;
       this.setDrag(this.sideway_drag);
       this.setVelocity(0, 0);
-      this.scene.add.existing(this);
+      scene.add.existing(this);
+      this.scene = scene;
    }
 
    update(cursors) {
       // arrow keys control
+      if (this.fuel > 0) {
+         this.engineNavigation(cursors);
+      } else {
+         console.log('Fuel empty');
+      }
+
+      // bounce off side of river
+      if (this.x > 360 - this.body.width / 2 && this.body.velocity.x > 0) {
+         this.body.velocity.x *= -1;
+      }
+      else if (this.x < this.body.width / 2 && this.body.velocity.x < 0) {
+         this.body.velocity.x *= -1;
+      }
+   }
+
+   useFuel(usage) {
+      this.fuel -= usage;
+      if (this.fuel < 0) this.fuel = 0;
+   }
+
+   engineNavigation(cursors) {
       if (cursors.left.isDown) {
          this.body.setVelocityX(-1 * this.sideway_speed);
          this.useFuel(1);
@@ -58,18 +76,6 @@ class Player extends Phaser.Physics.Arcade.Image {
             this.whenOnStation();
          }
       }
-
-      // bounce off side of river
-      if (this.x > 360 - this.body.width / 2 && this.body.velocity.x > 0) {
-         this.body.velocity.x *= -1;
-      }
-      else if (this.x < this.body.width / 2 && this.body.velocity.x < 0) {
-         this.body.velocity.x *= -1;
-      }
-   }
-
-   useFuel(usage) {
-      this.fuel -= usage;
    }
 
    moveBackToStation() {
