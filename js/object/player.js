@@ -4,7 +4,7 @@ class Player extends Phaser.Physics.Arcade.Image {
       this.start_x = x;
       this.start_y = y;
       this.key = key; // name of texture
-      this.fuel = 2000;
+      this.fuel = 500;
       this.sideway_speed = 30;
       this.sideway_drag = 35;
       this.forward_speed = 40;
@@ -21,12 +21,15 @@ class Player extends Phaser.Physics.Arcade.Image {
 
    update(cursors) {
       // should be test > 0, but a bug fuel sticks at 1
-      if (this.fuel > 4) {
+      if (this.fuel > 0) {
          // arrow keys control
          this.engineNavigation(cursors);
       } else {
          console.log('Fuel empty');
+         // this.scene.updateFuelDisplay(); // already called in Game update
          this.setTint(0xffffff);
+         this.stopWake(); // unsure why this needs calling here but it does
+
          // not returning to station looks out of control (which is appropriate)
          // if (this.y < this.start_y) {
          //    // boat is above its default position
@@ -60,7 +63,7 @@ class Player extends Phaser.Physics.Arcade.Image {
 
       // forward power, wake behind boat 
       // disallow if boat near top of display
-      if (cursors.up.isDown && this.body.y > this.body.height) {
+      if (cursors.up.isDown && this.body.y > this.body.height && this.fuel >= 4) {
          this.body.setVelocityY(-this.forward_speed);
          this.setTint(0xffb38a);
          this.addWake();
@@ -70,7 +73,7 @@ class Player extends Phaser.Physics.Arcade.Image {
 
       // slows, reverse engine, wake inverted?
       // less engine if anchor assisted but risk snagging
-      else if (cursors.down.isDown) {
+      else if (cursors.down.isDown && this.fuel >= 2) {
          this.scene.booms.setVelocityY(riverSpeed / 4);
          if (this.pierPlaced) {
             this.scene.pier.setVelocityY(riverSpeed / 4);
@@ -84,8 +87,7 @@ class Player extends Phaser.Physics.Arcade.Image {
          this.setTint(0xffffff);
 
          if (this.scene.playerWake.visible) {
-            this.scene.playerWake.visible = false;
-            this.scene.playerWake.setVelocityY(0);
+            this.stopWake();
             // this.scene.wake.body.setVelocityY(0);
             // this.scene.wake.destroy();
             // earlier effort revealed a 2nd ghost wake but with transparency
@@ -112,6 +114,11 @@ class Player extends Phaser.Physics.Arcade.Image {
       this.scene.playerWake.setVelocityY(-this.forward_speed);
       // this.wake = this.addChild(this.add.image(0, this.body.height, 'wake'));
       // this.scene.wake = this.scene.physics.add.image(this.x, this.y + this.body.height, 'wake').setVelocityY(-this.forward_speed);
+   }
+
+   stopWake() {
+      this.scene.playerWake.visible = false;
+      this.scene.playerWake.setVelocityY(0);
    }
 
    moveBackToStation() {
