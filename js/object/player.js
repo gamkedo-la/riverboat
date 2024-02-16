@@ -9,6 +9,7 @@ class Player extends Phaser.Physics.Arcade.Image {
       this.sideway_drag = 35;
       this.forward_speed = 40;
       this.backward_speed = -40;
+      this.engine = "off";
       this.rateOfReturnToStation = 0.5;
       scene.physics.world.enable(this);
       this.setImmovable(false);
@@ -19,12 +20,14 @@ class Player extends Phaser.Physics.Arcade.Image {
    }
 
    update(cursors) {
-      // arrow keys control
+      // should be test > 0, but a bug fuel sticks at 1
       if (this.fuel > 4) {
+         // arrow keys control
          this.engineNavigation(cursors);
       } else {
          console.log('Fuel empty');
          this.setTint(0xffffff);
+         // not returning to station looks out of control (which is appropriate)
          // if (this.y < this.start_y) {
          //    // boat is above its default position
          //    this.moveBackToStation();
@@ -55,11 +58,18 @@ class Player extends Phaser.Physics.Arcade.Image {
          this.useFuel(1);
       }
 
+      // forward power, wake behind boat 
+      // disallow if boat near top of display
       if (cursors.up.isDown && this.body.y > this.body.height) {
          this.body.setVelocityY(-this.forward_speed);
          this.setTint(0xffb38a);
+         this.addWake();
          this.useFuel(4);
+         this.engine = "forward";
       }
+
+      // slows, reverse engine, wake inverted?
+      // less engine if anchor assisted but risk snagging
       else if (cursors.down.isDown) {
          this.scene.booms.setVelocityY(riverSpeed / 4);
          if (this.pierPlaced) {
@@ -72,6 +82,13 @@ class Player extends Phaser.Physics.Arcade.Image {
       // neither up nor down is pressed
       else {
          this.setTint(0xffffff);
+         if (this.scene.wake) {
+            // debugger;
+            this.scene.wake.y = 999;
+            // this.scene.wake.body.setVelocityY(0);
+            this.scene.wake.destroy();
+         }
+
          if (this.y < this.start_y) {
             // boat is above its default position
             this.moveBackToStation();
@@ -83,11 +100,18 @@ class Player extends Phaser.Physics.Arcade.Image {
       }
    }
 
+   addWake() {
+      this.scene.wake = this.scene.physics.add.sprite(this.x, this.y + this.body.height, 'wake')
+         .setScale(1)
+         .setVelocityY(-this.forward_speed);
+   }
+
    moveBackToStation() {
-      // player's on-screen location slowly return to bottom
+      // player's on-screen location slowly returns to bottom
       this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
       // river furniture Y change faster to maintain relative motion
       this.scene.booms.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
+
       if (this.scene.pierPlaced) {
          this.scene.pier.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
       }
