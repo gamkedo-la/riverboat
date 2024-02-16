@@ -4,7 +4,7 @@ class Player extends Phaser.Physics.Arcade.Image {
       this.start_x = x;
       this.start_y = y;
       this.key = key; // name of texture
-      this.fuel = 1000;
+      this.fuel = 2000;
       this.sideway_speed = 30;
       this.sideway_drag = 35;
       this.forward_speed = 40;
@@ -82,11 +82,16 @@ class Player extends Phaser.Physics.Arcade.Image {
       // neither up nor down is pressed
       else {
          this.setTint(0xffffff);
-         if (this.scene.wake) {
-            // debugger;
-            this.scene.wake.y = 999;
+
+         if (this.scene.playerWake.visible) {
+            this.scene.playerWake.visible = false;
+            this.scene.playerWake.setVelocityY(0);
             // this.scene.wake.body.setVelocityY(0);
-            this.scene.wake.destroy();
+            // this.scene.wake.destroy();
+            // earlier effort revealed a 2nd ghost wake but with transparency
+            // which was affected by setVelocity() and destroy() while the
+            // bulkier wake was not: maybe something how Arcade Physics handles
+            // transparency that I don't yet understand.
          }
 
          if (this.y < this.start_y) {
@@ -101,9 +106,12 @@ class Player extends Phaser.Physics.Arcade.Image {
    }
 
    addWake() {
-      this.scene.wake = this.scene.physics.add.sprite(this.x, this.y + this.body.height, 'wake')
-         .setScale(1)
-         .setVelocityY(-this.forward_speed);
+      this.scene.playerWake.x = this.x - 4;
+      this.scene.playerWake.y = this.y + this.body.height;
+      this.scene.playerWake.visible = true;
+      this.scene.playerWake.setVelocityY(-this.forward_speed);
+      // this.wake = this.addChild(this.add.image(0, this.body.height, 'wake'));
+      // this.scene.wake = this.scene.physics.add.image(this.x, this.y + this.body.height, 'wake').setVelocityY(-this.forward_speed);
    }
 
    moveBackToStation() {

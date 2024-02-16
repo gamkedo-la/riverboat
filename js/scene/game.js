@@ -29,6 +29,10 @@ class Game extends Phaser.Scene {
       let start_y = displayHeight - 90;
       this.player = new Player(this, start_x, start_y, 'boat');
 
+      this.playerWake = this.physics.add.image(0, 0, 'wake');
+      // this.player.addChild(this.playerWake);
+      this.playerWake.visible = false;
+
       this.makeBooms();
 
       if (this.checkIfReachedPier()) {
