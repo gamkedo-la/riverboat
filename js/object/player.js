@@ -1,10 +1,12 @@
-class Player extends Phaser.Physics.Arcade.Image {
-   constructor(scene, x, y, key) {
-      super(scene, x, y, key);
+// class Player extends Phaser.Physics.Arcade.Image {
+class Player extends Phaser.Physics.Arcade.Sprite {
+
+   constructor(scene, x, y, key, frame) {
+      super(scene, x, y, key, frame);
       this.start_x = x;
       this.start_y = y;
       this.key = key; // name of texture
-      this.fuel = 500;
+      this.fuel = 2000;
       this.sideway_speed = 30;
       this.sideway_drag = 35;
       this.forward_speed = 40;
@@ -53,10 +55,13 @@ class Player extends Phaser.Physics.Arcade.Image {
 
    engineNavigation(cursors) {
       if (cursors.left.isDown) {
+
+         this.play('turnLeft');
          this.body.setVelocityX(-1 * this.sideway_speed);
          this.useFuel(1);
       }
       else if (cursors.right.isDown) {
+         this.play('turnRight');
          this.body.setVelocityX(this.sideway_speed);
          this.useFuel(1);
       }

@@ -27,11 +27,14 @@ class Game extends Phaser.Scene {
 
       let start_x = displayWidth / 2;
       let start_y = displayHeight - 90;
-      this.player = new Player(this, start_x, start_y, 'boat');
+      //this.player = new Player(this, start_x, start_y, 'boat');
+      this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
 
       this.playerWake = this.physics.add.image(0, 0, 'wake');
-      // this.player.addChild(this.playerWake);
+      this.playerWake.x = start_x;
+      this.playerWake.y = start_y + this.player.height;
       this.playerWake.visible = false;
+      // this.player.addChild(this.playerWake);
 
       this.makeBooms();
 

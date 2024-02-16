@@ -53,6 +53,12 @@ class Setup extends Phaser.Scene {
       this.load.image('placeholderButtonUp', 'public/art/placeholder_button_up.png');
       this.load.image('placeholderButtonDown', 'public/art/placeholder_button_down.png');
 
+      this.load.spritesheet('anim_boat', 'public/art/boat_5.png', {
+         frameWidth: 30,
+         frameHeight: 65,
+         spacing: 0
+      });
+
       this.load.spritesheet('anim_placeholderExplosion', 'public/art/placeholderExplosion.png', {
          frameWidth: 97,
          frameHeight: 83,
@@ -64,6 +70,22 @@ class Setup extends Phaser.Scene {
    };
 
    create() {
+      this.anims.create({
+         key: 'turnLeft',
+         frames: this.anims.generateFrameNames('anim_boat', { frames: [1, 0, 1, 2] }),
+         frameRate: 2,
+         yoyo: false,
+         repeat: 0
+      });
+
+      this.anims.create({
+         key: 'turnRight',
+         frames: this.anims.generateFrameNames('anim_boat', { frames: [3, 4, 3, 2] }),
+         frameRate: 2,
+         yoyo: false,
+         repeat: 0
+      });
+
       this.anims.create({
          key: 'explode',
          frames: this.anims.generateFrameNames('anim_placeholderExplosion', { frames: [1, 2, 3] }),
