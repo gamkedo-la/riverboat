@@ -18,7 +18,7 @@ class Home extends Phaser.Scene {
       let gameWidth = this.sys.game.config.width;
       let gameHeight = this.sys.game.config.height;
       let gameCentre = [gameWidth / 2, gameHeight / 2];
-      let titleCentre = [gameWidth / 2, 120];
+      let titleCentre = [gameWidth / 2, 80];
 
       let text = this.add.text(...titleCentre, 'River boat', { font: '36px Arial', fill: '#ffffff' })
          .setOrigin(0.5)
@@ -28,7 +28,7 @@ class Home extends Phaser.Scene {
       textPanel.fillStyle(0x000000, 0.7);
       let margin = 12;
       let left = gameWidth / 2 - text.width / 2 - margin;
-      let top = 120 - text.height / 2 - margin;
+      let top = 80 - text.height / 2 - margin;
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
 
       top += 120;
