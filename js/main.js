@@ -3,7 +3,7 @@ const config = {
    type: Phaser.AUTO,
    width: 360,
    height: 600,
-   scene: [Boot, Setup, Home, Game, Credits],
+   scene: [Boot, Setup, Home, Gallery, Game, Credits],
    title: 'Riverboat',
    pixelArt: true,
    roundPixels: true,

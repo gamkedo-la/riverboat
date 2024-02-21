@@ -5,7 +5,8 @@ class Home extends Phaser.Scene {
 
    init() {
       this.menu = [
-         { scene: 'Game', text: 'Play' },
+         { scene: 'Gallery', text: 'Gallery' },
+         { scene: 'Game', text: 'Play game' },
          { scene: 'Credits', text: 'Credits' },
       ];
    };
@@ -19,7 +20,7 @@ class Home extends Phaser.Scene {
       let gameCentre = [gameWidth / 2, gameHeight / 2];
       let titleCentre = [gameWidth / 2, 120];
 
-      let text = this.add.text(...titleCentre, 'River boat', { font: '40px Arial', fill: '#ffffff' })
+      let text = this.add.text(...titleCentre, 'River boat', { font: '36px Arial', fill: '#ffffff' })
          .setOrigin(0.5)
          .setDepth(1);
 
@@ -30,13 +31,19 @@ class Home extends Phaser.Scene {
       let top = 120 - text.height / 2 - margin;
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
 
-      top += 140;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play', { font: '32px Arial', fill: '#ffffff' })
+      top += 120;
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Gallery', { font: '32px Arial', fill: '#ffffff' })
+         .setOrigin(0.5)
+         .setInteractive();
+      this.buttonPlay.on('pointerdown', () => this.scene.start('Gallery'));
+
+      top += 70;
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game', { font: '32px Arial', fill: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonPlay.on('pointerdown', () => this.scene.start('Game'));
 
-      top += 75;
+      top += 70;
       this.buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '32px Arial', fill: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
