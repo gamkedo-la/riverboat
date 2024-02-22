@@ -73,6 +73,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.setTint(0xffb38a);
          this.addWake();
          this.useFuel(4);
+         this.scene.obstacles.setVelocityY(riverSpeed * 2);
          this.engine = "forward";
       }
 

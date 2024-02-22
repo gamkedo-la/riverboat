@@ -1,3 +1,6 @@
+// import Phaser from '../lib/phaser.js';
+// console.dir(Phaser);
+
 class Game extends Phaser.Scene {
    constructor() {
       super('Game');
@@ -89,19 +92,18 @@ class Game extends Phaser.Scene {
 
          let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
          const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
-         console.log(chosenObstacleType, obstacleSprites);
+         //console.log(chosenObstacleType, obstacleSprites);
          this.yNewObstacle = yNewObstacle;
          this.placeObstaclesY(...obstacleSprites);
 
          this.placeObstaclesX[chosenObstacleType](obstacleSprites);
-         console.log(yPreviousObstacle, ySpacing, yNewObstacle);
+         //console.log(yPreviousObstacle, ySpacing, yNewObstacle);
       }
 
       if (this.checkIfReachedPier()) {
          this.makePier();
          this.pierPlaced = true;
       }
-
       this.makeProgressDisplay();
       this.makeFuelDisplay();
 
@@ -151,12 +153,12 @@ class Game extends Phaser.Scene {
 
       let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
-      console.log(chosenObstacleType, obstacleSprites);
+      //console.log(chosenObstacleType, obstacleSprites);
       this.yNewObstacle = yNewObstacle;
       this.placeObstaclesY(...obstacleSprites);
 
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
-      console.log(yPreviousObstacle, ySpacing, yNewObstacle);
+      //console.log(yPreviousObstacle, ySpacing, yNewObstacle);
    }
 
    placeObstaclesY(...components) {
@@ -214,7 +216,6 @@ class Game extends Phaser.Scene {
    }
 
    placeBooms(leftBoom, rightBoom) {
-      console.log(leftBoom);
       // gap between left and right booms
       let gapSize = Phaser.Math.Between(...this.boomGapRange);
       // left side of gap's X coordinate i.e. right edge of left boom
@@ -276,7 +277,7 @@ class Game extends Phaser.Scene {
       let tempObstacles = [];
       this.obstacles.getChildren().forEach(obstacle => {
          if (obstacle.getBounds().top > displayHeight) {
-            console.log(obstacle);
+            //console.log(obstacle);
             tempObstacles.push(obstacle);
             obstacle.destroy();
             this.makeObstacle(); // will wrongly make one for each component
@@ -318,12 +319,6 @@ class Game extends Phaser.Scene {
             this.endLevel();
          }
       }
-   };
-
-   setBoomSpeed(speed) {
-      this.booms.children.iterate((boom) => {
-         boom.setVelocityY(speed);
-      });
    };
 
    endLevel() {
