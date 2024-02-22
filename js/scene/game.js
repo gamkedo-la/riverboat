@@ -11,7 +11,7 @@ class Game extends Phaser.Scene {
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
       this.obstacles_display = 3;
       this.booms_display = 3;
-      this.ySpacingRange = [250, 350];
+      this.ySpacingRange = [240, 320];
       this.boomGapRange = [80, 140];
       this.boom_length_min = 50; // 50 normal, 100 for easy path
       this.displayWidth = this.sys.config.width;
@@ -119,7 +119,7 @@ class Game extends Phaser.Scene {
 
       this.updateFuelDisplay();
 
-      //this.recycleBoom();
+      this.destroyPassedObstacle();
    };
 
    makeProgressDisplay() {
@@ -142,6 +142,22 @@ class Game extends Phaser.Scene {
          this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
       }
    };
+
+   makeObstacle() {
+      let yPreviousObstacle, ySpacing, yNewObstacle;
+      yPreviousObstacle = this.getPreviousObstacleY();
+      ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+      yNewObstacle = yPreviousObstacle - ySpacing;
+
+      let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
+      const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
+      console.log(chosenObstacleType, obstacleSprites);
+      this.yNewObstacle = yNewObstacle;
+      this.placeObstaclesY(...obstacleSprites);
+
+      this.placeObstaclesX[chosenObstacleType](obstacleSprites);
+      console.log(yPreviousObstacle, ySpacing, yNewObstacle);
+   }
 
    placeObstaclesY(...components) {
       components.forEach((item) => {
@@ -250,79 +266,31 @@ class Game extends Phaser.Scene {
       van.x = this.bank === 'left' ? 10 : displayWidth - 10;
    }
 
-   // do tile sprites enabling random variation in fast & slow Rapids
+   // do fast & slow patches within Rapids, and random variation
+   // smaller sprites (tiles) will enable this
    placeRapids(rapids) {
-
    }
 
-   // makeBooms() {
-   //    this.booms = this.physics.add.group();
-   //    for (let i = 0; i < this.booms_display; i += 1) {
-   //       let leftBoom = this.booms.create(0, 0, 'boom')
-   //          .setImmovable(true)
-   //          .setOrigin(1, 0)
-   //          .setScale(0.7);
-   //       leftBoom.damage = 2;
-   //       let rightBoom = this.booms.create(0, 0, 'boom')
-   //          .setImmovable(true)
-   //          .setOrigin(0, 0)
-   //          .setScale(0.7);
-   //       rightBoom.damage = 2;
-   //       this.placeBoom(leftBoom, rightBoom);
-   //    }
-   //    this.setBoomSpeed(-1 * riverSpeed);
-
-   //    this.booms.children.iterate(function (boom) {
-   //       // boom.y += 200; // move early obstacles into view
-   //       boom.y += 600; // too low, for quick testing
-   //    });
-   // };
-
-   // placeBoom(leftBoom, rightBoom) {
-   //    // gap between left and right booms
-   //    let gapSize = Phaser.Math.Between(...this.boomGapRange);
-   //    // left side of gap's X coordinate i.e. right edge of left boom
-   //    let gapLeftMin = this.boom_length_min;
-   //    let gapLeftMax = 360 - gapSize - this.boom_length_min;
-   //    let gapLeftRange = [gapLeftMin, gapLeftMax];
-   //    let xGapLeft = Phaser.Math.Between(...gapLeftRange);
-   //    leftBoom.x = xGapLeft;
-   //    rightBoom.x = xGapLeft + gapSize;
-
-   //    let yPrevious = this.getPreviousBoom();
-   //    let ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-   //    let yBoom = yPrevious - ySpacing;
-   //    leftBoom.y = yBoom;
-   //    rightBoom.y = yBoom;
-   // };
-
-   recycleBoom() {
+   destroyPassedObstacle() {
       //if (this.pierPlaced) return; // does the run carry on after pier?
-      let tempBooms = [];
-      this.booms.getChildren().forEach(boom => {
-         if (boom.getBounds().top > displayHeight) {
-            tempBooms.push(boom);
-            if (tempBooms.length === 2) {
-               this.placeBoom(...tempBooms);
-               this.trackProgress();
-               this.saveBestScore();
-               if (!this.pierPlaced) {
-                  if (this.checkIfReachedPier()) {
-                     this.makePier();
-                     this.pierPlaced = true;
-                  }
-               }
-            }
+      let tempObstacles = [];
+      this.obstacles.getChildren().forEach(obstacle => {
+         if (obstacle.getBounds().top > displayHeight) {
+            console.log(obstacle);
+            tempObstacles.push(obstacle);
+            obstacle.destroy();
+            this.makeObstacle(); // will wrongly make one for each component
+            this.trackProgress(); // incorrect, will count each component
          }
       });
-   };
 
-   getPreviousBoom() {
-      let yPrevious = 800;
-      this.booms.getChildren().forEach(boom => {
-         yPrevious = Math.min(boom.y, yPrevious);
-      });
-      return yPrevious;
+      // this.saveBestScore();
+      // if (!this.pierPlaced) {
+      //    if (this.checkIfReachedPier()) {
+      //       this.makePier();
+      //       this.pierPlaced = true;
+      //    }
+      // }
    };
 
    trackProgress() {
