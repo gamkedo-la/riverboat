@@ -4,6 +4,12 @@ class Game extends Phaser.Scene {
    }
 
    init() {
+      this.obstacles = this.physics.add.group({ runChildUpdate: true });
+      this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
+      this.obstacle_chances = [0.5, 0.3, 0.2, 0.0]; // demo
+      // Rapids cannot be used until overlap instead of collider
+      // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
+      this.obstacles_display = 3;
       this.booms_display = 3;
       this.ySpacingRange = [250, 350];
       this.boomGapRange = [80, 140];
@@ -18,11 +24,46 @@ class Game extends Phaser.Scene {
       this.boomsPassedMax = localStorage.getItem('boomsPassedMax');
       this.pierPlaced = false;
       this.levelOver = false;
+
+
+      this.obstacleMaker = {
+         boom: () => {
+            return this.makeBooms();
+         },
+         secret: () => {
+            return this.makeSecret();
+         },
+         bridge: () => {
+            return this.makeBridge();
+         },
+         rapids: () => {
+            return this.makeRapids();
+         },
+      };
+
+      this.placeObstaclesX = {
+         boom: (obstacleSprites) => {
+            console.log('placing a boom pair');
+            this.placeBooms(...obstacleSprites);
+         },
+         secret: (obstacleSprites) => {
+            console.log('placing a secret zone');
+            this.placeSecret(...obstacleSprites);
+         },
+         bridge: (obstacleSprites) => {
+            console.log('placing a bridge');
+            this.placeBridge(...obstacleSprites);
+         },
+         rapids: (obstacleSprites) => {
+            console.log('placing rapids');
+            this.placeRapids(...obstacleSprites);
+         },
+      };
    };
 
    create() {
       this.cameras.main.setBackgroundColor(0x0000ff);
-
+      this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
 
       let start_x = displayWidth / 2;
@@ -36,7 +77,25 @@ class Game extends Phaser.Scene {
       this.playerWake.visible = false;
       // this.player.addChild(this.playerWake);
 
-      this.makeBooms();
+      let yPreviousObstacle, ySpacing, yNewObstacle;
+      for (let i = 0; i < this.obstacles_display; i += 1) {
+         if (i === 0) {
+            yPreviousObstacle = 500;
+         } else {
+            yPreviousObstacle = this.getPreviousObstacleY();
+         }
+         ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+         yNewObstacle = yPreviousObstacle - ySpacing;
+
+         let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
+         const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
+         console.log(chosenObstacleType, obstacleSprites);
+         this.yNewObstacle = yNewObstacle;
+         this.placeObstaclesY(...obstacleSprites);
+
+         this.placeObstaclesX[chosenObstacleType](obstacleSprites);
+         console.log(yPreviousObstacle, ySpacing, yNewObstacle);
+      }
 
       if (this.checkIfReachedPier()) {
          this.makePier();
@@ -48,7 +107,7 @@ class Game extends Phaser.Scene {
 
       this.cursors = this.input.keyboard.createCursorKeys();
 
-      this.physics.add.collider(this.player, this.booms, this.endLevel, null, this);
+      this.physics.add.collider(this.player, this.obstacles, this.endLevel, null, this);
 
       this.input.keyboard.on('keyup', this.anyKey, this);
    };
@@ -60,7 +119,7 @@ class Game extends Phaser.Scene {
 
       this.updateFuelDisplay();
 
-      this.recycleBoom();
+      //this.recycleBoom();
    };
 
    makeProgressDisplay() {
@@ -84,30 +143,62 @@ class Game extends Phaser.Scene {
       }
    };
 
-   makeBooms() {
-      this.booms = this.physics.add.group();
-      for (let i = 0; i < this.booms_display; i += 1) {
-         let leftBoom = this.booms.create(0, 0, 'boom')
-            .setImmovable(true)
-            .setOrigin(1, 0)
-            .setScale(0.7);
-         leftBoom.damage = 2;
-         let rightBoom = this.booms.create(0, 0, 'boom')
-            .setImmovable(true)
-            .setOrigin(0, 0)
-            .setScale(0.7);
-         rightBoom.damage = 2;
-         this.placeBoom(leftBoom, rightBoom);
-      }
-      this.setBoomSpeed(-1 * riverSpeed);
-
-      this.booms.children.iterate(function (boom) {
-         // boom.y += 200; // move early obstacles into view
-         boom.y += 600; // too low, for quick testing
+   placeObstaclesY(...components) {
+      components.forEach((item) => {
+         item.y = this.yNewObstacle;
       });
-   };
+   }
 
-   placeBoom(leftBoom, rightBoom) {
+   makeBooms() {
+      let leftBoom = new Boom(this, 0, 0, 'boom');
+      let rightBoom = new Boom(this, 0, 0, 'boom');
+      // because X gap measured from leftBoom's right-hand edge
+      leftBoom.setOrigin(1, 0); // class default is 0,0
+      return [leftBoom, rightBoom];
+   }
+
+   makeSecret() {
+      this.bank = Math.random() < 0.5 ? 'left' : 'right';
+      this.towerBank = (this.bank === 'left') ? 'right' : 'left';
+
+      let land_secret = new Land(this, 0, 0, 'land');
+      let secret = new Secret(this, 0, 0, 'secret');
+
+      let land_tower = new Land(this, 0, 0, 'land');
+      // later use single tower texture and flip with Phaser
+      let tower;
+      if (this.towerBank === 'left') {
+         tower = new Tower(this, 0, 0, 'tower_left');
+      } else {
+         tower = new Tower(this, 0, 0, 'tower_right');
+      }
+      return [secret, land_secret, tower, land_tower];
+   }
+
+   makeBridge() {
+      let leftBridge = new BridgeSide(this, 0, 0, "bridge");
+      let rightBridge = new BridgeSide(this, 0, 0, "bridge");
+      leftBridge.setOrigin(1, 0.5); // class default X origin 0
+
+      this.bank = Math.random() < 0.5 ? 'left' : 'right';
+      let van = new Van(this, 0, 0, "van");
+      if (this.bank === 'left') {
+         van.setOrigin(0, 0.5);
+      } else {
+         van.flipX = true;
+         van.setOrigin(1, 0.5);
+      }
+      return [leftBridge, rightBridge, van];
+   }
+
+   // will have tiles of fast & slow patches, and rocks
+   makeRapids() {
+      let rapids = new Rapids(this, 0, 0, "rapids");
+      return [rapids];
+   }
+
+   placeBooms(leftBoom, rightBoom) {
+      console.log(leftBoom);
       // gap between left and right booms
       let gapSize = Phaser.Math.Between(...this.boomGapRange);
       // left side of gap's X coordinate i.e. right edge of left boom
@@ -117,13 +208,93 @@ class Game extends Phaser.Scene {
       let xGapLeft = Phaser.Math.Between(...gapLeftRange);
       leftBoom.x = xGapLeft;
       rightBoom.x = xGapLeft + gapSize;
+   }
 
-      let yPrevious = this.getPreviousBoom();
-      let ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-      let yBoom = yPrevious - ySpacing;
-      leftBoom.y = yBoom;
-      rightBoom.y = yBoom;
-   };
+   placeSecret(secret, land_secret, tower, land_tower) {
+      let x;
+      if (this.bank === "left") {
+         land_secret.setOrigin(0, 0.5);
+         secret.setOrigin(0, 0.5);
+         x = 0;
+         land_secret.x = x;
+         secret.x = x + 20;
+
+         land_tower.setOrigin(1, 0.5);
+         tower.setOrigin(1, 0.5);
+         x = displayWidth;
+         land_tower.x = x;
+         tower.x = x - 20;
+      }
+      else if (this.bank === "right") {
+         land_secret.setOrigin(1, 0.5);
+         secret.setOrigin(1, 0.5);
+         land_secret.x = displayWidth;
+         secret.x = displayWidth - 20;
+
+         land_tower.setOrigin(0, 0.5);
+         tower.setOrigin(0, 0.5);
+         land_tower.x = 0;
+         tower.x = 20;
+      }
+   }
+
+   placeBridge(leftBridge, rightBridge, van) {
+      let gapSize = 100;
+      // left side of gap's X coordinate i.e. right edge of left boom
+      let xGapLeft = 130;
+      leftBridge.x = xGapLeft;
+      rightBridge.x = xGapLeft + gapSize;
+      // let y = this.y_locations[1]; // gallery
+      // leftBridge.y = y;
+      // rightBridge.y = y;
+      van.x = this.bank === 'left' ? 10 : displayWidth - 10;
+   }
+
+   // do tile sprites enabling random variation in fast & slow Rapids
+   placeRapids(rapids) {
+
+   }
+
+   // makeBooms() {
+   //    this.booms = this.physics.add.group();
+   //    for (let i = 0; i < this.booms_display; i += 1) {
+   //       let leftBoom = this.booms.create(0, 0, 'boom')
+   //          .setImmovable(true)
+   //          .setOrigin(1, 0)
+   //          .setScale(0.7);
+   //       leftBoom.damage = 2;
+   //       let rightBoom = this.booms.create(0, 0, 'boom')
+   //          .setImmovable(true)
+   //          .setOrigin(0, 0)
+   //          .setScale(0.7);
+   //       rightBoom.damage = 2;
+   //       this.placeBoom(leftBoom, rightBoom);
+   //    }
+   //    this.setBoomSpeed(-1 * riverSpeed);
+
+   //    this.booms.children.iterate(function (boom) {
+   //       // boom.y += 200; // move early obstacles into view
+   //       boom.y += 600; // too low, for quick testing
+   //    });
+   // };
+
+   // placeBoom(leftBoom, rightBoom) {
+   //    // gap between left and right booms
+   //    let gapSize = Phaser.Math.Between(...this.boomGapRange);
+   //    // left side of gap's X coordinate i.e. right edge of left boom
+   //    let gapLeftMin = this.boom_length_min;
+   //    let gapLeftMax = 360 - gapSize - this.boom_length_min;
+   //    let gapLeftRange = [gapLeftMin, gapLeftMax];
+   //    let xGapLeft = Phaser.Math.Between(...gapLeftRange);
+   //    leftBoom.x = xGapLeft;
+   //    rightBoom.x = xGapLeft + gapSize;
+
+   //    let yPrevious = this.getPreviousBoom();
+   //    let ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+   //    let yBoom = yPrevious - ySpacing;
+   //    leftBoom.y = yBoom;
+   //    rightBoom.y = yBoom;
+   // };
 
    recycleBoom() {
       //if (this.pierPlaced) return; // does the run carry on after pier?
@@ -245,4 +416,40 @@ class Game extends Phaser.Scene {
          // cannot resume scene but good enough to stop motion and sounds while coding without having to close and later re-open browser tab.
       }
    };
+
+   getPreviousObstacleY() {
+      let yPrevious = 700;
+      this.obstacles.getChildren().forEach(obstacle => {
+         yPrevious = Math.min(obstacle.y, yPrevious);
+      });
+      return yPrevious;
+   }
+
+   setObstacleSpeed(speed) {
+      this.obstacles.children.iterate((obstacle) => {
+         obstacle.setVelocityY(speed);
+      });
+   }
+
+   weightedRandomChoice(items, weights) {
+      let totalWeight = 0;
+      for (let weight of weights) {
+         totalWeight += weight;
+      }
+      const tolerance = 0.001;
+      if (Math.abs(totalWeight - 1) > tolerance) {
+         console.warn('Random choice weights do not sum to 1');
+      }
+      let randomValue = Math.random() * totalWeight;
+      let currentWeight = 0;
+
+      for (let i = 0; i < items.length; i++) {
+         currentWeight += weights[i];
+         if (randomValue <= currentWeight) {
+            return items[i];
+         }
+      }
+      // return last item in case of error
+      return items[items.length - 1];
+   }
 }

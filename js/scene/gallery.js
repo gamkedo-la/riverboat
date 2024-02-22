@@ -114,8 +114,8 @@ class Gallery extends Phaser.Scene {
 
    // all swing/tower bridges have small central gap
    makeBridge() {
-      let leftBridge = new Bridge(this, 0, 0, "bridge");
-      let rightBridge = new Bridge(this, 0, 0, "bridge");
+      let leftBridge = new BridgeSide(this, 0, 0, "bridge");
+      let rightBridge = new BridgeSide(this, 0, 0, "bridge");
       leftBridge.setOrigin(1, 0.5); // class default X origin 0
       this.placeBridgeSides(leftBridge, rightBridge);
       let van = new Van(this, 0, this.y_locations[1], "van");

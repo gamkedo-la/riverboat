@@ -79,7 +79,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // slows, reverse engine, wake inverted?
       // less engine if anchor assisted but risk snagging
       else if (cursors.down.isDown && this.fuel >= 2) {
-         this.scene.booms.setVelocityY(riverSpeed / 4);
+         this.scene.obstacles.setVelocityY(riverSpeed / 4);
          if (this.pierPlaced) {
             this.scene.pier.setVelocityY(riverSpeed / 4);
          }
@@ -130,7 +130,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // player's on-screen location slowly returns to bottom
       this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
       // river furniture Y change faster to maintain relative motion
-      this.scene.booms.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
+      this.scene.obstacles.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
 
       if (this.scene.pierPlaced) {
          this.scene.pier.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
@@ -141,7 +141,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // player now on station at bottom of playarea, so...
       this.body.setVelocityY(0);
       // river furniture's relative motion needs no adjustment
-      this.scene.booms.setVelocityY(riverSpeed);
+      this.scene.obstacles.setVelocityY(riverSpeed);
       if (this.scene.pierPlaced) {
          this.scene.pier.setVelocityY(riverSpeed);
       }

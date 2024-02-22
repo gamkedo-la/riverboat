@@ -1,4 +1,4 @@
-class Bridge extends Phaser.Physics.Arcade.Image {
+class BridgeSide extends Phaser.Physics.Arcade.Image {
    constructor(scene, x, y, texture) {
       super(scene, x, y, texture);
       Object.assign(this, { x, y, scene });
