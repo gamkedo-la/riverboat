@@ -1,4 +1,4 @@
-class Secret extends Phaser.Physics.Arcade.Image {
+class Tower extends Phaser.Physics.Arcade.Image {
    constructor(scene, x, y, texture, bank) {
       super(scene, x, y, texture, bank);
       Object.assign(this, { scene, x, y, bank });

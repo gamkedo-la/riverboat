@@ -48,6 +48,15 @@ class Setup extends Phaser.Scene {
       this.load.image('anim_turnBoat', 'public/art/boat_5.png');
       this.load.image('wake', 'public/art/water_wake.png');
       this.load.image('boom', 'public/art/boom_480x50.png');
+      this.load.image('land', 'public/art/land.png');
+      this.load.image('rock', 'public/art/rock.png');
+      this.load.image('secret', 'public/art/secret.png');
+      this.load.image('bridge', 'public/art/bridge_480x50.png');
+      this.load.image('rapids', 'public/art/rapids.png');
+      this.load.image('van', 'public/art/van.png');
+      this.load.image('light', 'public/art/searchlight.png');
+      this.load.image('tower_left', 'public/art/tower_leftbank.png');
+      this.load.image('tower_right', 'public/art/tower_rightbank.png');
       this.load.image('pier', 'public/art/goal.png');
 
       this.load.image('placeholderButtonUp', 'public/art/placeholder_button_up.png');
