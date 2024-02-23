@@ -54,13 +54,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    engineNavigation(cursors) {
-      if (cursors.left.isDown) {
+      if (cursors.left.isDown || cursors.keyA.isDown) {
 
          this.play('turnLeft');
          this.body.setVelocityX(-1 * this.sideway_speed);
          this.useFuel(1);
       }
-      else if (cursors.right.isDown) {
+      else if (cursors.right.isDown || cursors.keyD.isDown) {
          this.play('turnRight');
          this.body.setVelocityX(this.sideway_speed);
          this.useFuel(1);
@@ -68,7 +68,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
       // forward power, wake behind boat 
       // disallow if boat near top of display
-      if (cursors.up.isDown && this.body.y > this.body.height && this.fuel >= 4) {
+      if ((cursors.up.isDown || cursors.keyW.isDown) 
+            && this.body.y > this.body.height && this.fuel >= 4) {
          this.body.setVelocityY(-this.forward_speed);
          this.setTint(0xffb38a);
          this.addWake();
@@ -79,7 +80,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
       // slows, reverse engine, wake inverted?
       // less engine if anchor assisted but risk snagging
-      else if (cursors.down.isDown && this.fuel >= 2) {
+      else if ((cursors.down.isDown || cursors.keyS.isDown)
+             && this.fuel >= 2) {
          this.scene.obstacles.setVelocityY(riverSpeed / 4);
          if (this.pierPlaced) {
             this.scene.pier.setVelocityY(riverSpeed / 4);

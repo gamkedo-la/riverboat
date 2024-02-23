@@ -108,6 +108,11 @@ class Game extends Phaser.Scene {
       this.makeFuelDisplay();
 
       this.cursors = this.input.keyboard.createCursorKeys();
+      // add W,A,S,D to cursors so they work in addition to the arrow keys
+      this.cursors.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+      this.cursors.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+      this.cursors.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+      this.cursors.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 
       this.physics.add.collider(this.player, this.obstacles, this.endLevel, null, this);
 
