@@ -7,6 +7,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.start_y = y;
       this.key = key; // name of texture
       this.fuel = 2000;
+      this.forwardFuel = 4;
+      this.backwardFuel = 2;
+      this.sidewaysFuel = 1;
       this.sideway_speed = 30;
       this.sideway_drag = 35;
       this.forward_speed = 40;
@@ -50,7 +53,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    useFuel(usage) {
       this.fuel -= usage;
-      if (this.fuel < 0) this.fuel = 0;
+      if (this.fuel < 0) {
+         this.fuel = 0;
+         // poke display in case that doesnt get called when zero fuel
+         this.scene.updateFuelDisplay();
+      }
    }
 
    engineNavigation(cursors) {
@@ -58,36 +65,41 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
          this.play('turnLeft');
          this.body.setVelocityX(-1 * this.sideway_speed);
-         this.useFuel(1);
+         this.useFuel(this.sidewaysFuel);
       }
       else if (cursors.right.isDown || cursors.keyD.isDown) {
          this.play('turnRight');
          this.body.setVelocityX(this.sideway_speed);
-         this.useFuel(1);
+         this.useFuel(this.sidewaysFuel);
       }
 
       // forward power, wake behind boat 
       // disallow if boat near top of display
-      if ((cursors.up.isDown || cursors.keyW.isDown) 
-            && this.body.y > this.body.height && this.fuel >= 4) {
+      if ((cursors.up.isDown || cursors.keyW.isDown)
+         && this.body.y > this.body.height && this.fuel >= this.forwardFuel) {
          this.body.setVelocityY(-this.forward_speed);
          this.setTint(0xffb38a);
          this.addWake();
-         this.useFuel(4);
-         this.scene.obstacles.setVelocityY(riverSpeed * 2);
+         this.useFuel(this.forwardFuel);
+
+         // in case current obstacle speed needed in scene, made available
+         this.scene.obstacleSpeed = riverSpeed * 2;
+         this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
          this.engine = "forward";
       }
 
       // slows, reverse engine, wake inverted?
       // less engine if anchor assisted but risk snagging
       else if ((cursors.down.isDown || cursors.keyS.isDown)
-             && this.fuel >= 2) {
-         this.scene.obstacles.setVelocityY(riverSpeed / 4);
+         && this.fuel >= this.backwardFuel) {
+         this.scene.obstacleSpeed = riverSpeed / 4;
+         this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
+
          if (this.pierPlaced) {
-            this.scene.pier.setVelocityY(riverSpeed / 4);
+            this.scene.pier.setVelocityY(this.scene.obstacleSpeed);
          }
          this.setTint(0xbae946);
-         this.useFuel(2);
+         this.useFuel(this.backwardFuel);
       }
 
       // neither up nor down is pressed
@@ -133,10 +145,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // player's on-screen location slowly returns to bottom
       this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
       // river furniture Y change faster to maintain relative motion
-      this.scene.obstacles.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
 
+      this.scene.obstacleSpeed = riverSpeed + this.forward_speed * this.rateOfReturnToStation;
+      this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
+
+      // pier code will move to Pier object
       if (this.scene.pierPlaced) {
-         this.scene.pier.setVelocityY(riverSpeed + this.forward_speed * this.rateOfReturnToStation);
+         this.scene.pier.setVelocityY(this.scene.obstacleSpeed);
       }
    }
 
@@ -144,9 +159,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // player now on station at bottom of playarea, so...
       this.body.setVelocityY(0);
       // river furniture's relative motion needs no adjustment
-      this.scene.obstacles.setVelocityY(riverSpeed);
+      this.scene.obstacleSpeed = riverSpeed;
+      this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
+
+      // pier code will move to Pier object
       if (this.scene.pierPlaced) {
-         this.scene.pier.setVelocityY(riverSpeed);
+         this.scene.pier.setVelocityY(this.scene.obstacleSpeed);
       }
    }
 }
