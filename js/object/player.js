@@ -25,7 +25,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    update(cursors) {
-      // should be test > 0, but a bug fuel sticks at 1
+      // a bug fuel sticks at 1
       if (this.fuel > 0) {
          // arrow keys control
          this.engineNavigation(cursors);

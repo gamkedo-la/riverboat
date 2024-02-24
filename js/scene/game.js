@@ -12,22 +12,26 @@ class Game extends Phaser.Scene {
       this.obstacle_chances = [0.5, 0.3, 0.2, 0.0]; // demo
       // Rapids cannot be used until overlap instead of collider
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
-      this.obstacles_display = 3;
-      this.booms_display = 3;
+
+      this.spawnY = -70;
       this.ySpacingRange = [240, 320];
+      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+
+      this.obstaclesPassed = 0;
+      this.obstaclesToGoal = 7; // 0 or 1 if testing pier
+      this.obstaclesPassedMax = localStorage.getItem('obstaclesPassedMax');
+
       this.boomGapRange = [80, 140];
       this.boom_length_min = 50; // 50 normal, 100 for easy path
+
       this.displayWidth = this.sys.config.width;
       this.displayHeight = this.sys.config.height;
       this.fontSize = 16;
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, fill: '#999' };
-      this.boomsPassed = 0;
-      this.boomsToGoal = 7; // 0 or 1 if testing pier
-      this.boomsPassedMax = localStorage.getItem('boomsPassedMax');
+
       this.pierPlaced = false;
       this.levelOver = false;
-
 
       this.obstacleMaker = {
          boom: () => {
@@ -46,19 +50,15 @@ class Game extends Phaser.Scene {
 
       this.placeObstaclesX = {
          boom: (obstacleSprites) => {
-            console.log('placing a boom pair');
             this.placeBooms(...obstacleSprites);
          },
          secret: (obstacleSprites) => {
-            console.log('placing a secret zone');
             this.placeSecret(...obstacleSprites);
          },
          bridge: (obstacleSprites) => {
-            console.log('placing a bridge');
             this.placeBridge(...obstacleSprites);
          },
          rapids: (obstacleSprites) => {
-            console.log('placing rapids');
             this.placeRapids(...obstacleSprites);
          },
       };
@@ -66,7 +66,6 @@ class Game extends Phaser.Scene {
 
    create() {
       this.cameras.main.setBackgroundColor(0x0000ff);
-      this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
 
       let start_x = displayWidth / 2;
@@ -80,25 +79,18 @@ class Game extends Phaser.Scene {
       this.playerWake.visible = false;
       // this.player.addChild(this.playerWake);
 
-      let yPreviousObstacle, ySpacing, yNewObstacle;
-      for (let i = 0; i < this.obstacles_display; i += 1) {
-         if (i === 0) {
-            yPreviousObstacle = 500;
-         } else {
-            yPreviousObstacle = this.getPreviousObstacleY();
-         }
-         ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-         yNewObstacle = yPreviousObstacle - ySpacing;
+      // only create first obstacle, let update() make others
+      // obstacles always start at this.spawnY
 
-         let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
-         const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
-         //console.log(chosenObstacleType, obstacleSprites);
-         this.yNewObstacle = yNewObstacle;
-         this.placeObstaclesY(...obstacleSprites);
+      let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
+      const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
 
-         this.placeObstaclesX[chosenObstacleType](obstacleSprites);
-         //console.log(yPreviousObstacle, ySpacing, yNewObstacle);
-      }
+      this.placeObstaclesY(...obstacleSprites);
+
+      this.placeObstaclesX[chosenObstacleType](obstacleSprites);
+
+      //console.log(chosenObstacleType, obstacleSprites);
+      //console.log(yPreviousObstacle, ySpacing, yNewObstacle);
 
       if (this.checkIfReachedPier()) {
          this.makePier();
@@ -127,6 +119,8 @@ class Game extends Phaser.Scene {
       this.updateFuelDisplay();
 
       this.destroyPassedObstacle();
+
+      this.testIfreadyForNextObstacle();
    };
 
    makeProgressDisplay() {
@@ -134,7 +128,7 @@ class Game extends Phaser.Scene {
       let y = 40;
       let yLineSpacing = 32;
       this.score = 0;
-      this.progressDisplay = this.add.text(x, y, `Passed: ${this.boomsPassed}`, { fontSize: '24px', fill: '#fff' });
+      this.progressDisplay = this.add.text(x, y, `Passed: ${this.obstaclesPassed}`, { fontSize: '24px', fill: '#fff' });
       y += yLineSpacing;
    };
 
@@ -149,6 +143,16 @@ class Game extends Phaser.Scene {
          this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
       }
    };
+
+   testIfreadyForNextObstacle() {
+      let previousY = this.getPreviousObstacleY();
+      if (previousY - this.spawnY > this.ySpacing) {
+         this.makeObstacle();
+         // ready for next Obstacle
+         this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+         console.log(previousY, this.ySpacing);
+      }
+   }
 
    makeObstacle() {
       let yPreviousObstacle, ySpacing, yNewObstacle;
@@ -168,7 +172,7 @@ class Game extends Phaser.Scene {
 
    placeObstaclesY(...components) {
       components.forEach((item) => {
-         item.y = this.yNewObstacle;
+         item.y = this.spawnY;
       });
    }
 
@@ -279,14 +283,12 @@ class Game extends Phaser.Scene {
 
    destroyPassedObstacle() {
       //if (this.pierPlaced) return; // does the run carry on after pier?
-      let tempObstacles = [];
+      // let tempObstacles = [];
       this.obstacles.getChildren().forEach(obstacle => {
          if (obstacle.getBounds().top > displayHeight) {
             //console.log(obstacle);
-            tempObstacles.push(obstacle);
+            // tempObstacles.push(obstacle);
             obstacle.destroy();
-            this.makeObstacle(); // will wrongly make one for each component
-            this.trackProgress(); // incorrect, will count each component
          }
       });
 
@@ -300,8 +302,8 @@ class Game extends Phaser.Scene {
    };
 
    trackProgress() {
-      this.boomsPassed += 1;
-      this.progressDisplay.setText(`Passed: ${this.boomsPassed}`);
+      this.obstaclesPassed += 1;
+      this.progressDisplay.setText(`Passed: ${this.ObstaclesPassed}`);
    };
 
    saveBestScore() {
@@ -358,7 +360,7 @@ class Game extends Phaser.Scene {
    };
 
    checkIfReachedPier() {
-      if (!this.pierPlaced && this.boomsPassed >= this.boomsToGoal) {
+      if (!this.pierPlaced && this.obstaclesPassed >= this.obstaclesToGoal) {
          return true;
       }
    };
