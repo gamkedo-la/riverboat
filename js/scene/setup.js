@@ -39,7 +39,7 @@ class Setup extends Phaser.Scene {
       });
 
       // test progress bar
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 2; i++) {
          this.load.image('river' + i, 'public/art/river_0_360x640.png');
       }
 
