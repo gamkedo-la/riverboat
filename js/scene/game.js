@@ -155,6 +155,14 @@ class Game extends Phaser.Scene {
       this.playerWake.visible = false;
       this.playerWake.setOrigin(0.5, 0);
       // this.player.addChild(this.playerWake);
+
+      this.cone_left = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
+         .setOrigin(1, 0.5)
+         .setVisible(false)
+         .setFlipX(true);
+      this.cone_right = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
+         .setOrigin(0, 0.5)
+         .setVisible(false);
    }
 
    makeProgressDisplay() {
@@ -274,12 +282,14 @@ class Game extends Phaser.Scene {
 
    placeSecret(secret, intel, tower, land_tower) {
       let x;
+      let distSecretFromRiver = 45;
+
       if (this.bank === "left") {
          intel.setOrigin(0, 0.5);
          secret.setOrigin(0, 0.5);
          x = bankWidth;
          intel.x = x;
-         secret.x = x - 70;
+         secret.x = x - distSecretFromRiver;
 
          land_tower.setOrigin(1, 0.5);
          tower.setOrigin(1, 0.5);
@@ -292,7 +302,7 @@ class Game extends Phaser.Scene {
          secret.setOrigin(1, 0.5);
          x = gameWidth - bankWidth;
          intel.x = x;
-         secret.x = x + 70;
+         secret.x = x + distSecretFromRiver;
 
          land_tower.setOrigin(0, 0.5);
          tower.setOrigin(0, 0.5);
