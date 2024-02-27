@@ -11,11 +11,11 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.6, 0.4, 0, 0.0]; // demo
+      this.obstacle_chances = [0, 1, 0, 0.0]; // demo
       // Rapids cannot be used until overlap instead of collider
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
-      this.spawnY = 0;  //-70;
+      this.spawnY = -100;  //-70;
       this.ySpacingRange = [240, 320];
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
@@ -70,38 +70,23 @@ class Game extends Phaser.Scene {
       this.physics.world.bounds.width = gameWidth; // works without these?
       this.physics.world.bounds.height = displayHeight;
 
-      this.cameras.main.setBounds(0, 0, gameWidth, displayHeight);
-      this.cameras.main.setBackgroundColor(0x0000ff);
-
-      this.makeBanks(this);
+      this.makeBanks();
       this.makePlayer();
-      this.cameras.main.startFollow(this.player, true, 1, 0);
-      // roundPixels=true reduces jitter 
-      // LERP=1,0 prevents Y-axis following
+      this.setupXscroll();
+      this.makeHud();
 
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
 
-      // only create first obstacle, let update() make others
-      // obstacles always start at this.spawnY
-
-      let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
-      const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
-
-      this.placeObstaclesY(...obstacleSprites);
-
-      this.placeObstaclesX[chosenObstacleType](obstacleSprites);
-      //console.log(chosenObstacleType, obstacleSprites);
-      //console.log(yPreviousObstacle, ySpacing, yNewObstacle);
+      // create first 2 obstacles, using same method as update()
+      this.makeObstacle();
+      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+      this.obstacles.incY(this.ySpacing + 1);
+      this.makeObstacle();
 
       if (this.checkIfReachedPier()) {
          this.makePier();
          this.pierPlaced = true;
       }
-
-      this.hud = this.add.container(0, 0);
-      this.hud.setScrollFactor(0);
-      this.makeProgressDisplay();
-      this.makeFuelDisplay();
 
       this.cursors = this.input.keyboard.createCursorKeys();
       // add W,A,S,D to cursors so they work in addition to the arrow keys
@@ -124,8 +109,23 @@ class Game extends Phaser.Scene {
 
       this.destroyPassedObstacle();
 
-      this.testIfreadyForNextObstacle();
+      this.testIfReadyForNextObstacle();
    };
+
+   makeHud() {
+      this.hud = this.add.container(0, 0);
+      this.hud.setScrollFactor(0);
+      this.makeProgressDisplay();
+      this.makeFuelDisplay();
+   }
+
+   setupXscroll() {
+      this.cameras.main.setBounds(0, 0, gameWidth, displayHeight);
+      this.cameras.main.setBackgroundColor(0x0000ff);
+      this.cameras.main.startFollow(this.player, true, 1, 0);
+      // roundPixels=true reduces jitter 
+      // LERP=1,0 prevents Y-axis following
+   }
 
    makeBanks() {
       let bank_left = this.add.image(0, 0, 'bank_left')
@@ -181,26 +181,24 @@ class Game extends Phaser.Scene {
       }
    };
 
-   testIfreadyForNextObstacle() {
+   testIfReadyForNextObstacle() {
       let previousY = this.getPreviousObstacleY();
       if (previousY - this.spawnY > this.ySpacing) {
+         // console.log(previousY, this.ySpacing, this.spawnY);
          this.makeObstacle();
          // ready for next Obstacle
          this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-         console.log(previousY, this.ySpacing);
       }
    }
 
    makeObstacle() {
-      let yPreviousObstacle, ySpacing, yNewObstacle;
-      yPreviousObstacle = this.getPreviousObstacleY();
-      ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-      yNewObstacle = yPreviousObstacle - ySpacing;
+      // let yPreviousObstacle, ySpacing, yNewObstacle;
+      // ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
       let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
       //console.log(chosenObstacleType, obstacleSprites);
-      this.yNewObstacle = yNewObstacle;
+      // this.yNewObstacle = yNewObstacle;
       this.placeObstaclesY(...obstacleSprites);
 
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
@@ -286,8 +284,8 @@ class Game extends Phaser.Scene {
          land_tower.setOrigin(1, 0.5);
          tower.setOrigin(1, 0.5);
          x = gameWidth - bankWidth;
-         land_tower.x = x;
-         tower.x = x - 20;
+         land_tower.x = x + 20;
+         tower.x = x;
       }
       else if (this.bank === "right") {
          intel.setOrigin(1, 0.5);
@@ -299,8 +297,8 @@ class Game extends Phaser.Scene {
          land_tower.setOrigin(0, 0.5);
          tower.setOrigin(0, 0.5);
          x = bankWidth;
-         land_tower.x = x;
-         tower.x = x + 20;
+         land_tower.x = x - 20;
+         tower.x = x;
       }
    }
 
