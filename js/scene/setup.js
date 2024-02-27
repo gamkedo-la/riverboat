@@ -44,6 +44,8 @@ class Setup extends Phaser.Scene {
       }
 
       this.load.image('river', 'public/art/river_0_360x640.png');
+      this.load.image('bank_left', 'public/art/bank_left_120.png');
+      this.load.image('bank_right', 'public/art/bank_right_120.png');
       this.load.image('boat', 'public/art/boat_30x65.png');
       this.load.image('anim_turnBoat', 'public/art/boat_5.png');
       this.load.image('wake', 'public/art/water_wake.png');
@@ -102,7 +104,7 @@ class Setup extends Phaser.Scene {
          yoyo: true,
          repeat: 1
       });
-      this.scene.start('Home');
+      this.scene.start('Game');
    };
 
 }

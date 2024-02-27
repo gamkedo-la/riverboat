@@ -7,9 +7,11 @@ class Game extends Phaser.Scene {
    }
 
    init() {
+      this.banks = this.physics.add.group({ runChildUpdate: true });
+
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.6, 0.2, 0.2, 0.0]; // demo
+      this.obstacle_chances = [1, 0, 0, 0.0]; // demo
       // Rapids cannot be used until overlap instead of collider
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -66,18 +68,18 @@ class Game extends Phaser.Scene {
 
    create() {
       this.cameras.main.setBackgroundColor(0x0000ff);
+      this.cameras.main.setBounds(0, 0, gameWidth, displayHeight);
+
+      // this.bank_left = new Bank(this, 0, 0, 'bank_left_120');
+      // this.bank_left.setOrigin(0, 0);
+      // this.bank_right = new Bank(this, gameWidth, 0, 'bank_right_120');
+      // this.bank_right.setOrigin(1, 0);
+
+      this.makeBanks(this);
+      this.makePlayer();
+      this.cameras.main.startFollow(this.player);
+
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
-
-      let start_x = displayWidth / 2;
-      let start_y = displayHeight - 90;
-      //this.player = new Player(this, start_x, start_y, 'boat');
-      this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
-
-      this.playerWake = this.physics.add.image(0, 0, 'wake');
-      this.playerWake.x = start_x;
-      this.playerWake.y = start_y + this.player.height;
-      this.playerWake.visible = false;
-      // this.player.addChild(this.playerWake);
 
       // only create first obstacle, let update() make others
       // obstacles always start at this.spawnY
@@ -88,7 +90,6 @@ class Game extends Phaser.Scene {
       this.placeObstaclesY(...obstacleSprites);
 
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
-
       //console.log(chosenObstacleType, obstacleSprites);
       //console.log(yPreviousObstacle, ySpacing, yNewObstacle);
 
@@ -107,7 +108,7 @@ class Game extends Phaser.Scene {
       this.cursors.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 
       this.physics.add.collider(this.player, this.obstacles, this.endLevel, null, this);
-
+      this.physics.add.collider(this.player, this.bank_left, this.endLevel, null, this);
       this.input.keyboard.on('keyup', this.anyKey, this);
    };
 
@@ -122,6 +123,30 @@ class Game extends Phaser.Scene {
 
       this.testIfreadyForNextObstacle();
    };
+
+   makeBanks() {
+      this.scene.bank_left = this.add.image(0, 0, 'bank_left')
+         .setOrigin(0, 0)
+         .setDepth(2);
+      this.scene.bank_right = this.add.image(gameWidth, 0, 'bank_right')
+         .setOrigin(1, 0)
+         .setDepth(2);
+   }
+
+   makePlayer() {
+      let start_x = gameWidth / 2; // game width screen + 2 * offset
+      let start_y = displayHeight - 70;
+      //this.player = new Player(this, start_x, start_y, 'boat');
+      this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
+
+      this.playerWake = this.physics.add.image(0, 0, 'wake');
+      this.playerWake.x = start_x;
+      this.playerWake.y = start_y + this.player.height;
+      this.playerWake.visible = false;
+      // this.player.addChild(this.playerWake);
+
+      this.player.setCollideWorldBounds(true);
+   }
 
    makeProgressDisplay() {
       let x = 40;
@@ -232,8 +257,8 @@ class Game extends Phaser.Scene {
       let gapLeftMax = 360 - gapSize - this.boom_length_min;
       let gapLeftRange = [gapLeftMin, gapLeftMax];
       let xGapLeft = Phaser.Math.Between(...gapLeftRange);
-      leftBoom.x = xGapLeft;
-      rightBoom.x = xGapLeft + gapSize;
+      leftBoom.x = xGapLeft + bankWidth;
+      rightBoom.x = xGapLeft + gapSize + bankWidth;
    }
 
    placeSecret(secret, land_secret, tower, land_tower) {

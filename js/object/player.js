@@ -20,6 +20,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setImmovable(false);
       this.setDrag(this.sideway_drag);
       this.setVelocity(0, 0);
+      this.depth = 7;
       scene.add.existing(this);
       this.scene = scene;
    }
@@ -43,12 +44,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       }
 
       // bounce off side of river
-      if (this.x > 360 - this.body.width / 2 && this.body.velocity.x > 0) {
-         this.body.velocity.x *= -1;
-      }
-      else if (this.x < this.body.width / 2 && this.body.velocity.x < 0) {
-         this.body.velocity.x *= -1;
-      }
+      // if (this.x > 360 - this.body.width / 2 && this.body.velocity.x > 0) {
+      //    this.body.velocity.x *= -1;
+      // }
+      // else if (this.x < this.body.width / 2 && this.body.velocity.x < 0) {
+      //    this.body.velocity.x *= -1;
+      // }
    }
 
    useFuel(usage) {
