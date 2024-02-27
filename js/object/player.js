@@ -11,13 +11,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.backwardFuel = 2;
       this.sidewaysFuel = 1;
       this.sideway_speed = 30;
-      this.sideway_drag = 35;
+      this.sideway_drag = 120;  //35;
       this.forward_speed = 40;
       this.backward_speed = -40;
       this.engine = "off";
       this.rateOfReturnToStation = 0.5;
       scene.physics.world.enable(this);
       this.setImmovable(false);
+      this.setOrigin(0.5, 1);
       this.setDrag(this.sideway_drag);
       this.setVelocity(0, 0);
       this.depth = 7;
@@ -130,7 +131,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    addWake() {
       this.scene.playerWake.x = this.x - 4;
-      this.scene.playerWake.y = this.y + this.body.height;
+      this.scene.playerWake.y = this.y - 10;
       this.scene.playerWake.visible = true;
       this.scene.playerWake.setVelocityY(-this.forward_speed);
       // this.wake = this.addChild(this.add.image(0, this.body.height, 'wake'));

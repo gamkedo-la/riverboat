@@ -67,17 +67,17 @@ class Game extends Phaser.Scene {
    };
 
    create() {
-      this.cameras.main.setBackgroundColor(0x0000ff);
-      this.cameras.main.setBounds(0, 0, gameWidth, displayHeight);
+      this.physics.world.bounds.width = gameWidth; // works without these?
+      this.physics.world.bounds.height = displayHeight;
 
-      // this.bank_left = new Bank(this, 0, 0, 'bank_left_120');
-      // this.bank_left.setOrigin(0, 0);
-      // this.bank_right = new Bank(this, gameWidth, 0, 'bank_right_120');
-      // this.bank_right.setOrigin(1, 0);
+      this.cameras.main.setBounds(0, 0, gameWidth, displayHeight);
+      this.cameras.main.setBackgroundColor(0x0000ff);
 
       this.makeBanks(this);
       this.makePlayer();
-      this.cameras.main.startFollow(this.player);
+      this.cameras.main.startFollow(this.player, true, 1, 0);
+      // roundPixels=true reduces jitter 
+      // LERP=1,0 prevents Y-axis following
 
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
 
@@ -97,6 +97,9 @@ class Game extends Phaser.Scene {
          this.makePier();
          this.pierPlaced = true;
       }
+
+      this.hud = this.add.container(0, 0);
+      this.hud.setScrollFactor(0);
       this.makeProgressDisplay();
       this.makeFuelDisplay();
 
@@ -108,7 +111,7 @@ class Game extends Phaser.Scene {
       this.cursors.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 
       this.physics.add.collider(this.player, this.obstacles, this.endLevel, null, this);
-      this.physics.add.collider(this.player, this.bank_left, this.endLevel, null, this);
+      this.physics.add.collider(this.player, this.banks, this.endLevel, null, this);
       this.input.keyboard.on('keyup', this.anyKey, this);
    };
 
@@ -125,27 +128,33 @@ class Game extends Phaser.Scene {
    };
 
    makeBanks() {
-      this.scene.bank_left = this.add.image(0, 0, 'bank_left')
+      let bank_left = this.add.image(0, 0, 'bank_left')
          .setOrigin(0, 0)
          .setDepth(2);
-      this.scene.bank_right = this.add.image(gameWidth, 0, 'bank_right')
+      this.banks.add(bank_left);
+      let bank_right = this.add.image(gameWidth, 0, 'bank_right')
          .setOrigin(1, 0)
          .setDepth(2);
+      this.banks.add(bank_right);
+
+      // below was in create() but image not showing
+      // this.bank_left = new Bank(this, 0, 0, 'bank_left_120');
+      // this.bank_left.setOrigin(0, 0);
+      // this.bank_right = new Bank(this, gameWidth, 0, 'bank_right_120');
+      // this.bank_right.setOrigin(1, 0);
    }
 
    makePlayer() {
       let start_x = gameWidth / 2; // game width screen + 2 * offset
-      let start_y = displayHeight - 70;
+      let start_y = displayHeight - 10;
       //this.player = new Player(this, start_x, start_y, 'boat');
       this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
 
       this.playerWake = this.physics.add.image(0, 0, 'wake');
-      this.playerWake.x = start_x;
-      this.playerWake.y = start_y + this.player.height;
+      this.playerWake.y = start_y; // unused because player.addWake() sets position
       this.playerWake.visible = false;
+      this.playerWake.setOrigin(0.5, 0);
       // this.player.addChild(this.playerWake);
-
-      this.player.setCollideWorldBounds(true);
    }
 
    makeProgressDisplay() {
@@ -155,12 +164,15 @@ class Game extends Phaser.Scene {
       this.score = 0;
       this.progressDisplay = this.add.text(x, y, `Passed: ${this.obstaclesPassed}`, { fontSize: '24px', fill: '#fff' });
       y += yLineSpacing;
+      this.hud.add(this.progressDisplay);
+
    };
 
    makeFuelDisplay() {
       let x = 40;
       let y = 80;
       this.fuelDisplay = this.add.text(x, y, `Fuel: ${this.player.fuel}`, { fontSize: '24px', fill: '#fff' });
+      this.hud.add(this.fuelDisplay);
    };
 
    updateFuelDisplay() {

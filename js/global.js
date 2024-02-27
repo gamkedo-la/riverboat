@@ -1,5 +1,5 @@
 const displayWidth = 360;
-const displayHeight = 640;
+const displayHeight = 600;
 const bankWidth = 120;
 const gameWidth = displayWidth + bankWidth * 2;
 const riverSpeed = 10; // 20 makes access to riverbank easier
