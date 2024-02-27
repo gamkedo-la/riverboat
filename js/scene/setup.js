@@ -53,6 +53,7 @@ class Setup extends Phaser.Scene {
       this.load.image('land', 'public/art/land.png');
       this.load.image('rock', 'public/art/rock.png');
       this.load.image('secret', 'public/art/secret.png');
+      this.load.image('intel', 'public/art/intel_left.png');
       this.load.image('bridge', 'public/art/bridge_480x50.png');
       this.load.image('rapids', 'public/art/rapids.png');
       this.load.image('van', 'public/art/van.png');

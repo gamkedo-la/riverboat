@@ -11,7 +11,7 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [1, 0, 0, 0.0]; // demo
+      this.obstacle_chances = [0.6, 0.4, 0, 0.0]; // demo
       // Rapids cannot be used until overlap instead of collider
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -225,7 +225,8 @@ class Game extends Phaser.Scene {
       this.bank = Math.random() < 0.5 ? 'left' : 'right';
       this.towerBank = (this.bank === 'left') ? 'right' : 'left';
 
-      let land_secret = new Land(this, 0, 0, 'land');
+      //let land_secret = new Land(this, 0, 0, 'land');
+      let intel = new Intel(this, 0, 0, 'intel');
       let secret = new Secret(this, 0, 0, 'secret');
 
       let land_tower = new Land(this, 0, 0, 'land');
@@ -236,7 +237,7 @@ class Game extends Phaser.Scene {
       } else {
          tower = new Tower(this, 0, 0, 'tower_right');
       }
-      return [secret, land_secret, tower, land_tower];
+      return [secret, intel, tower, land_tower];
    }
 
    makeBridge() {
@@ -273,31 +274,33 @@ class Game extends Phaser.Scene {
       rightBoom.x = xGapLeft + gapSize + bankWidth;
    }
 
-   placeSecret(secret, land_secret, tower, land_tower) {
+   placeSecret(secret, intel, tower, land_tower) {
       let x;
       if (this.bank === "left") {
-         land_secret.setOrigin(0, 0.5);
+         intel.setOrigin(0, 0.5);
          secret.setOrigin(0, 0.5);
-         x = 0;
-         land_secret.x = x;
-         secret.x = x + 20;
+         x = bankWidth;
+         intel.x = x;
+         secret.x = x - 70;
 
          land_tower.setOrigin(1, 0.5);
          tower.setOrigin(1, 0.5);
-         x = displayWidth;
+         x = gameWidth - bankWidth;
          land_tower.x = x;
          tower.x = x - 20;
       }
       else if (this.bank === "right") {
-         land_secret.setOrigin(1, 0.5);
+         intel.setOrigin(1, 0.5);
          secret.setOrigin(1, 0.5);
-         land_secret.x = displayWidth;
-         secret.x = displayWidth - 20;
+         x = gameWidth - bankWidth;
+         intel.x = x;
+         secret.x = x + 70;
 
          land_tower.setOrigin(0, 0.5);
          tower.setOrigin(0, 0.5);
-         land_tower.x = 0;
-         tower.x = 20;
+         x = bankWidth;
+         land_tower.x = x;
+         tower.x = x + 20;
       }
    }
 
@@ -376,7 +379,7 @@ class Game extends Phaser.Scene {
          delay: 1000,
          callback: () => {
             let x = this.player.x - 2;
-            let y = this.player.y - 10;
+            let y = this.player.y - 36;
             this.explosion = this.add.sprite(x, y, 'anim_placeholderExplosion', 0);
             this.explosion.play('explode');
             let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', fill: '#ffffff' }).setOrigin(0.5);
