@@ -1,5 +1,6 @@
 // our game's configuration
 const config = {
+   parent: 'game-container',
    type: Phaser.AUTO,
    width: 360,
    height: 600,

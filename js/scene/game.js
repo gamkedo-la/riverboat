@@ -11,12 +11,12 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0, 0, 0, 1.0]; // demo
-      //this.obstacle_chances = [0.5, 0.3, 0.2, 0.0]; // demo
+      this.obstacle_chances = [0.5, 0.35, 0.15, 0.0]; // demo
       // Rapids cannot be used until overlap instead of collider
+      // this.obstacle_chances = [0, 0, 0, 1.0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
-      this.spawnY = -100;  //-70;
+      this.spawnY = -100;
       this.ySpacingRange = [240, 320];
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
