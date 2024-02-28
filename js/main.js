@@ -1,4 +1,5 @@
-// our game's configuration
+// import Phaser from './lib/phaser.js';
+
 const config = {
    parent: 'game-container',
    type: Phaser.AUTO,
@@ -18,5 +19,4 @@ const config = {
    }
 };
 
-// create the game, and pass it the configuration
 let riverboat = new Phaser.Game(config);

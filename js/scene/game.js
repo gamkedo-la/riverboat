@@ -1,5 +1,4 @@
 // import Phaser from '../lib/phaser.js';
-// console.dir(Phaser);
 
 class Game extends Phaser.Scene {
    constructor() {
