@@ -30,7 +30,7 @@ class Game extends Phaser.Scene {
       this.displayHeight = this.sys.config.height;
       this.fontSize = 16;
       this.lineHeight = 70;
-      this.fontOptions = { fontSize: `${this.fontSize}px`, fill: '#999' };
+      this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
       this.pierPlaced = false;
       this.levelOver = false;
@@ -170,7 +170,7 @@ class Game extends Phaser.Scene {
       let y = 40;
       let yLineSpacing = 32;
       this.score = 0;
-      this.progressDisplay = this.add.text(x, y, `Passed: ${this.obstaclesPassed}`, { fontSize: '24px', fill: '#fff' });
+      this.progressDisplay = this.add.text(x, y, `Passed: ${this.obstaclesPassed}`, { fontSize: '24px', color: '#fff' });
       y += yLineSpacing;
       this.hud.add(this.progressDisplay);
 
@@ -179,7 +179,7 @@ class Game extends Phaser.Scene {
    makeFuelDisplay() {
       let x = 40;
       let y = 80;
-      this.fuelDisplay = this.add.text(x, y, `Fuel: ${this.player.fuel}`, { fontSize: '24px', fill: '#fff' });
+      this.fuelDisplay = this.add.text(x, y, `Fuel: ${this.player.fuel}`, { fontSize: '24px', color: '#fff' });
       this.hud.add(this.fuelDisplay);
    };
 
@@ -235,7 +235,7 @@ class Game extends Phaser.Scene {
       let intel = new Intel(this, 0, 0, 'intel');
       let secret = new Secret(this, 0, 0, 'secret');
 
-      let land_tower = new Land(this, 0, 0, 'land');
+      //let land_tower = new Land(this, 0, 0, 'land');
       // later use single tower texture and flip with Phaser
       let tower;
       if (this.towerBank === 'left') {
@@ -243,7 +243,8 @@ class Game extends Phaser.Scene {
       } else {
          tower = new Tower(this, 0, 0, 'tower_right');
       }
-      return [secret, intel, tower, land_tower];
+      return [secret, intel, tower];
+      // return [secret, intel, tower, land_tower];
    }
 
    makeBridge() {
@@ -283,6 +284,7 @@ class Game extends Phaser.Scene {
    placeSecret(secret, intel, tower, land_tower) {
       let x;
       let distSecretFromRiver = 45;
+      let distTowerFromRiver = 40;
 
       if (this.bank === "left") {
          intel.setOrigin(0, 0.5);
@@ -291,10 +293,10 @@ class Game extends Phaser.Scene {
          intel.x = x;
          secret.x = x - distSecretFromRiver;
 
-         land_tower.setOrigin(1, 0.5);
+         //land_tower.setOrigin(1, 0.5);
          tower.setOrigin(1, 0.5);
-         x = gameWidth - bankWidth;
-         land_tower.x = x + 20;
+         x = gameWidth - bankWidth + distTowerFromRiver;
+         //land_tower.x = x + 20;
          tower.x = x;
       }
       else if (this.bank === "right") {
@@ -304,10 +306,10 @@ class Game extends Phaser.Scene {
          intel.x = x;
          secret.x = x + distSecretFromRiver;
 
-         land_tower.setOrigin(0, 0.5);
+         //land_tower.setOrigin(0, 0.5);
          tower.setOrigin(0, 0.5);
-         x = bankWidth;
-         land_tower.x = x - 20;
+         x = bankWidth - distTowerFromRiver;
+         //land_tower.x = x - 20;
          tower.x = x;
       }
    }
@@ -390,7 +392,7 @@ class Game extends Phaser.Scene {
             let y = this.player.y - 36;
             this.explosion = this.add.sprite(x, y, 'anim_placeholderExplosion', 0);
             this.explosion.play('explode');
-            let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', fill: '#ffffff' }).setOrigin(0.5);
+            let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', color: '#ffffff' }).setOrigin(0.5);
          },
          loop: false
       });

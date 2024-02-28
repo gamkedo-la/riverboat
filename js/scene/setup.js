@@ -2,9 +2,6 @@ class Setup extends Phaser.Scene {
    constructor() {
       super('Setup');
    }
-   init() {
-      this.sys.game.config.gameCentre = [180, 320];
-   }
 
    preload() {
       let width = this.cameras.main.width;
@@ -32,7 +29,7 @@ class Setup extends Phaser.Scene {
          progressBar.fillRect(0, 0, value * barW, barH);
       }, this);
 
-      let loadingFile = this.add.text(width / 2, height / 2 + 100, 'XXXX', { font: '24px monospace', fill: '#ffffff' }).setOrigin(0.5);
+      let loadingFile = this.add.text(width / 2, height / 2 + 100, 'XXXX', { font: '24px monospace', color: '#ffffff' }).setOrigin(0.5);
 
       this.load.on('fileprogress', function (file) {
          loadingFile.setText('Loading: ' + file.key);

@@ -20,7 +20,7 @@ class Home extends Phaser.Scene {
       let gameCentre = [gameWidth / 2, gameHeight / 2];
       let titleCentre = [gameWidth / 2, 80];
 
-      let text = this.add.text(...titleCentre, 'River boat', { font: '36px Arial', fill: '#ffffff' })
+      let text = this.add.text(...titleCentre, 'River boat', { font: '36px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setDepth(1);
 
@@ -32,19 +32,19 @@ class Home extends Phaser.Scene {
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
 
       top += 120;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Gallery', { font: '32px Arial', fill: '#ffffff' })
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Gallery', { font: '32px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonPlay.on('pointerdown', () => this.scene.start('Gallery'));
 
       top += 70;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game', { font: '32px Arial', fill: '#ffffff' })
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game', { font: '32px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonPlay.on('pointerdown', () => this.scene.start('Game'));
 
       top += 70;
-      this.buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '32px Arial', fill: '#ffffff' })
+      this.buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '32px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonCredits.on('pointerdown', () => this.scene.start('Credits'));
@@ -53,7 +53,7 @@ class Home extends Phaser.Scene {
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Scores', () => { console.log('pointer down -> show High Scores'); });
 
       top += 125;
-      this.add.text(gameWidth / 2, top, 'ESCape key to return here', { font: '22px Arial', fill: '#ffffff' }).setOrigin(0.5);
+      this.add.text(gameWidth / 2, top, 'ESCape key to return here', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
    };
 
    makeMenu(menu) {

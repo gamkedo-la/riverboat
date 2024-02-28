@@ -12,6 +12,7 @@ class Tower extends Phaser.Physics.Arcade.Image {
          this.setOrigin(1, 0.5);
       }
       this.setScale(0.8);
+      this.setDepth(4);
       this.scene.add.existing(this);
    }
 }
