@@ -11,7 +11,8 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0, 1, 0, 0.0]; // demo
+      this.obstacle_chances = [0, 0, 0, 1.0]; // demo
+      //this.obstacle_chances = [0.5, 0.3, 0.2, 0.0]; // demo
       // Rapids cannot be used until overlap instead of collider
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -318,12 +319,13 @@ class Game extends Phaser.Scene {
       let gapSize = 100;
       // left side of gap's X coordinate i.e. right edge of left boom
       let xGapLeft = 130;
-      leftBridge.x = xGapLeft;
-      rightBridge.x = xGapLeft + gapSize;
+      leftBridge.x = xGapLeft + bankWidth;
+      rightBridge.x = xGapLeft + gapSize + bankWidth;
       // let y = this.y_locations[1]; // gallery
       // leftBridge.y = y;
       // rightBridge.y = y;
       van.x = this.bank === 'left' ? 10 : displayWidth - 10;
+      van.x += bankWidth;
    }
 
    // do fast & slow patches within Rapids, and random variation
@@ -392,7 +394,7 @@ class Game extends Phaser.Scene {
             let y = this.player.y - 36;
             this.explosion = this.add.sprite(x, y, 'anim_placeholderExplosion', 0);
             this.explosion.play('explode');
-            let text = this.add.text(180, 300, 'Level over', { font: '40px Arial', color: '#ffffff' }).setOrigin(0.5);
+            let text = this.add.text(180 + bankWidth, 300, 'Level over', { font: '40px Arial', color: '#ffffff' }).setOrigin(0.5);
          },
          loop: false
       });

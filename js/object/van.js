@@ -7,6 +7,7 @@ class Van extends Phaser.Physics.Arcade.Sprite {
       this.setImmovable(true);
       this.setOrigin(0, 0.5);
       this.setScale(0.8);
+      this.setDepth(8);
       this.scene.add.existing(this);
    }
 }

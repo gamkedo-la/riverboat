@@ -7,6 +7,7 @@ class BridgeSide extends Phaser.Physics.Arcade.Image {
       this.setImmovable(true);
       this.setOrigin(0, 0.5);
       this.setScale(0.9);
+      this.setDepth(5);
       this.scene.add.existing(this);
    }
 }
