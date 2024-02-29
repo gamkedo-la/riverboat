@@ -8,13 +8,14 @@ class Game extends Phaser.Scene {
       this.booms = this.physics.add.group({ runChildUpdate: true });
       this.bridges = this.physics.add.group({ runChildUpdate: true });
       this.rapids = this.physics.add.group({ runChildUpdate: true });
+      this.intels = this.physics.add.group();
 
       // decoration of land and water
       this.features = this.physics.add.group({ runChildUpdate: true });
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.8, 0, 0.1, 0.1]; // demo
+      this.obstacle_chances = [0.4, 0.2, 0.2, 0.2]; // demo
       // this.obstacle_chances = [0, 0, 0, 1.0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -101,6 +102,7 @@ class Game extends Phaser.Scene {
 
       this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
       this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
+      this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
       this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
       this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
@@ -127,10 +129,12 @@ class Game extends Phaser.Scene {
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
       this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0.5 });
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0.5 });
+      this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0.5 });
    }
 
    makeHud() {
-      this.hud = this.add.container(0, 0);
+      this.hud = this.add.container(85, 0);
+      this.hud.setDepth(9);
       this.hud.setScrollFactor(0);
       this.makeProgressDisplay();
       this.makeFuelDisplay();
@@ -146,12 +150,12 @@ class Game extends Phaser.Scene {
    }
 
    makeBanks() {
-      let bank_left = this.add.image(0, 0, 'bank_left')
-         .setOrigin(0, 0)
+      let bank_left = this.add.image(bankWidth, 0, 'bank_left')
+         .setOrigin(1, 0)
          .setDepth(2);
       this.land.add(bank_left);
-      let bank_right = this.add.image(gameWidth, 0, 'bank_right')
-         .setOrigin(1, 0)
+      let bank_right = this.add.image(gameWidth - bankWidth, 0, 'bank_right')
+         .setOrigin(0, 0)
          .setDepth(2);
       this.land.add(bank_right);
 
@@ -188,7 +192,7 @@ class Game extends Phaser.Scene {
       let y = 40;
       let yLineSpacing = 32;
       this.score = 0;
-      this.progressDisplay = this.add.text(x, y, `Passed: ${this.obstaclesPassed}`, { fontSize: '24px', color: '#fff' });
+      this.progressDisplay = this.add.text(x, y, `Passed: ${this.obstaclesPassed}`, hudStyle);
       y += yLineSpacing;
       this.hud.add(this.progressDisplay);
 
@@ -197,14 +201,14 @@ class Game extends Phaser.Scene {
    makeFuelDisplay() {
       let x = 40;
       let y = 80;
-      this.fuelDisplay = this.add.text(x, y, `Fuel: ${this.player.fuel}`, { fontSize: '24px', color: '#fff' });
+      this.fuelDisplay = this.add.text(x, y, `Fuel: ${this.player.fuel}`, hudStyle);
       this.hud.add(this.fuelDisplay);
    };
 
    makeHealthDisplay() {
       let x = 40;
       let y = 120;
-      this.healthDisplay = this.add.text(x, y, `Health: ${this.player.health}`, { fontSize: '24px', color: '#fff' });
+      this.healthDisplay = this.add.text(x, y, `Health: ${this.player.health}`, hudStyle);
       this.hud.add(this.healthDisplay);
    };
 
@@ -262,6 +266,7 @@ class Game extends Phaser.Scene {
 
       //let land_secret = new Land(this, 0, 0, 'land');
       let intel = new Intel(this, 0, 0, 'intel');
+      this.intels.add(intel);
       let secret = new Secret(this, 0, 0, 'secret');
 
       //let land_tower = new Land(this, 0, 0, 'land');
@@ -401,9 +406,10 @@ class Game extends Phaser.Scene {
    // if player health, but multiple hits on impact is a problem
    hitBooms(boat, boom) {
       console.log('Boom Hit', boom.damage);
+      boom.body.enable = false;
       this.boomCollideSound.play();
       this.player.setVelocity(0, 0);
-      //this.endLevel(); // while bug drift continues after hit
+      this.endLevel(); // while bug drift continues after hit
       if (!boom.hit) {
          console.log(this, boom);
          this.driftSpeed = 0;
@@ -419,9 +425,10 @@ class Game extends Phaser.Scene {
 
    hitBridges(boat, bridge) {
       console.log('Bridge Hit');
+      bridge.body.enable = false;
       this.bridgeCollideSound.play();
       this.player.setVelocity(0, 0);
-      //this.endLevel(); // while bug drift continues after hit
+      this.endLevel(); // while bug drift continues after hit
       if (!bridge.hit) {
          console.log(this, bridge);
          this.driftSpeed = 0;
@@ -446,8 +453,15 @@ class Game extends Phaser.Scene {
       }
    };
 
+   hitIntel(boat, intel) {
+      console.log('Intel found');
+      //intel.body.enable = false;
+      this.intelOverlapSound.play();
+   }
+
    hitLand(boat, land) {
       console.log('Land Hit');
+      land.body.enable = false;
       this.landCollideSound.play();
       this.player.setVelocity(0, 0);
       this.player.updateHealth(land.damage);
@@ -471,7 +485,8 @@ class Game extends Phaser.Scene {
             let y = this.player.y - 36;
             this.explosion = this.add.sprite(x, y, 'anim_placeholderExplosion', 0);
             this.explosion.play('explode');
-            let text = this.add.text(180 + bankWidth, 300, 'Level over', { font: '40px Arial', color: '#ffffff' }).setOrigin(0.5);
+            let text = this.add.text(100, 300, 'Level over', { font: '40px Arial', color: '#ffffff' }).setOrigin(0.5);
+            this.hud.add(text);
          },
          loop: false
       });

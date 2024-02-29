@@ -1,7 +1,14 @@
 const displayWidth = 360;
 const displayHeight = 600;
-const bankWidth = 120;
+const bankWidth = 100;
 const gameWidth = displayWidth + bankWidth * 2;
 const riverSpeed = 30; // 20 makes access to riverbank easier
 const intelWidth = 70;
 const intelDepth = 50;
+
+const hudStyle = {
+   font: '22px Arial',
+   color: '#FFFFFF',
+   stroke: '#000000',
+   strokeThickness: 2
+};

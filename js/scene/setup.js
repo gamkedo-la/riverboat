@@ -81,6 +81,7 @@ class Setup extends Phaser.Scene {
       this.load.audio('snd_boomCollide', ['public/sound/boom_hit_placeholder.mp3']);
       this.load.audio('snd_bridgeCollide', ['public/sound/bridge_hit_placeholder.mp3']);
       this.load.audio('snd_rapidsOverlap', ['public/sound/rapids_over_placeholder.mp3']);
+      this.load.audio('snd_intelOverlap', ['public/sound/collider_placeholder.mp3']);
    };
 
    create() {
