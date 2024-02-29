@@ -381,6 +381,7 @@ class Game extends Phaser.Scene {
    // if player health, but multiple hits on impact is a problem
    hitBooms(boat, boom) {
       console.log('Boom Hit');
+      this.endLevel(); // while bug drift continues after hit
       if (!boom.hit) {
          console.log(this, boom);
          this.driftSpeed = 0; // doesnt help, boat pushed down by boom
@@ -394,6 +395,7 @@ class Game extends Phaser.Scene {
 
    hitBridges(boat, bridge) {
       console.log('Bridge Hit');
+      this.endLevel(); // while bug drift continues after hit
       if (!bridge.hit) {
          console.log(this, bridge);
          this.driftSpeed = 0;
