@@ -14,7 +14,7 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.5, 0, 0.4, 0.1]; // demo
+      this.obstacle_chances = [0.8, 0, 0.1, 0.1]; // demo
       // this.obstacle_chances = [0, 0, 0, 1.0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -134,6 +134,7 @@ class Game extends Phaser.Scene {
       this.hud.setScrollFactor(0);
       this.makeProgressDisplay();
       this.makeFuelDisplay();
+      this.makeHealthDisplay();
    }
 
    setupXscroll() {
@@ -200,9 +201,21 @@ class Game extends Phaser.Scene {
       this.hud.add(this.fuelDisplay);
    };
 
+   makeHealthDisplay() {
+      let x = 40;
+      let y = 120;
+      this.healthDisplay = this.add.text(x, y, `Health: ${this.player.health}`, { fontSize: '24px', color: '#fff' });
+      this.hud.add(this.healthDisplay);
+   };
+
    updateFuelDisplay() {
-      if (this.player.fuel) {
-         this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
+      //if (this.player.fuel) {
+      this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
+      //}
+   };
+   updateHealthDisplay() {
+      if (this.player.health) {
+         this.healthDisplay.setText(`Health: ${this.player.health}`);
       }
    };
 
@@ -387,14 +400,17 @@ class Game extends Phaser.Scene {
 
    // if player health, but multiple hits on impact is a problem
    hitBooms(boat, boom) {
-      console.log('Boom Hit');
+      console.log('Boom Hit', boom.damage);
       this.boomCollideSound.play();
-      this.endLevel(); // while bug drift continues after hit
+      this.player.setVelocity(0, 0);
+      //this.endLevel(); // while bug drift continues after hit
       if (!boom.hit) {
          console.log(this, boom);
-         this.driftSpeed = 0; // doesnt help, boat pushed down by boom
+         this.driftSpeed = 0;
          boom.hit = true;
          this.player.updateHealth(boom.damage);
+         this.player.health -= boom.damage;
+         this.updateHealthDisplay();
          if (this.player.health <= 0) {
             this.endLevel();
          }
@@ -404,7 +420,8 @@ class Game extends Phaser.Scene {
    hitBridges(boat, bridge) {
       console.log('Bridge Hit');
       this.bridgeCollideSound.play();
-      this.endLevel(); // while bug drift continues after hit
+      this.player.setVelocity(0, 0);
+      //this.endLevel(); // while bug drift continues after hit
       if (!bridge.hit) {
          console.log(this, bridge);
          this.driftSpeed = 0;
@@ -432,11 +449,13 @@ class Game extends Phaser.Scene {
    hitLand(boat, land) {
       console.log('Land Hit');
       this.landCollideSound.play();
+      this.player.setVelocity(0, 0);
       this.player.updateHealth(land.damage);
    }
 
    hitObstacles(boat, obstacle) {
       console.log('Obstacle hit', obstacle);
+
    };
 
    endLevel() {
@@ -506,7 +525,7 @@ class Game extends Phaser.Scene {
    }
 
    setDrift(speed) {
-      console.log(speed);
+      //console.log(speed);
       this.driftSpeed = speed;
       this.obstacles.setVelocity(0, speed);
       this.features.setVelocity(0, speed);

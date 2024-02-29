@@ -46,12 +46,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       }
 
       // bounce off side of river
-      // if (this.x > 360 - this.body.width / 2 && this.body.velocity.x > 0) {
-      //    this.body.velocity.x *= -1;
-      // }
-      // else if (this.x < this.body.width / 2 && this.body.velocity.x < 0) {
-      //    this.body.velocity.x *= -1;
-      // }
+      //console.log(this.x, this.body.velocity);
+      let bankLeftX = bankWidth + this.body.width / 2;
+      let bankRightX = bankWidth + displayWidth - this.body.width / 2;
+      if (this.x > bankRightX && this.body.velocity.x > 0) {
+         //this.body.velocity.x *= -1;
+         this.setVelocity(0, 0);
+      }
+      else if (this.x < bankLeftX && this.body.velocity.x < 0) {
+         //this.body.velocity.x *= -1;
+         this.setVelocity(0, 0);
+      }
    }
 
    useFuel(usage) {
@@ -65,7 +70,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    engineNavigation(cursors) {
       if (cursors.left.isDown || cursors.keyA.isDown) {
-
          this.play('turnLeft');
          this.body.setVelocityX(-1 * this.sideway_speed);
          this.useFuel(this.sidewaysFuel);
@@ -173,5 +177,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    updateHealth(damage) {
       this.health -= damage;
+      this.scene.updateHealthDisplay();
    }
 }
