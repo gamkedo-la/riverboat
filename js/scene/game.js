@@ -79,7 +79,7 @@ class Game extends Phaser.Scene {
       this.setupXscroll();
       this.makeHud();
 
-      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
+      this.setupSounds();
 
       // create first 2 obstacles, using same method as update()
       this.makeObstacle();
@@ -121,6 +121,13 @@ class Game extends Phaser.Scene {
 
       this.testIfReadyForNextObstacle();
    };
+
+   setupSounds() {
+      this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0.5 });
+      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
+      this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0.5 });
+      this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0.5 });
+   }
 
    makeHud() {
       this.hud = this.add.container(0, 0);
@@ -381,6 +388,7 @@ class Game extends Phaser.Scene {
    // if player health, but multiple hits on impact is a problem
    hitBooms(boat, boom) {
       console.log('Boom Hit');
+      this.boomCollideSound.play();
       this.endLevel(); // while bug drift continues after hit
       if (!boom.hit) {
          console.log(this, boom);
@@ -395,6 +403,7 @@ class Game extends Phaser.Scene {
 
    hitBridges(boat, bridge) {
       console.log('Bridge Hit');
+      this.bridgeCollideSound.play();
       this.endLevel(); // while bug drift continues after hit
       if (!bridge.hit) {
          console.log(this, bridge);
@@ -410,6 +419,7 @@ class Game extends Phaser.Scene {
    hitRapids(boat, rapid) {
       if (!rapid.hit) {
          console.log('Rapids Hit');
+         this.rapidsOverlapSound.play();
          console.log(this, rapid);
          rapid.hit = true;
          this.player.updateHealth(rapid.damage);
@@ -419,6 +429,12 @@ class Game extends Phaser.Scene {
       }
    };
 
+   hitLand(boat, land) {
+      console.log('Land Hit');
+      this.landCollideSound.play();
+      this.player.updateHealth(land.damage);
+   }
+
    hitObstacles(boat, obstacle) {
       console.log('Obstacle hit', obstacle);
    };
@@ -426,7 +442,6 @@ class Game extends Phaser.Scene {
    endLevel() {
       this.levelOver = true;
       this.player.setTint(0xff0000);
-      this.boomCollideSound.play();
       this.physics.pause();
       //this.saveBestScore();
 

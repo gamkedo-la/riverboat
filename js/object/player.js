@@ -86,7 +86,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.useFuel(this.forwardFuel);
 
          // in case current obstacle speed needed in scene, made available
-         this.scene.driftSpeed = riverSpeed * 2;
+         // this.scene.driftSpeed = riverSpeed * 2;
          //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
          this.engine = "forward";
       }
