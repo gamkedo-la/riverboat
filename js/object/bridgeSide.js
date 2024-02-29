@@ -8,6 +8,9 @@ class BridgeSide extends Phaser.Physics.Arcade.Image {
       this.setOrigin(0, 0.5);
       this.setScale(0.9);
       this.setDepth(5);
+      this.setVelocity(0, scene.driftSpeed);
+      this.hit = false;
+      this.damage = 5;
       this.scene.add.existing(this);
    }
 }

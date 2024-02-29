@@ -8,6 +8,9 @@ class Boom extends Phaser.Physics.Arcade.Sprite {
       this.setOrigin(0, 0);
       this.setScale(0.7);
       this.setDepth(1);
+      this.setVelocity(0, scene.driftSpeed);
+      this.hit = false;
+      this.damage = 1;
       this.scene.add.existing(this);
    }
 }

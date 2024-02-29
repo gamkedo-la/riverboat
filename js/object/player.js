@@ -6,6 +6,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.start_x = x;
       this.start_y = y;
       this.key = key; // name of texture
+      this.health = 10;
       this.fuel = 2000;
       this.forwardFuel = 4;
       this.backwardFuel = 2;
@@ -85,8 +86,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.useFuel(this.forwardFuel);
 
          // in case current obstacle speed needed in scene, made available
-         this.scene.obstacleSpeed = riverSpeed * 2;
-         this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
+         this.scene.driftSpeed = riverSpeed * 2;
+         //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
          this.engine = "forward";
       }
 
@@ -94,8 +95,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // less engine if anchor assisted but risk snagging
       else if ((cursors.down.isDown || cursors.keyS.isDown)
          && this.fuel >= this.backwardFuel) {
-         this.scene.obstacleSpeed = riverSpeed / 4;
-         this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
+         this.scene.driftSpeed = riverSpeed / 4;
+         //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
 
          if (this.pierPlaced) {
             this.scene.pier.setVelocityY(this.scene.obstacleSpeed);
@@ -148,8 +149,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
       // river furniture Y change faster to maintain relative motion
 
-      this.scene.obstacleSpeed = riverSpeed + this.forward_speed * this.rateOfReturnToStation;
-      this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
+      this.scene.driftSpeed = riverSpeed + this.forward_speed * this.rateOfReturnToStation;
+      //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
 
       // pier code will move to Pier object
       if (this.scene.pierPlaced) {
@@ -161,12 +162,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // player now on station at bottom of playarea, so...
       this.body.setVelocityY(0);
       // river furniture's relative motion needs no adjustment
-      this.scene.obstacleSpeed = riverSpeed;
-      this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
+      //this.scene.driftSpeed = scene.driftSpeed;
+      //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
 
       // pier code will move to Pier object
       if (this.scene.pierPlaced) {
          this.scene.pier.setVelocityY(this.scene.obstacleSpeed);
       }
+   }
+
+   updateHealth(damage) {
+      this.health -= damage;
    }
 }

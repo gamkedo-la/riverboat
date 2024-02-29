@@ -1,4 +1,4 @@
-// import Phaser from './lib/phaser.js';
+// import Phaser from './lib/phaser.js'; // not needed for Intellisense
 
 const config = {
    parent: 'game-container',

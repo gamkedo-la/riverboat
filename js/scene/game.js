@@ -1,20 +1,24 @@
-// import Phaser from '../lib/phaser.js';
-
 class Game extends Phaser.Scene {
    constructor() {
       super('Game');
    }
 
    init() {
-      this.banks = this.physics.add.group({ runChildUpdate: true });
+      this.land = this.physics.add.group({ runChildUpdate: true });
+      this.booms = this.physics.add.group({ runChildUpdate: true });
+      this.bridges = this.physics.add.group({ runChildUpdate: true });
+      this.rapids = this.physics.add.group({ runChildUpdate: true });
+
+      // decoration of land and water
+      this.features = this.physics.add.group({ runChildUpdate: true });
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.5, 0.35, 0.15, 0.0]; // demo
-      // Rapids cannot be used until overlap instead of collider
+      this.obstacle_chances = [0.5, 0, 0.4, 0.1]; // demo
       // this.obstacle_chances = [0, 0, 0, 1.0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
+      this.driftSpeed = riverSpeed;
       this.spawnY = -100;
       this.ySpacingRange = [240, 320];
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
@@ -95,14 +99,20 @@ class Game extends Phaser.Scene {
       this.cursors.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
       this.cursors.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 
-      this.physics.add.collider(this.player, this.obstacles, this.endLevel, null, this);
-      this.physics.add.collider(this.player, this.banks, this.endLevel, null, this);
+      this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
+      this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
+      this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
+      this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
+      this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
+
+      this.setDrift(riverSpeed);
       this.input.keyboard.on('keyup', this.anyKey, this);
    };
 
    update() {
       if (this.levelOver) return;
 
+      this.setDrift(this.driftSpeed);
       this.player.update(this.cursors);
 
       this.updateFuelDisplay();
@@ -131,11 +141,11 @@ class Game extends Phaser.Scene {
       let bank_left = this.add.image(0, 0, 'bank_left')
          .setOrigin(0, 0)
          .setDepth(2);
-      this.banks.add(bank_left);
+      this.land.add(bank_left);
       let bank_right = this.add.image(gameWidth, 0, 'bank_right')
          .setOrigin(1, 0)
          .setDepth(2);
-      this.banks.add(bank_right);
+      this.land.add(bank_right);
 
       // below was in create() but image not showing
       // this.bank_left = new Bank(this, 0, 0, 'bank_left_120');
@@ -191,6 +201,7 @@ class Game extends Phaser.Scene {
 
    testIfReadyForNextObstacle() {
       let previousY = this.getPreviousObstacleY();
+      // console.log(previousY, this.ySpacing);
       if (previousY - this.spawnY > this.ySpacing) {
          // console.log(previousY, this.ySpacing, this.spawnY);
          this.makeObstacle();
@@ -200,17 +211,13 @@ class Game extends Phaser.Scene {
    }
 
    makeObstacle() {
-      // let yPreviousObstacle, ySpacing, yNewObstacle;
       // ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-
       let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
       //console.log(chosenObstacleType, obstacleSprites);
-      // this.yNewObstacle = yNewObstacle;
-      this.placeObstaclesY(...obstacleSprites);
 
+      this.placeObstaclesY(...obstacleSprites);
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
-      //console.log(yPreviousObstacle, ySpacing, yNewObstacle);
    }
 
    placeObstaclesY(...components) {
@@ -224,6 +231,8 @@ class Game extends Phaser.Scene {
       let rightBoom = new Boom(this, 0, 0, 'boom');
       // because X gap measured from leftBoom's right-hand edge
       leftBoom.setOrigin(1, 0); // class default is 0,0
+      this.booms.add(leftBoom);
+      this.booms.add(rightBoom);
       return [leftBoom, rightBoom];
    }
 
@@ -260,12 +269,16 @@ class Game extends Phaser.Scene {
          van.flipX = true;
          van.setOrigin(1, 0.5);
       }
+
+      this.bridges.add(leftBridge);
+      this.bridges.add(rightBridge);
       return [leftBridge, rightBridge, van];
    }
 
    // will have tiles of fast & slow patches, and rocks
    makeRapids() {
       let rapids = new Rapids(this, 0, 0, "rapids");
+      this.rapids.add(rapids);
       return [rapids];
    }
 
@@ -366,17 +379,46 @@ class Game extends Phaser.Scene {
    };
 
    // if player health, but multiple hits on impact is a problem
-   boomImpact(boat, boom) {
-      //console.log(this);
-      this.setBoomSpeed(0); // doesnt help, boat pushed down by boom
+   hitBooms(boat, boom) {
+      console.log('Boom Hit');
       if (!boom.hit) {
-         console.log('Boom Hit');
+         console.log(this, boom);
+         this.driftSpeed = 0; // doesnt help, boat pushed down by boom
          boom.hit = true;
-         this.updateHealth(boom.damage);
+         this.player.updateHealth(boom.damage);
          if (this.player.health <= 0) {
             this.endLevel();
          }
       }
+   };
+
+   hitBridges(boat, bridge) {
+      console.log('Bridge Hit');
+      if (!bridge.hit) {
+         console.log(this, bridge);
+         this.driftSpeed = 0;
+         bridge.hit = true;
+         this.player.updateHealth(bridge.damage);
+         if (this.player.health <= 0) {
+            this.endLevel();
+         }
+      }
+   };
+
+   hitRapids(boat, rapid) {
+      if (!rapid.hit) {
+         console.log('Rapids Hit');
+         console.log(this, rapid);
+         rapid.hit = true;
+         this.player.updateHealth(rapid.damage);
+         // if (this.player.health <= 0) {
+         //    this.endLevel();
+         // }
+      }
+   };
+
+   hitObstacles(boat, obstacle) {
+      console.log('Obstacle hit', obstacle);
    };
 
    endLevel() {
@@ -446,10 +488,17 @@ class Game extends Phaser.Scene {
       return yPrevious;
    }
 
-   setObstacleSpeed(speed) {
-      this.obstacles.children.iterate((obstacle) => {
-         obstacle.setVelocityY(speed);
-      });
+   setDrift(speed) {
+      console.log(speed);
+      this.driftSpeed = speed;
+      this.obstacles.setVelocity(0, speed);
+      this.features.setVelocity(0, speed);
+      // this.obstacles.children.iterate((obstacle) => {
+      //    obstacle.setVelocityY(speed);
+      // });
+      // this.features.children.iterate((feature) => {
+      //    feature.setVelocityY(speed);
+      // });
    }
 
    weightedRandomChoice(items, weights) {
