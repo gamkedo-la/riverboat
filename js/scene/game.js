@@ -16,7 +16,7 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.3, 0.5, 0.1, 0.1]; // demo
+      this.obstacle_chances = [0.3, 0.5, 0.2, 0]; // demo
       //this.obstacle_chances = [0, 1, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -39,6 +39,7 @@ class Game extends Phaser.Scene {
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
       this.intel_alert = 200
+      this.milestone_interval = 3
       this.pierPlaced = false;
       this.levelOver = false;
 
@@ -55,6 +56,9 @@ class Game extends Phaser.Scene {
          rapids: () => {
             return this.makeRapids();
          },
+         milestone: () => {
+            return this.makeMilestone();
+         },
       };
 
       this.placeObstaclesX = {
@@ -69,6 +73,9 @@ class Game extends Phaser.Scene {
          },
          rapids: (obstacleSprites) => {
             this.placeRapids(...obstacleSprites);
+         },
+         milestone: (obstacleSprites) => {
+            this.placeMilestone(...obstacleSprites);
          },
       };
    };
@@ -286,11 +293,14 @@ class Game extends Phaser.Scene {
    }
 
    makeObstacle() {
-      // ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-      let chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
+      let chosenObstacleType
+      if (this.obstaclesPassed === 0 || this.obstaclesPassed % this.milestone_interval > 0) {
+         chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);         
+      } else {
+         chosenObstacleType = "milestone"
+      }
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
       //console.log(chosenObstacleType, obstacleSprites);
-
       this.placeObstaclesY(...obstacleSprites);
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
    }
@@ -359,6 +369,12 @@ class Game extends Phaser.Scene {
       return [rapids];
    }
 
+   makeMilestone() {
+      let milestone = new Rapids(this, 0, 0, "rapids");
+      this.milestone = milestone
+      return [milestone];
+   }
+
    placeBooms(leftBoom, rightBoom) {
       // gap between left and right booms
       let gapSize = Phaser.Math.Between(...this.boomGapRange);
@@ -421,6 +437,9 @@ class Game extends Phaser.Scene {
    // smaller sprites (tiles) will enable this
    placeRapids(rapids) {
    }
+   placeMilestone(milestone) {
+      console.log('Milestone obstacle created!')
+   }
 
    destroyPassedObstacle() {
       //if (this.pierPlaced) return; // does the run carry on after pier?
@@ -452,7 +471,7 @@ class Game extends Phaser.Scene {
 
    // if player health, but multiple hits on impact is a problem
    hitBooms(boat, boom) {
-      console.log('Boom Hit', boom.damage);
+      // console.log('Boom Hit', boom.damage);
       boom.body.enable = false;
       this.boomCollideSound.play();
       this.player.setVelocity(0, 0);
