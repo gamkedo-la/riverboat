@@ -16,7 +16,7 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.4, 0.2, 0.2, 0.2]; // demo
+      this.obstacle_chances = [0.3, 0.4, 0.2, 0.1]; // demo
       //this.obstacle_chances = [0, 1, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -38,6 +38,7 @@ class Game extends Phaser.Scene {
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
+      this.intel_alert = 200
       this.pierPlaced = false;
       this.levelOver = false;
 
@@ -132,19 +133,25 @@ class Game extends Phaser.Scene {
       // if Intel on screen
       if (this.intels) {
          let nearest_Intel_dist = 800;
+         let intelX // to calc which side of boat is nearest Intel
          this.intels.getChildren().forEach(intel => {
-            // console.log(intel);
-            let ix = intel.x;
-            let iy = intel.y;
-            let dist = Phaser.Math.Between(this.player.x, this.player.y, ix, iy);
+            // console.log(this.player.x, this.player.y, intel.x, intel.y)
+            let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, intel.x, intel.y);
             if (dist < nearest_Intel_dist) {
                nearest_Intel_dist = dist;
+               intelX = intel.x
             }
          });
-         console.log(nearest_Intel_dist);
-         if (nearest_Intel_dist < 200) {
-            this.showSensorCone();
-         } else {
+
+         if (nearest_Intel_dist < this.intel_alert) {
+            //console.log(nearest_Intel_dist);
+            if (this.player.x > intelX) {
+               this.showLeftSensorCone();               
+            } else {
+               this.showRightSensorCone();                        
+            }
+         } // boat isn't near any Intel
+         else {
             this.hideSensorCone();
          }
       }
@@ -296,7 +303,6 @@ class Game extends Phaser.Scene {
       //let land_secret = new Land(this, 0, 0, 'land');
       let intel = new Intel(this, 0, 0, 'intel');
       this.intels.add(intel);
-      this.showSensorCone();
 
       let secret = new Secret(this, 0, 0, 'secret');
 
@@ -537,14 +543,18 @@ class Game extends Phaser.Scene {
       });
    };
 
-   showSensorCone() {
+   showLeftSensorCone() {
       this.cone_left.x = this.player.x;
       this.cone_left.y = this.player.y - 20;
       this.cone_left.setVisible(true);
+   }
+
+   showRightSensorCone() {
       this.cone_right.x = this.player.x;
       this.cone_right.y = this.player.y - 20;
       this.cone_right.setVisible(true);
    }
+
    hideSensorCone() {
       this.cone_left
          .setVisible(false);
