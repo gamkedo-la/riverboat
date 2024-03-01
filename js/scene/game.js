@@ -210,8 +210,8 @@ class Game extends Phaser.Scene {
    makePlayer() {
       let start_x = gameWidth / 2; // game width screen + 2 * offset
       let start_y = displayHeight - 10;
-      //this.player = new Player(this, start_x, start_y, 'boat');
-      this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
+      this.player = new Player(this, start_x, start_y, 'boat');
+      //this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
       //this.sensors.add(this.player); // boat move directly over intel zone 
 
       this.playerWake = this.physics.add.image(0, 0, 'wake');
@@ -223,10 +223,14 @@ class Game extends Phaser.Scene {
       this.cone_left = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
          .setOrigin(1, 0.5)
          .setVisible(false)
+         .setDepth(9)
+         .setAlpha(0.5)
          .setFlipX(true);
       this.cone_right = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
          .setOrigin(0, 0.5)
-         .setVisible(false);
+         .setVisible(false)
+         .setAlpha(0.5)
+         .setDepth(9)
       this.sensors.add(this.cone_left);
       this.sensors.add(this.cone_right);
    }
@@ -402,7 +406,7 @@ class Game extends Phaser.Scene {
       let distTowerFromRiver = 40;
 
       if (this.bank === "left") {
-         intel.setOrigin(0, 0.5);
+         intel.setOrigin(0, 0.5).setAlpha(0.3);
          secret.setOrigin(0, 0.5);
          x = bankWidth;
          intel.x = x;
@@ -415,7 +419,7 @@ class Game extends Phaser.Scene {
          tower.x = x;
       }
       else if (this.bank === "right") {
-         intel.setOrigin(1, 0.5);
+         intel.setOrigin(1, 0.5).setAlpha(0.3);
          secret.setOrigin(1, 0.5);
          x = gameWidth - bankWidth;
          intel.x = x;

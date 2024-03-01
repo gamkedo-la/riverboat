@@ -72,12 +72,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    engineNavigation(cursors) {
       if (cursors.left.isDown || cursors.keyA.isDown) {
-         this.play('turnLeft');
+         //this.play('turnLeft');
          this.body.setVelocityX(-1 * this.sideway_speed);
          this.useFuel(this.sidewaysFuel);
       }
       else if (cursors.right.isDown || cursors.keyD.isDown) {
-         this.play('turnRight');
+         //this.play('turnRight');
          this.body.setVelocityX(this.sideway_speed);
          this.useFuel(this.sidewaysFuel);
       }
