@@ -7,6 +7,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.start_y = y;
       this.key = key; // name of texture
       this.health = 10;
+      this.intelScore = 0
       this.fuel = 2000;
       this.forwardFuel = 4;
       this.backwardFuel = 2;
@@ -88,10 +89,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.setTint(0xffb38a);
          this.addWake();
          this.useFuel(this.forwardFuel);
-
-         // in case current obstacle speed needed in scene, made available
-         // this.scene.driftSpeed = riverSpeed * 2;
-         //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
+         this.scene.driftSpeed = riverSpeed * 2;
          this.engine = "forward";
       }
 
@@ -110,8 +108,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       }
 
       // neither up nor down is pressed
+      // when Fuel=0 unable to release; will need explicit keyReleased handling
       else {
          this.setTint(0xffffff);
+         this.scene.driftSpeed = riverSpeed
 
          if (this.scene.playerWake.visible) {
             this.stopWake();

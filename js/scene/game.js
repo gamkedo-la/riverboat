@@ -16,7 +16,7 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.3, 0.4, 0.2, 0.1]; // demo
+      this.obstacle_chances = [0.3, 0.5, 0.1, 0.1]; // demo
       //this.obstacle_chances = [0, 1, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -171,7 +171,8 @@ class Game extends Phaser.Scene {
       this.hud.setScrollFactor(0);
       this.makeProgressDisplay();
       this.makeFuelDisplay();
-      this.makeHealthDisplay();
+      this.makeScoreDisplay();
+      // this.makeHealthDisplay();
    }
 
    setupXscroll() {
@@ -231,7 +232,10 @@ class Game extends Phaser.Scene {
       this.progressDisplay = this.add.text(x, y, `Passed: ${this.obstaclesPassed}`, hudStyle);
       y += yLineSpacing;
       this.hud.add(this.progressDisplay);
-
+   };
+   trackProgress() {
+      this.obstaclesPassed += 1;
+      this.progressDisplay.setText(`Passed: ${this.obstaclesPassed}`);
    };
 
    makeFuelDisplay() {
@@ -240,10 +244,15 @@ class Game extends Phaser.Scene {
       this.fuelDisplay = this.add.text(x, y, `Fuel: ${this.player.fuel}`, hudStyle);
       this.hud.add(this.fuelDisplay);
    };
-
-   makeHealthDisplay() {
+   makeScoreDisplay() {
       let x = 40;
       let y = 120;
+      this.scoreDisplay = this.add.text(x, y, `Intel: ${this.player.intelScore}`, hudStyle);
+      this.hud.add(this.scoreDisplay);
+   };
+   makeHealthDisplay() {
+      let x = 40;
+      let y = 160;
       this.healthDisplay = this.add.text(x, y, `Health: ${this.player.health}`, hudStyle);
       this.hud.add(this.healthDisplay);
    };
@@ -253,9 +262,14 @@ class Game extends Phaser.Scene {
       this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
       //}
    };
+   updateScoreDisplay() {
+      //if (this.player.health) {
+         this.scoreDisplay.setText(`Score: ${this.player.intelScore}`);
+      //}
+   };
    updateHealthDisplay() {
       if (this.player.health) {
-         this.healthDisplay.setText(`Health: ${this.player.health}`);
+         // this.healthDisplay.setText(`Health: ${this.player.health}`);
       }
    };
 
@@ -267,6 +281,7 @@ class Game extends Phaser.Scene {
          this.makeObstacle();
          // ready for next Obstacle
          this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+         this.trackProgress()
       }
    }
 
@@ -427,11 +442,6 @@ class Game extends Phaser.Scene {
       // }
    };
 
-   trackProgress() {
-      this.obstaclesPassed += 1;
-      this.progressDisplay.setText(`Passed: ${this.ObstaclesPassed}`);
-   };
-
    saveBestScore() {
       let bestScoreStr = localStorage.getItem('bestScore');
       let bestScore = bestScoreStr && parseInt(bestScoreStr, 10);
@@ -448,7 +458,7 @@ class Game extends Phaser.Scene {
       this.player.setVelocity(0, 0);
       this.endLevel(); // while bug drift continues after hit
       if (!boom.hit) {
-         console.log(this, boom);
+         //console.log(this, boom);
          this.driftSpeed = 0;
          boom.hit = true;
          this.player.updateHealth(boom.damage);
@@ -467,7 +477,7 @@ class Game extends Phaser.Scene {
       this.player.setVelocity(0, 0);
       this.endLevel(); // while bug drift continues after hit
       if (!bridge.hit) {
-         console.log(this, bridge);
+         //console.log(this, bridge);
          this.driftSpeed = 0;
          bridge.hit = true;
          this.player.updateHealth(bridge.damage);
@@ -493,10 +503,15 @@ class Game extends Phaser.Scene {
    hitIntel(boat, intel) {
       console.log('Intel found');
       this.intelOverlapSound.play();
+      this.player.intelScore += 1
+      this.updateScoreDisplay()
    }
+
    senseIntel(sensor, intel) {
-      console.log('Intel sensed');
+      //console.log('Intel sensed');
       this.intelOverlapSound.play();
+      this.player.intelScore += 1
+      this.updateScoreDisplay()
    }
 
    hitLand(boat, land) {
@@ -508,8 +523,7 @@ class Game extends Phaser.Scene {
    }
 
    hitObstacles(boat, obstacle) {
-      console.log('Obstacle hit', obstacle);
-
+      //console.log('Obstacle hit', obstacle);
    };
 
    endLevel() {
