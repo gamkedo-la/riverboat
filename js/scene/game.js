@@ -179,7 +179,7 @@ class Game extends Phaser.Scene {
       this.makeProgressDisplay();
       this.makeFuelDisplay();
       this.makeScoreDisplay();
-      // this.makeHealthDisplay();
+      this.makeLifeDisplay();
    }
 
    setupXscroll() {
@@ -257,11 +257,12 @@ class Game extends Phaser.Scene {
       this.scoreDisplay = this.add.text(x, y, `Intel: ${this.player.intelScore}`, hudStyle);
       this.hud.add(this.scoreDisplay);
    };
-   makeHealthDisplay() {
+   makeLifeDisplay() {
       let x = 40;
       let y = 160;
-      this.healthDisplay = this.add.text(x, y, `Health: ${this.player.health}`, hudStyle);
-      this.hud.add(this.healthDisplay);
+      //this.healthDisplay = this.add.text(x, y, `Health: ${this.player.health}`, hudStyle);
+      this.lifeDisplay = this.add.text(x, y, `Lives: ${this.player.life}`, hudStyle);
+      this.hud.add(this.lifeDisplay);
    };
 
    updateFuelDisplay() {
@@ -274,10 +275,10 @@ class Game extends Phaser.Scene {
          this.scoreDisplay.setText(`Score: ${this.player.intelScore}`);
       //}
    };
-   updateHealthDisplay() {
-      if (this.player.health) {
-         // this.healthDisplay.setText(`Health: ${this.player.health}`);
-      }
+   updateLifeDisplay() {
+      //if (this.player.health) {
+         this.lifeDisplay.setText(`Lives: ${this.player.life}`);
+      //}
    };
 
    testIfReadyForNextObstacle() {
@@ -472,37 +473,37 @@ class Game extends Phaser.Scene {
    // if player health, but multiple hits on impact is a problem
    hitBooms(boat, boom) {
       // console.log('Boom Hit', boom.damage);
-      boom.body.enable = false;
+      //boom.body.enable = false;
       this.boomCollideSound.play();
       this.player.setVelocity(0, 0);
-      this.endLevel(); // while bug drift continues after hit
+      this.loseLife(); // while bug drift continues after hit
       if (!boom.hit) {
          //console.log(this, boom);
          this.driftSpeed = 0;
          boom.hit = true;
-         this.player.updateHealth(boom.damage);
-         this.player.health -= boom.damage;
-         this.updateHealthDisplay();
-         if (this.player.health <= 0) {
-            this.endLevel();
-         }
+         // this.player.updateHealth(boom.damage);
+         // this.player.health -= boom.damage;
+         //this.updateHealthDisplay();
+         // if (this.player.health <= 0) {
+         //    this.endLevel();
+         // }
       }
    };
 
    hitBridges(boat, bridge) {
       console.log('Bridge Hit');
-      bridge.body.enable = false;
+      //bridge.body.enable = false;
       this.bridgeCollideSound.play();
       this.player.setVelocity(0, 0);
-      this.endLevel(); // while bug drift continues after hit
+      this.loseLife(); // while bug drift continues after hit
       if (!bridge.hit) {
          //console.log(this, bridge);
          this.driftSpeed = 0;
          bridge.hit = true;
-         this.player.updateHealth(bridge.damage);
-         if (this.player.health <= 0) {
-            this.endLevel();
-         }
+         //this.player.updateHealth(bridge.damage);
+         // if (this.player.health <= 0) {
+         //    this.endLevel();
+         // }
       }
    };
 
@@ -512,7 +513,7 @@ class Game extends Phaser.Scene {
          this.rapidsOverlapSound.play();
          console.log(this, rapid);
          rapid.hit = true;
-         this.player.updateHealth(rapid.damage);
+         //this.player.updateHealth(rapid.damage);
          // if (this.player.health <= 0) {
          //    this.endLevel();
          // }
@@ -538,12 +539,30 @@ class Game extends Phaser.Scene {
       land.body.enable = false;
       this.landCollideSound.play();
       this.player.setVelocity(0, 0);
-      this.player.updateHealth(land.damage);
+      // this.player.updateHealth(land.damage);
    }
 
    hitObstacles(boat, obstacle) {
       //console.log('Obstacle hit', obstacle);
    };
+
+   loseLife() {
+      this.player.life -= 1
+      this.updateLifeDisplay()
+      if (this.player.life > 0) {
+         this.newLife()      
+      } else {
+         this.endLevel()
+      }
+   }
+
+   newLife() {
+      console.log("New life - fuel restored")
+      this.cameras.main.shake(500);
+      this.player.fuel = this.player.startFuel
+      this.obstacles.incY(-200); // should be less than interval to avoid collisioon with previous obstacle, though usually X centre empty, except for a closed bridge.
+      this.player.x = this.player.start_x
+   }
 
    endLevel() {
       this.levelOver = true;

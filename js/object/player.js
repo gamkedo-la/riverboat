@@ -6,9 +6,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.start_x = x;
       this.start_y = y;
       this.key = key; // name of texture
+      this.life = 3;
       this.health = 10;
       this.intelScore = 0
-      this.fuel = 2000;
+      this.startFuel = 2000;
+      this.fuel = this.startFuel;
       this.forwardFuel = 4;
       this.backwardFuel = 2;
       this.sidewaysFuel = 1;
