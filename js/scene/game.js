@@ -39,7 +39,7 @@ class Game extends Phaser.Scene {
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
       this.intel_alert = 200
-      this.milestone_interval = 3
+      this.milestone_interval = 5
       this.pierPlaced = false;
       this.levelOver = false;
 
@@ -266,7 +266,15 @@ class Game extends Phaser.Scene {
    };
 
    updateFuelDisplay() {
-      //if (this.player.fuel) {
+      if (this.player.engine === 'forward') {
+         this.fuelDisplay.setTint(0xff0000);
+      }
+      else if (this.player.engine === 'backward') {
+         this.fuelDisplay.setTint(0xff7f50);
+      }
+      else {
+         this.fuelDisplay.setTint(0xffffff);
+      }
       this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
       //}
    };

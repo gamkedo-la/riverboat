@@ -13,11 +13,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.fuel = this.startFuel;
       this.forwardFuel = 4;
       this.backwardFuel = 2;
-      this.sidewaysFuel = 1;
+      this.sidewaysFuel = 0;
       this.sideway_speed = 30;
       this.sideway_drag = 120;  //35;
       this.forward_speed = 40;
       this.backward_speed = -40;
+      this.forward_ratio = 2
+      this.backward_ratio = 3
       this.engine = "off";
       this.rateOfReturnToStation = 0.5;
       scene.physics.world.enable(this);
@@ -31,21 +33,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    update(cursors) {
-      // a bug fuel sticks at 1
-      if (this.fuel > 0) {
-         // arrow keys control
-         this.engineNavigation(cursors);
-      } else {
+      this.engineNavigation(cursors);
+
+      if (this.fuel < 1) {
          console.log('Fuel empty');
-         // this.scene.updateFuelDisplay(); // already called in Game update
          this.setTint(0xffffff);
          this.stopWake(); // unsure why this needs calling here but it does
-
-         // not returning to station looks out of control (which is appropriate)
-         // if (this.y < this.start_y) {
-         //    // boat is above its default position
-         //    this.moveBackToStation();
-         // }
       }
 
       // bounce off side of river
@@ -60,6 +53,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          //this.body.velocity.x *= -1;
          this.setVelocity(0, 0);
       }
+
+      // not returning to station looks out of control (which is appropriate)
+      // if (this.y < this.start_y) {
+      //    // boat is above its default position
+      //    this.moveBackToStation();
+      // }
    }
 
    useFuel(usage) {
@@ -91,7 +90,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.setTint(0xffb38a);
          this.addWake();
          this.useFuel(this.forwardFuel);
-         this.scene.driftSpeed = riverSpeed * 2;
+         this.scene.driftSpeed = riverSpeed * this.forward_ratio;
          this.engine = "forward";
       }
 
@@ -99,7 +98,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // less engine if anchor assisted but risk snagging
       else if ((cursors.down.isDown || cursors.keyS.isDown)
          && this.fuel >= this.backwardFuel) {
-         this.scene.driftSpeed = riverSpeed / 4;
+         this.scene.driftSpeed = riverSpeed / this.backward_ratio;
+         this.engine = "backward";
          //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
 
          if (this.pierPlaced) {
@@ -114,6 +114,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       else {
          this.setTint(0xffffff);
          this.scene.driftSpeed = riverSpeed
+         this.engine = "off";
 
          if (this.scene.playerWake.visible) {
             this.stopWake();
