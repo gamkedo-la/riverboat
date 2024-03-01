@@ -1,10 +1,14 @@
 // import Phaser from './lib/phaser.js'; // not needed for Intellisense
 
 const config = {
-   parent: 'game-container',
    type: Phaser.AUTO,
-   width: 360,
-   height: 600,
+   scale: {
+      parent: 'game-container',
+      width: 360,
+      height: 600,
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH
+   },
    scene: [Boot, Setup, Home, Gallery, Game, Credits],
    title: 'Riverboat',
    pixelArt: true,

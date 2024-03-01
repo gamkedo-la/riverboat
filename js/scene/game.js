@@ -8,6 +8,7 @@ class Game extends Phaser.Scene {
       this.booms = this.physics.add.group({ runChildUpdate: true });
       this.bridges = this.physics.add.group({ runChildUpdate: true });
       this.rapids = this.physics.add.group({ runChildUpdate: true });
+      this.sensors = this.physics.add.group({ runChildUpdate: true });
       this.intels = this.physics.add.group();
 
       // decoration of land and water
@@ -103,6 +104,7 @@ class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
       this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
       this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
+      this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
       this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
       this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
@@ -171,6 +173,7 @@ class Game extends Phaser.Scene {
       let start_y = displayHeight - 10;
       //this.player = new Player(this, start_x, start_y, 'boat');
       this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
+      //this.sensors.add(this.player); // boat move directly over intel zone 
 
       this.playerWake = this.physics.add.image(0, 0, 'wake');
       this.playerWake.y = start_y; // unused because player.addWake() sets position
@@ -178,13 +181,15 @@ class Game extends Phaser.Scene {
       this.playerWake.setOrigin(0.5, 0);
       // this.player.addChild(this.playerWake);
 
-      this.cone_left = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
-         .setOrigin(1, 0.5)
-         .setVisible(false)
-         .setFlipX(true);
-      this.cone_right = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
-         .setOrigin(0, 0.5)
-         .setVisible(false);
+      // this.cone_left = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
+      //    .setOrigin(1, 0.5)
+      //    .setVisible(false)
+      //    .setFlipX(true);
+      // this.cone_right = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
+      //    .setOrigin(0, 0.5)
+      //    .setVisible(false);
+      // this.sensors.add(this.cone_left);
+      // this.sensors.add(this.cone_right);
    }
 
    makeProgressDisplay() {
@@ -267,6 +272,8 @@ class Game extends Phaser.Scene {
       //let land_secret = new Land(this, 0, 0, 'land');
       let intel = new Intel(this, 0, 0, 'intel');
       this.intels.add(intel);
+      //this.showSensorCone();
+
       let secret = new Secret(this, 0, 0, 'secret');
 
       //let land_tower = new Land(this, 0, 0, 'land');
@@ -455,7 +462,10 @@ class Game extends Phaser.Scene {
 
    hitIntel(boat, intel) {
       console.log('Intel found');
-      //intel.body.enable = false;
+      this.intelOverlapSound.play();
+   }
+   senseIntel(sensor, intel) {
+      console.log('Intel sensed');
       this.intelOverlapSound.play();
    }
 
@@ -502,6 +512,13 @@ class Game extends Phaser.Scene {
          loop: false
       });
    };
+
+   showSensorCone() {
+      this.cone_left
+         .setVisible(true);
+      this.cone_right
+         .setVisible(true);
+   }
 
    checkIfReachedPier() {
       if (!this.pierPlaced && this.obstaclesPassed >= this.obstaclesToGoal) {
