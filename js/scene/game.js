@@ -17,7 +17,7 @@ class Game extends Phaser.Scene {
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
       this.obstacle_chances = [0.4, 0.2, 0.2, 0.2]; // demo
-      // this.obstacle_chances = [0, 0, 0, 1.0]; // test one type
+      //this.obstacle_chances = [0, 1, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
       this.driftSpeed = riverSpeed;
@@ -119,12 +119,36 @@ class Game extends Phaser.Scene {
       this.setDrift(this.driftSpeed);
       this.player.update(this.cursors);
 
+      this.isIntelWithinRange();
+
       this.updateFuelDisplay();
 
       this.destroyPassedObstacle();
 
       this.testIfReadyForNextObstacle();
    };
+
+   isIntelWithinRange() {
+      // if Intel on screen
+      if (this.intels) {
+         let nearest_Intel_dist = 800;
+         this.intels.getChildren().forEach(intel => {
+            // console.log(intel);
+            let ix = intel.x;
+            let iy = intel.y;
+            let dist = Phaser.Math.Between(this.player.x, this.player.y, ix, iy);
+            if (dist < nearest_Intel_dist) {
+               nearest_Intel_dist = dist;
+            }
+         });
+         console.log(nearest_Intel_dist);
+         if (nearest_Intel_dist < 200) {
+            this.showSensorCone();
+         } else {
+            this.hideSensorCone();
+         }
+      }
+   }
 
    setupSounds() {
       this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0.5 });
@@ -181,15 +205,15 @@ class Game extends Phaser.Scene {
       this.playerWake.setOrigin(0.5, 0);
       // this.player.addChild(this.playerWake);
 
-      // this.cone_left = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
-      //    .setOrigin(1, 0.5)
-      //    .setVisible(false)
-      //    .setFlipX(true);
-      // this.cone_right = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
-      //    .setOrigin(0, 0.5)
-      //    .setVisible(false);
-      // this.sensors.add(this.cone_left);
-      // this.sensors.add(this.cone_right);
+      this.cone_left = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
+         .setOrigin(1, 0.5)
+         .setVisible(false)
+         .setFlipX(true);
+      this.cone_right = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
+         .setOrigin(0, 0.5)
+         .setVisible(false);
+      this.sensors.add(this.cone_left);
+      this.sensors.add(this.cone_right);
    }
 
    makeProgressDisplay() {
@@ -272,7 +296,7 @@ class Game extends Phaser.Scene {
       //let land_secret = new Land(this, 0, 0, 'land');
       let intel = new Intel(this, 0, 0, 'intel');
       this.intels.add(intel);
-      //this.showSensorCone();
+      this.showSensorCone();
 
       let secret = new Secret(this, 0, 0, 'secret');
 
@@ -514,10 +538,18 @@ class Game extends Phaser.Scene {
    };
 
    showSensorCone() {
+      this.cone_left.x = this.player.x;
+      this.cone_left.y = this.player.y - 20;
+      this.cone_left.setVisible(true);
+      this.cone_right.x = this.player.x;
+      this.cone_right.y = this.player.y - 20;
+      this.cone_right.setVisible(true);
+   }
+   hideSensorCone() {
       this.cone_left
-         .setVisible(true);
+         .setVisible(false);
       this.cone_right
-         .setVisible(true);
+         .setVisible(false);
    }
 
    checkIfReachedPier() {
