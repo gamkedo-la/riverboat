@@ -38,7 +38,7 @@ class Game extends Phaser.Scene {
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
-      this.intel_alert = 200
+      this.intel_alert = 180
       this.milestone_interval = 5
       this.pierPlaced = false;
       this.levelOver = false;
@@ -220,16 +220,18 @@ class Game extends Phaser.Scene {
       this.playerWake.setOrigin(0.5, 0);
       // this.player.addChild(this.playerWake);
 
-      this.cone_left = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
+      this.cone_left = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor')
          .setOrigin(1, 0.5)
          .setVisible(false)
          .setDepth(9)
          .setAlpha(0.5)
+         .setScale(1.1, 0.7)
          .setFlipX(true);
-      this.cone_right = this.physics.add.sprite(start_x, start_y - 20, 'sensor')
+      this.cone_right = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor')
          .setOrigin(0, 0.5)
          .setVisible(false)
          .setAlpha(0.5)
+         .setScale(1.1, 0.7)
          .setDepth(9)
       this.sensors.add(this.cone_left);
       this.sensors.add(this.cone_right);
@@ -451,7 +453,7 @@ class Game extends Phaser.Scene {
    placeRapids(rapids) {
    }
    placeMilestone(milestone) {
-      console.log('Milestone obstacle created!')
+      // console.log('Milestone obstacle created!')
    }
 
    destroyPassedObstacle() {
@@ -569,7 +571,7 @@ class Game extends Phaser.Scene {
    }
 
    newLife() {
-      console.log("New life - fuel restored")
+      // console.log("New life - fuel restored")
       this.cameras.main.shake(500);
       this.player.fuel = this.player.startFuel
       this.obstacles.incY(-200); // should be less than interval to avoid collisioon with previous obstacle, though usually X centre empty, except for a closed bridge.
@@ -609,21 +611,25 @@ class Game extends Phaser.Scene {
 
    showLeftSensorCone() {
       this.cone_left.x = this.player.x;
-      this.cone_left.y = this.player.y - 20;
-      this.cone_left.setVisible(true);
+      this.cone_left.y = this.player.y - this.player.coneYoffset;
+      this.cone_left
+         .setVisible(true)
    }
 
    showRightSensorCone() {
       this.cone_right.x = this.player.x;
-      this.cone_right.y = this.player.y - 20;
-      this.cone_right.setVisible(true);
+      this.cone_right.y = this.player.y - this.player.coneYoffset;
+      this.cone_right
+         .setVisible(true)
    }
 
    hideSensorCone() {
       this.cone_left
-         .setVisible(false);
+         .setVisible(false)
+         .setPosition(-100, 0)
       this.cone_right
-         .setVisible(false);
+         .setVisible(false)
+         .setPosition(-100, 0)
    }
 
    checkIfReachedPier() {

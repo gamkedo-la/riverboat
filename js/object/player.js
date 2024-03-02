@@ -28,6 +28,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setDrag(this.sideway_drag);
       this.setVelocity(0, 0);
       this.depth = 7;
+      this.coneYoffset = 35
       scene.add.existing(this);
       this.scene = scene;
    }
@@ -147,7 +148,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    stopWake() {
-      this.scene.playerWake.visible = false;
+      this.scene.playerWake
+         .setVisible(false)
+         .setPosition(0, 999)
       this.scene.playerWake.setVelocityY(0);
    }
 
