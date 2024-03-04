@@ -5,6 +5,7 @@ const gameWidth = displayWidth + bankWidth * 2;
 const riverSpeed = 50; // 20 makes access to riverbank easier
 const intelWidth = 70;
 const intelDepth = 50;
+const waterColor = 0x0000ff;
 
 const hudStyle = {
    font: '22px Arial',

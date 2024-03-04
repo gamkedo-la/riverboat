@@ -60,6 +60,7 @@ class Setup extends Phaser.Scene {
       this.load.image('tower_left', 'public/art/tower_leftbank.png');
       this.load.image('tower_right', 'public/art/tower_rightbank.png');
       this.load.image('pier', 'public/art/goal.png');
+      this.load.image('water', 'public/art/water_background.png');
 
       this.load.image('placeholderButtonUp', 'public/art/placeholder_button_up.png');
       this.load.image('placeholderButtonDown', 'public/art/placeholder_button_down.png');

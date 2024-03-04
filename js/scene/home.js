@@ -12,7 +12,7 @@ class Home extends Phaser.Scene {
    };
 
    create() {
-      this.cameras.main.setBackgroundColor(0x0000ff);
+      this.cameras.main.setBackgroundColor(waterColor);
       //this.input.on('pointerdown', () => this.scene.start('Game'));
 
       let gameWidth = this.sys.game.config.width;

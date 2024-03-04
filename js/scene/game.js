@@ -4,6 +4,13 @@ class Game extends Phaser.Scene {
    }
 
    init() {
+      this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
+      this.waterBG.setOrigin(0, 0);
+      //make background tileSprite scroll with camera
+      this.waterBG.tilePositionX = this.cameras.main.scrollX;
+      this.waterBG.tilePositionY = this.cameras.main.scrollY;
+
+
       this.land = this.physics.add.group({ runChildUpdate: true });
       this.booms = this.physics.add.group({ runChildUpdate: true });
       this.bridges = this.physics.add.group({ runChildUpdate: true });
@@ -673,6 +680,7 @@ class Game extends Phaser.Scene {
       this.driftSpeed = speed;
       this.obstacles.setVelocity(0, speed);
       this.features.setVelocity(0, speed);
+      this.waterBG.tilePositionY -= speed/60;
       // this.obstacles.children.iterate((obstacle) => {
       //    obstacle.setVelocityY(speed);
       // });
