@@ -7,6 +7,7 @@ class Rapids extends Phaser.Physics.Arcade.Image {
       this.setImmovable(true);
       this.setOrigin(0, 0.5);
       this.setScale(1.0);
+      this.setDepth(2)
       this.setVelocity(0, scene.driftSpeed);
       this.hit = false;
       this.damage = 1;

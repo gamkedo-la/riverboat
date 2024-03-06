@@ -14,6 +14,7 @@ class Game extends Phaser.Scene {
       this.booms = this.physics.add.group({ runChildUpdate: true });
       this.bridges = this.physics.add.group({ runChildUpdate: true });
       this.rapids = this.physics.add.group({ runChildUpdate: true });
+      this.woods = this.physics.add.group({ runChildUpdate: true });
       this.sensors = this.physics.add.group({ runChildUpdate: true });
       this.intels = this.physics.add.group();
 
@@ -45,7 +46,7 @@ class Game extends Phaser.Scene {
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
       this.intel_alert = 180
-      this.milestone_interval = 5
+      this.milestone_interval = 50
       this.pierPlaced = false;
       this.levelOver = false;
 
@@ -118,6 +119,7 @@ class Game extends Phaser.Scene {
 
       this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
       this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
+      this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
       this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
       this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
@@ -200,11 +202,11 @@ class Game extends Phaser.Scene {
    makeBanks() {
       let bank_left = this.add.image(bankWidth, 0, 'bank_left')
          .setOrigin(1, 0)
-         .setDepth(2);
+         .setDepth(4);
       this.land.add(bank_left);
       let bank_right = this.add.image(gameWidth - bankWidth, 0, 'bank_right')
          .setOrigin(0, 0)
-         .setDepth(2);
+         .setDepth(4);
       this.land.add(bank_right);
 
       // below was in create() but image not showing
@@ -474,7 +476,8 @@ class Game extends Phaser.Scene {
    // smaller sprites (tiles) will enable this
    placeRapids(rapidsLine, driftwood) {
       rapidsLine.x = bankWidth
-      driftwood.x = bankWidth + Phaser.Math.Between(30, displayWidth - 30);
+      driftwood.x = bankWidth + Phaser.Math.Between(20, displayWidth - 20);
+      // console.log('wood x', driftwood.x - bankWidth)
    }
 
    placeMilestone(milestone) {
@@ -558,6 +561,15 @@ class Game extends Phaser.Scene {
          // }
       }
    };
+
+   hitDriftwood(boat, wood) {
+      console.log('Driftwood Hit');
+      wood.setVelocity(0, this.driftSpeed)
+      this.landCollideSound.play();
+      this.player.setVelocity(0, 0);
+      this.loseLife();
+      //wood.setVisible(false)
+   }
 
    hitIntel(boat, intel) {
       console.log('Intel found');

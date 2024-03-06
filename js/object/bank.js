@@ -6,7 +6,7 @@ class Bank extends Phaser.Physics.Arcade.Image {
       this.scene.physics.world.enable(this);
       this.setImmovable(true);
       this.setScale(1);
-      this.setDepth(2);
+      this.setDepth(4);
       this.setVelocity(0, 0);
       this.hit = false;
       this.damage = 3;
