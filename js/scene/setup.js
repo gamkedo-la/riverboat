@@ -95,9 +95,9 @@ class Setup extends Phaser.Scene {
 
    create() {
       this.anims.create({
-         key: 'splashy_driftwood',
+         key: 'splash_driftwood',
          frames: this.anims.generateFrameNames('anim_driftwood', { frames: [0, 1, 2, 3] }),
-         frameRate: 2,
+         frameRate: 6,
          yoyo: false,
          repeat: -1
       });
@@ -125,7 +125,7 @@ class Setup extends Phaser.Scene {
          yoyo: true,
          repeat: 1
       });
-      this.scene.start('Game');
+      this.scene.start('Home');
    };
 
 }

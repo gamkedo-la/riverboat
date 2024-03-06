@@ -10,7 +10,6 @@ class Game extends Phaser.Scene {
       this.waterBG.tilePositionX = this.cameras.main.scrollX;
       this.waterBG.tilePositionY = this.cameras.main.scrollY;
 
-
       this.land = this.physics.add.group({ runChildUpdate: true });
       this.booms = this.physics.add.group({ runChildUpdate: true });
       this.bridges = this.physics.add.group({ runChildUpdate: true });
@@ -23,7 +22,7 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      //this.obstacle_chances = [0.3, 0.5, 0.2, 0]; // demo
+      //this.obstacle_chances = [0.3, 0.4, 0.1, 0.2]; // demo
       this.obstacle_chances = [0, 0, 0, 1]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
@@ -96,6 +95,7 @@ class Game extends Phaser.Scene {
       this.setupXscroll();
       this.makeHud();
 
+      // this.makeDriftwood(200, 300)
       this.setupSounds();
 
       // create first 2 obstacles, using same method as update()
@@ -388,11 +388,22 @@ class Game extends Phaser.Scene {
    makeRapids() {
       let rapidsLine = new Rapids(this, 0, 0, "rapids");
       this.rapids.add(rapidsLine);
-      let driftwood = this.add.sprite(0, 0, 'anim_driftwood', 0);
-      driftwood.play('splashy_driftwood');
-      driftwood.setDepth(100)
+      // let driftwood = this.add.sprite(0, 0, 'anim_driftwood', 0);
+      let driftwood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
       this.rapids.add(driftwood);
+      driftwood.play('splash_driftwood');
+      // driftwood.setDepth(100)
+      // driftwood.setScale(1.0);
+      // this.obstacles.add(driftwood);
       return [rapidsLine, driftwood];
+   }
+
+   makeDriftwood(x, y) {
+      this.wood = this.add.sprite(x, y, 'anim_driftwood', 0);
+      this.wood.setDepth(99)
+      this.wood.play('splash_driftwood');
+      console.log(this.wood)
+      //this.wood.setVelocity(0, this.driftSpeed);
    }
 
    makeMilestone() {
@@ -462,7 +473,8 @@ class Game extends Phaser.Scene {
    // do fast & slow patches within Rapids, and random variation
    // smaller sprites (tiles) will enable this
    placeRapids(rapidsLine, driftwood) {
-      driftwood.x = 300
+      rapidsLine.x = bankWidth
+      driftwood.x = bankWidth + Phaser.Math.Between(30, displayWidth - 30);
    }
 
    placeMilestone(milestone) {
@@ -536,9 +548,9 @@ class Game extends Phaser.Scene {
 
    hitRapids(boat, rapid) {
       if (!rapid.hit) {
-         console.log('Rapids Hit');
+         //console.log('Rapids Hit');
          this.rapidsOverlapSound.play();
-         console.log(this, rapid);
+         //console.log(this, rapid);
          rapid.hit = true;
          //this.player.updateHealth(rapid.damage);
          // if (this.player.health <= 0) {
