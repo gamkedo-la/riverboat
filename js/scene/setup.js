@@ -67,6 +67,12 @@ class Setup extends Phaser.Scene {
       this.load.image('placeholderButtonUp', 'public/art/placeholder_button_up.png');
       this.load.image('placeholderButtonDown', 'public/art/placeholder_button_down.png');
 
+      this.load.spritesheet('anim_driftwood', 'public/art/splashy_driftwood.png', {
+         frameWidth: 32,
+         frameHeight: 32,
+         spacing: 0
+      });
+
       this.load.spritesheet('anim_boat', 'public/art/boat_5.png', {
          frameWidth: 30,
          frameHeight: 65,
@@ -88,6 +94,14 @@ class Setup extends Phaser.Scene {
    };
 
    create() {
+      this.anims.create({
+         key: 'splashy_driftwood',
+         frames: this.anims.generateFrameNames('anim_driftwood', { frames: [0, 1, 2, 3] }),
+         frameRate: 2,
+         yoyo: false,
+         repeat: -1
+      });
+
       this.anims.create({
          key: 'turnLeft',
          frames: this.anims.generateFrameNames('anim_boat', { frames: [1, 0, 1, 2] }),

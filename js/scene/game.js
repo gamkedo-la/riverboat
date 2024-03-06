@@ -23,8 +23,8 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.3, 0.5, 0.2, 0]; // demo
-      //this.obstacle_chances = [0, 1, 0, 0]; // test one type
+      //this.obstacle_chances = [0.3, 0.5, 0.2, 0]; // demo
+      this.obstacle_chances = [0, 0, 0, 1]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
       this.driftSpeed = riverSpeed;
@@ -386,9 +386,13 @@ class Game extends Phaser.Scene {
 
    // will have tiles of fast & slow patches, and rocks
    makeRapids() {
-      let rapids = new Rapids(this, 0, 0, "rapids");
-      this.rapids.add(rapids);
-      return [rapids];
+      let rapidsLine = new Rapids(this, 0, 0, "rapids");
+      this.rapids.add(rapidsLine);
+      let driftwood = this.add.sprite(0, 0, 'anim_driftwood', 0);
+      driftwood.play('splashy_driftwood');
+      driftwood.setDepth(100)
+      this.rapids.add(driftwood);
+      return [rapidsLine, driftwood];
    }
 
    makeMilestone() {
@@ -457,8 +461,10 @@ class Game extends Phaser.Scene {
 
    // do fast & slow patches within Rapids, and random variation
    // smaller sprites (tiles) will enable this
-   placeRapids(rapids) {
+   placeRapids(rapidsLine, driftwood) {
+      driftwood.x = 300
    }
+
    placeMilestone(milestone) {
       // console.log('Milestone obstacle created!')
    }
