@@ -564,7 +564,7 @@ class Game extends Phaser.Scene {
    };
 
    hitDriftwood(boat, wood) {
-      console.log('Driftwood Hit');
+      // console.log('Driftwood Hit');
       wood.setVelocity(0, this.driftSpeed)
       this.landCollideSound.play();
       this.player.setVelocity(0, 0);
@@ -612,7 +612,7 @@ class Game extends Phaser.Scene {
             loop: false
          });
       } else {
-         this.endLevel()
+         this.endLevel();
       }
    }
 
@@ -622,6 +622,39 @@ class Game extends Phaser.Scene {
       this.player.fuel = this.player.startFuel
       this.obstacles.incY(-200); // should be less than interval to avoid collisioon with previous obstacle, though usually X centre empty, except for a closed bridge.
       this.player.x = this.player.start_x
+   }
+
+   createGameOverButtons() {
+      // const buttonContainer = this.add.container(this.cameras.main.centerX, this.cameras.main.centerY);
+    
+      const replayButton = this.add.text(40, 320, "Replay", { font: "36px Arial", fill: "#fff" })
+        .setInteractive()
+        .on('pointerdown', () => {
+           // reset game state (lives, fuel, position)
+           this.obstacles.incY(-200);
+           this.physics.resume();
+           this.player.health = this.player.initialHealth;
+           this.player.fuel = this.player.initialFuel;
+           this.levelOver = false;
+           this.scene.restart();
+         //  buttonContainer.destroy();
+        });
+    
+      const menuButton = this.add.text(40, 380, "Menu", { font: "36px Arial", fill: "#fff" })
+        .setInteractive()
+        .on('pointerdown', () => {
+          this.scene.start("Home");
+         //  buttonContainer.destroy();
+        });
+    
+      // buttonContainer.add(replayButton);
+      // buttonContainer.add(menuButton);
+      replayButton.setDepth(99)
+      menuButton.setDepth(99)
+      replayButton.setOrigin(0, 0);
+      menuButton.setOrigin(0, 0);
+      this.hud.add(replayButton);
+      this.hud.add(menuButton);
    }
 
    endLevel() {
@@ -637,19 +670,20 @@ class Game extends Phaser.Scene {
             let y = this.player.y - 36;
             this.explosion = this.add.sprite(x, y, 'anim_placeholderExplosion', 0);
             this.explosion.play('explode');
-            let text = this.add.text(100, 300, 'Level over', { font: '40px Arial', color: '#ffffff' }).setOrigin(0.5);
-            this.hud.add(text);
+            // let text = this.add.text(100, 300, 'Level over', { font: '40px Arial', color: '#ffffff' }).setOrigin(0.5);
+            //this.hud.add(text);
          },
          loop: false
       });
+      this.createGameOverButtons();
 
       this.time.addEvent({
          delay: 2500,
          callback: () => {
             this.player.health = this.player.initialHealth;
             this.player.fuel = this.player.initialFuel;
-            this.levelOver = false;
-            this.scene.restart();
+            //this.levelOver = false;
+            //this.scene.restart();
          },
          loop: false
       });
