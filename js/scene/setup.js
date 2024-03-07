@@ -67,7 +67,7 @@ class Setup extends Phaser.Scene {
       this.load.image('placeholderButtonUp', 'public/art/placeholder_button_up.png');
       this.load.image('placeholderButtonDown', 'public/art/placeholder_button_down.png');
 
-      this.load.spritesheet('anim_driftwood', 'public/art/splashy_driftwood.png', {
+      this.load.spritesheet('anim_driftwood', 'public/art/splashy_driftwood2.png', {
          frameWidth: 32,
          frameHeight: 32,
          spacing: 0
