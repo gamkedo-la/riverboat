@@ -63,6 +63,7 @@ class Setup extends Phaser.Scene {
       this.load.image('water', 'public/art/water_background.png');
       this.load.image('driftWood_gif', 'public/art/splashy_driftwood.gif');
       this.load.image('driftWood', 'public/art/splashy_driftwood.png');
+      this.load.image('rock', 'public/art/boulder01.png');
 
       this.load.image('placeholderButtonUp', 'public/art/placeholder_button_up.png');
       this.load.image('placeholderButtonDown', 'public/art/placeholder_button_down.png');
