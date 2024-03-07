@@ -102,8 +102,9 @@ class Game extends Phaser.Scene {
       // create first 2 obstacles, using same method as update()
       this.makeObstacle();
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-      this.obstacles.incY(this.ySpacing + 1);
+      this.obstacles.incY(this.ySpacing + 1); // ? forgot why +1
       this.makeObstacle();
+      this.obstacles.incY(100); // start closer 
 
       if (this.checkIfReachedPier()) {
          this.makePier();
@@ -598,10 +599,18 @@ class Game extends Phaser.Scene {
    };
 
    loseLife() {
-      this.player.life -= 1
-      this.updateLifeDisplay()
+      this.invincible = true;
+      this.player.life -= 1;
+      this.updateLifeDisplay();
+      this.cameras.main.shake(500);
+      this.physics.pause()
       if (this.player.life > 0) {
-         this.newLife()      
+         this.time.addEvent({
+            delay: 2000,
+            callback: this.newLife,
+            callbackScope: this,
+            loop: false
+         });
       } else {
          this.endLevel()
       }
@@ -609,7 +618,7 @@ class Game extends Phaser.Scene {
 
    newLife() {
       // console.log("New life - fuel restored")
-      this.cameras.main.shake(500);
+      this.physics.resume()
       this.player.fuel = this.player.startFuel
       this.obstacles.incY(-200); // should be less than interval to avoid collisioon with previous obstacle, though usually X centre empty, except for a closed bridge.
       this.player.x = this.player.start_x
