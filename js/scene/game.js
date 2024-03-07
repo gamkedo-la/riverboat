@@ -15,6 +15,7 @@ class Game extends Phaser.Scene {
       this.bridges = this.physics.add.group({ runChildUpdate: true });
       this.rapids = this.physics.add.group({ runChildUpdate: true });
       this.woods = this.physics.add.group({ runChildUpdate: true });
+      this.rocks = this.physics.add.group({ runChildUpdate: true });
       this.sensors = this.physics.add.group({ runChildUpdate: true });
       this.intels = this.physics.add.group();
 
@@ -121,6 +122,7 @@ class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
       this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
       this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
+      this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
       this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
       this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
@@ -391,23 +393,33 @@ class Game extends Phaser.Scene {
    makeRapids() {
       let rapidsLine = new Rapids(this, 0, 0, "rapids");
       this.rapids.add(rapidsLine);
+
+      let dangerOption = Math.random() < 0.5 ? 'wood' : 'rock';
+      let danger;
+      if (dangerOption === 'wood') {
+         danger = new Driftwood(this, 0, 0, "anim_driftwood", 0);
+         danger.play('splash_driftwood');
+      } else {
+         danger = new Rock(this, 0, 0, "rock", 0);
+      }
+      this.rapids.add(danger);
       // let driftwood = this.add.sprite(0, 0, 'anim_driftwood', 0);
-      let driftwood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
-      this.rapids.add(driftwood);
-      driftwood.play('splash_driftwood');
+      // let driftwood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
+      // this.rapids.add(driftwood);
+      // driftwood.play('splash_driftwood');
       // driftwood.setDepth(100)
       // driftwood.setScale(1.0);
       // this.obstacles.add(driftwood);
-      return [rapidsLine, driftwood];
+      return [rapidsLine, danger];
    }
 
-   makeDriftwood(x, y) {
-      this.wood = this.add.sprite(x, y, 'anim_driftwood', 0);
-      this.wood.setDepth(99)
-      this.wood.play('splash_driftwood');
-      console.log(this.wood)
-      //this.wood.setVelocity(0, this.driftSpeed);
-   }
+   // makeDriftwood(x, y) {
+   //    this.wood = this.add.sprite(x, y, 'anim_driftwood', 0);
+   //    this.wood.setDepth(99)
+   //    this.wood.play('splash_driftwood');
+   //    console.log(this.wood)
+   //    //this.wood.setVelocity(0, this.driftSpeed);
+   // }
 
    makeMilestone() {
       let milestone = new Rapids(this, 0, 0, "rapids");
@@ -475,10 +487,9 @@ class Game extends Phaser.Scene {
 
    // do fast & slow patches within Rapids, and random variation
    // smaller sprites (tiles) will enable this
-   placeRapids(rapidsLine, driftwood) {
+   placeRapids(rapidsLine, danger) {
       rapidsLine.x = bankWidth
-      driftwood.x = bankWidth + Phaser.Math.Between(20, displayWidth - 20);
-      // console.log('wood x', driftwood.x - bankWidth)
+      danger.x = bankWidth + Phaser.Math.Between(30, displayWidth - 30);
    }
 
    placeMilestone(milestone) {
@@ -569,7 +580,14 @@ class Game extends Phaser.Scene {
       this.landCollideSound.play();
       this.player.setVelocity(0, 0);
       this.loseLife();
-      //wood.setVisible(false)
+   }
+
+   hitRock(boat, rock) {
+      console.log('Rock Hit', this.rocks);
+      rock.setVelocity(0, this.driftSpeed)
+      this.landCollideSound.play();
+      this.player.setVelocity(0, 0);
+      this.loseLife();
    }
 
    hitIntel(boat, intel) {

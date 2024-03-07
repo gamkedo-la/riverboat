@@ -7,7 +7,7 @@ class Driftwood extends Phaser.Physics.Arcade.Sprite {
       this.scene.physics.world.enable(this);
       this.setImmovable(true);
       this.setOrigin(0.5);
-      this.setScale(1);
+      this.setScale(1.6);
       this.setDepth(3);
       this.setVelocity(0, scene.driftSpeed);
       this.hit = false;
