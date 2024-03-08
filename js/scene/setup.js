@@ -98,7 +98,7 @@ class Setup extends Phaser.Scene {
       this.anims.create({
          key: 'splash_driftwood',
          frames: this.anims.generateFrameNames('anim_driftwood', { frames: [0, 1, 2, 3] }),
-         frameRate: 6,
+         frameRate: 1,
          yoyo: false,
          repeat: -1
       });

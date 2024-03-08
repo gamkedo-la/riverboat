@@ -53,7 +53,7 @@ class Home extends Phaser.Scene {
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Scores', () => { console.log('pointer down -> show High Scores'); });
 
       top += 125;
-      this.add.text(gameWidth / 2, top, 'ESCape key to return here', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+      this.add.text(gameWidth / 2, top, 'P key to Pause game', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
    };
 
    makeMenu(menu) {

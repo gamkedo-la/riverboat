@@ -17,6 +17,7 @@ class Game extends Phaser.Scene {
       this.woods = this.physics.add.group({ runChildUpdate: true });
       this.rocks = this.physics.add.group({ runChildUpdate: true });
       this.sensors = this.physics.add.group({ runChildUpdate: true });
+      this.secrets = this.physics.add.group({ runChildUpdate: true });
       this.intels = this.physics.add.group();
 
       // decoration of land and water
@@ -24,8 +25,8 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      //this.obstacle_chances = [0.3, 0.4, 0.1, 0.2]; // demo
-      this.obstacle_chances = [0, 0, 0, 1]; // test one type
+      this.obstacle_chances = [0.2, 0.3, 0.1, 0.4]; // demo
+      // this.obstacle_chances = [0, 0, 0, 1]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
       this.driftSpeed = riverSpeed;
@@ -123,8 +124,8 @@ class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
       this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
       this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
-      this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
-      this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
+      this.physics.add.overlap(this.player, this.intel, this.hitIntel, null, this);
+      this.physics.add.overlap(this.sensors, this.secrets, this.senseIntel, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
       this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
       this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
@@ -247,15 +248,13 @@ class Game extends Phaser.Scene {
       this.hud.setScrollFactor(0);
       let y_UI_spacing = 40;
       let y = y_UI_spacing;
-      this.makeFuelDisplay(y);
+      this.makeIntelDisplay(y);
       y += y_UI_spacing;
       this.makeProgressDisplay(y);
       y += y_UI_spacing;
-      this.makeIntelDisplay(y);
+      this.makeFuelDisplay(y);
       y += y_UI_spacing;
       this.makeLifeDisplay(y);
-      //this.makePauseButton();
-      console.log(this.hud.x);
    }
 
    makeLifeDisplay(y) {
@@ -299,9 +298,9 @@ class Game extends Phaser.Scene {
       this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
       //}
    };
-   updateScoreDisplay() {
+   updateIntelDisplay() {
       //if (this.player.health) {
-      this.intelDisplay.setText(`Score: ${this.player.intelScore}`);
+      this.intelDisplay.setText(`Intel: ${this.player.intelScore}`);
       //}
    };
    updateLifeDisplay() {
@@ -597,14 +596,14 @@ class Game extends Phaser.Scene {
       console.log('Intel found');
       this.intelOverlapSound.play();
       this.player.intelScore += 1;
-      this.updateScoreDisplay();
+      this.updateIntelDisplay();
    }
 
    senseIntel(sensor, intel) {
       //console.log('Intel sensed');
       this.intelOverlapSound.play();
       this.player.intelScore += 1;
-      this.updateScoreDisplay();
+      this.updateIntelDisplay();
    }
 
    hitLand(boat, land) {

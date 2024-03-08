@@ -3,6 +3,7 @@ class Secret extends Phaser.Physics.Arcade.Image {
       super(scene, x, y, texture, bank);
       Object.assign(this, { scene, x, y, bank });
       this.scene.obstacles.add(this);
+      this.scene.secrets.add(this);
       this.scene.physics.world.enable(this);
       this.setImmovable(true);
       if (bank === "left") {

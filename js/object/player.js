@@ -6,10 +6,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.start_x = x;
       this.start_y = y;
       this.key = key; // name of texture
-      this.life = 1;
+      this.life = 3;
       this.invincible = false;
       this.health = 10;
-      this.intelScore = 0
+      this.intelScore = 0;
       this.startFuel = 2000;
       this.fuel = this.startFuel;
       this.forwardFuel = 4;
@@ -19,8 +19,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.sideway_drag = 120;  //35;
       this.forward_speed = 40;
       this.backward_speed = -40;
-      this.forward_ratio = 2
-      this.backward_ratio = 3
+      this.forward_ratio = 2;
+      this.backward_ratio = 3;
       this.engine = "off";
       this.rateOfReturnToStation = 0.5;
       scene.physics.world.enable(this);
@@ -29,7 +29,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setDrag(this.sideway_drag);
       this.setVelocity(0, 0);
       this.depth = 7;
-      this.coneYoffset = 35
+      this.coneYoffset = 35;
       scene.add.existing(this);
       this.scene = scene;
    }
@@ -115,7 +115,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // when Fuel=0 unable to release; will need explicit keyReleased handling
       else {
          this.setTint(0xffffff);
-         this.scene.driftSpeed = riverSpeed
+         this.scene.driftSpeed = riverSpeed;
          this.engine = "off";
 
          if (this.scene.playerWake.visible) {
@@ -151,7 +151,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    stopWake() {
       this.scene.playerWake
          .setVisible(false)
-         .setPosition(0, 999)
+         .setPosition(0, 999);
       this.scene.playerWake.setVelocityY(0);
    }
 
