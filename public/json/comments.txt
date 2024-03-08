@@ -1,0 +1,22 @@
+Outline of JSON level settings object
+
+"variety"
+chance of each type of linear obstacle
+
+"intelAlert"
+distance between boat and secret triggering sensor cone visible
+ 
+Searchlight 
+patrolSpeed, huntSpeed
+
+Boom 
+gapMin, gapMax, minLength, chanceClosable, delay, speed
+
+Bridge 
+gapMin, gapMax, delay, speed
+
+Wood 
+minSize, maxSize, strayChance
+
+Rock 
+minSize, maxSize, strayChance

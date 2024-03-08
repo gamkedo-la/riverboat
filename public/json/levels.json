@@ -1,0 +1,31 @@
+{
+   "Level_1": {
+      "driftSpeed": 40,
+      "ySpacing": [
+         240,
+         320
+      ],
+      "variety": [
+         0.2,
+         0.2,
+         0.3,
+         0.3
+      ],
+      "intelAlert": 180,
+      "light": [
+         20,
+         50
+      ],
+      "boom": [
+         80,
+         140,
+         50
+      ],
+      "bridge": [],
+      "strayWood": 0,
+      "strayRock": 0,
+      "boomClose": 0,
+      "windSpeed": 0,
+      "windRose": "W"
+   }
+}
