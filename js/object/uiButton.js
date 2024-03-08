@@ -8,6 +8,7 @@ class uiButton extends Phaser.GameObjects.Container {
 
    createButton() {
       this.button = this.scene.add.image(0, 0, 'placeholderButtonUp')
+         .setDepth(99)
          .setScale(1.5)
          .setOrigin(0.5)
          .setInteractive();
@@ -19,17 +20,29 @@ class uiButton extends Phaser.GameObjects.Container {
       this.add(this.button);
       this.add(this.buttonText);
 
-      this.button.on('pointerdown', () => {
+      this.button.once('pointerdown', () => {
          this.targetCallback();
       });
 
-      this.button.on('pointerover', () => {
+      this.button.once('pointerover', () => {
          console.log('pointer over button');
          this.button.setTexture(this.hoverKey);
       });
 
-      this.button.on('pointerout', () => {
+      this.button.once('pointerout', () => {
          this.button.setTexture(this.key);
+      });
+
+      this.buttonText.once('pointerdown', () => {
+         this.button.emit('pointerdown');
+      });
+
+      this.buttonText.once('pointerover', () => {
+         this.button.emit('pointerover');
+      });
+
+      this.buttonText.once('pointerout', () => {
+         this.button.emit('pointerout');
       });
    }
 }

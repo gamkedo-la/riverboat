@@ -654,9 +654,7 @@ class Game extends Phaser.Scene {
    }
 
    createGameOverButtons() {
-      // const buttonContainer = this.add.container(this.cameras.main.centerX, this.cameras.main.centerY);
-
-      this.buttonReplay = new uiButton(this, 0, 320, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
+      this.buttonReplay = new uiButton(this, 0, 300, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
          console.log('pointer down -> replay');
          // reset game state (lives, fuel, position)
          this.player.health = this.player.initialHealth;
@@ -668,34 +666,11 @@ class Game extends Phaser.Scene {
       });
       this.hud.add(this.buttonReplay);
 
-      const replayButton = this.add.text(40, 320, "Replay", { font: "36px Arial", fill: "#fff" })
-         .setInteractive()
-         .on('pointerdown', () => {
-            // reset game state (lives, fuel, position)
-            this.obstacles.incY(-200);
-            this.physics.resume();
-            this.player.health = this.player.initialHealth;
-            this.player.fuel = this.player.initialFuel;
-            this.levelOver = false;
-            this.scene.restart();
-            //  buttonContainer.destroy();
-         });
-
-      const menuButton = this.add.text(40, 380, "Menu", { font: "36px Arial", fill: "#fff" })
-         .setInteractive()
-         .on('pointerdown', () => {
-            this.scene.start("Home");
-            //  buttonContainer.destroy();
-         });
-
-      // buttonContainer.add(replayButton);
-      // buttonContainer.add(menuButton);
-      replayButton.setDepth(99);
-      menuButton.setDepth(99);
-      replayButton.setOrigin(0, 0);
-      menuButton.setOrigin(0, 0);
-      this.hud.add(replayButton);
-      this.hud.add(menuButton);
+      this.buttonMenu = new uiButton(this, 0, 380, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+         console.log('pointer down -> menu');
+         this.scene.start("Home");
+      });
+      this.hud.add(this.buttonMenu);
    }
 
    endLevel() {
@@ -776,8 +751,8 @@ class Game extends Phaser.Scene {
          this.scene.start('Home');
       }
       else if (code === Phaser.Input.Keyboard.KeyCodes.P) {
-	 this.scene.pause('Game');
-	 this.scene.launch('Pause');
+         this.scene.pause('Game');
+         this.scene.launch('Pause');
       }
    };
 
