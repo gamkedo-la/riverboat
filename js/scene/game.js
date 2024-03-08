@@ -46,8 +46,8 @@ class Game extends Phaser.Scene {
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
-      this.intel_alert = 180
-      this.milestone_interval = 50
+      this.intel_alert = 180;
+      this.milestone_interval = 50;
       this.pierPlaced = false;
       this.levelOver = false;
 
@@ -131,6 +131,7 @@ class Game extends Phaser.Scene {
 
       this.setDrift(riverSpeed);
       this.input.keyboard.on('keyup', this.anyKey, this);
+      //this.loseLife()
    };
 
    update() {
@@ -152,22 +153,22 @@ class Game extends Phaser.Scene {
       // if Intel on screen
       if (this.intels) {
          let nearest_Intel_dist = 800;
-         let intelX // to calc which side of boat is nearest Intel
+         let intelX; // to calc which side of boat is nearest Intel
          this.intels.getChildren().forEach(intel => {
             // console.log(this.player.x, this.player.y, intel.x, intel.y)
             let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, intel.x, intel.y);
             if (dist < nearest_Intel_dist) {
                nearest_Intel_dist = dist;
-               intelX = intel.x
+               intelX = intel.x;
             }
          });
 
          if (nearest_Intel_dist < this.intel_alert) {
             //console.log(nearest_Intel_dist);
             if (this.player.x > intelX) {
-               this.showLeftSensorCone();               
+               this.showLeftSensorCone();
             } else {
-               this.showRightSensorCone();                        
+               this.showRightSensorCone();
             }
          } // boat isn't near any Intel
          else {
@@ -182,16 +183,6 @@ class Game extends Phaser.Scene {
       this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0.5 });
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0.5 });
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0.5 });
-   }
-
-   makeHud() {
-      this.hud = this.add.container(85, 0);
-      this.hud.setDepth(9);
-      this.hud.setScrollFactor(0);
-      this.makeProgressDisplay();
-      this.makeFuelDisplay();
-      this.makeScoreDisplay();
-      this.makeLifeDisplay();
    }
 
    setupXscroll() {
@@ -244,18 +235,38 @@ class Game extends Phaser.Scene {
          .setVisible(false)
          .setAlpha(0.5)
          .setScale(1.1, 0.7)
-         .setDepth(9)
+         .setDepth(9);
       this.sensors.add(this.cone_left);
       this.sensors.add(this.cone_right);
    }
 
-   makeProgressDisplay() {
-      let x = 40;
-      let y = 40;
-      let yLineSpacing = 32;
-      this.score = 0;
-      this.progressDisplay = this.add.text(x, y, `Passed: ${this.obstaclesPassed}`, hudStyle);
-      y += yLineSpacing;
+   makeHud() {
+      // HUD centre at game centre, and don't scroll when river scroll sideways
+      this.hud = this.add.container(displayWidth / 2, 0);
+      this.hud.setDepth(9);
+      this.hud.setScrollFactor(0);
+      let y_UI_spacing = 40;
+      let y = y_UI_spacing;
+      this.makeFuelDisplay(y);
+      y += y_UI_spacing;
+      this.makeProgressDisplay(y);
+      y += y_UI_spacing;
+      this.makeIntelDisplay(y);
+      y += y_UI_spacing;
+      this.makeLifeDisplay(y);
+      //this.makePauseButton();
+      console.log(this.hud.x);
+   }
+
+   makeLifeDisplay(y) {
+      this.lifeDisplay = this.add.text(0, y, `Lives: ${this.player.life}`, hudStyle);
+      this.lifeDisplay.setOrigin(0.5);
+      this.hud.add(this.lifeDisplay);
+   };
+
+   makeProgressDisplay(y) {
+      this.progressDisplay = this.add.text(0, y, `Passed: ${this.obstaclesPassed}`, hudStyle);
+      this.progressDisplay.setOrigin(0.5);
       this.hud.add(this.progressDisplay);
    };
    trackProgress() {
@@ -263,24 +274,16 @@ class Game extends Phaser.Scene {
       this.progressDisplay.setText(`Passed: ${this.obstaclesPassed}`);
    };
 
-   makeFuelDisplay() {
-      let x = 40;
-      let y = 80;
-      this.fuelDisplay = this.add.text(x, y, `Fuel: ${this.player.fuel}`, hudStyle);
+   makeFuelDisplay(y) {
+      this.fuelDisplay = this.add.text(0, y, `Fuel: ${this.player.fuel}`, hudStyle);
+      this.fuelDisplay.setOrigin(0.5);
       this.hud.add(this.fuelDisplay);
    };
-   makeScoreDisplay() {
-      let x = 40;
-      let y = 120;
-      this.scoreDisplay = this.add.text(x, y, `Intel: ${this.player.intelScore}`, hudStyle);
-      this.hud.add(this.scoreDisplay);
-   };
-   makeLifeDisplay() {
-      let x = 40;
-      let y = 160;
-      //this.healthDisplay = this.add.text(x, y, `Health: ${this.player.health}`, hudStyle);
-      this.lifeDisplay = this.add.text(x, y, `Lives: ${this.player.life}`, hudStyle);
-      this.hud.add(this.lifeDisplay);
+
+   makeIntelDisplay(y) {
+      this.intelDisplay = this.add.text(0, y, `Intel: ${this.player.intelScore}`, hudStyle);
+      this.intelDisplay.setOrigin(0.5);
+      this.hud.add(this.intelDisplay);
    };
 
    updateFuelDisplay() {
@@ -298,12 +301,12 @@ class Game extends Phaser.Scene {
    };
    updateScoreDisplay() {
       //if (this.player.health) {
-         this.scoreDisplay.setText(`Score: ${this.player.intelScore}`);
+      this.intelDisplay.setText(`Score: ${this.player.intelScore}`);
       //}
    };
    updateLifeDisplay() {
       //if (this.player.health) {
-         this.lifeDisplay.setText(`Lives: ${this.player.life}`);
+      this.lifeDisplay.setText(`Lives: ${this.player.life}`);
       //}
    };
 
@@ -315,16 +318,16 @@ class Game extends Phaser.Scene {
          this.makeObstacle();
          // ready for next Obstacle
          this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-         this.trackProgress()
+         this.trackProgress();
       }
    }
 
    makeObstacle() {
-      let chosenObstacleType
+      let chosenObstacleType;
       if (this.obstaclesPassed === 0 || this.obstaclesPassed % this.milestone_interval > 0) {
-         chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);         
+         chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
       } else {
-         chosenObstacleType = "milestone"
+         chosenObstacleType = "milestone";
       }
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
       //console.log(chosenObstacleType, obstacleSprites);
@@ -423,7 +426,7 @@ class Game extends Phaser.Scene {
 
    makeMilestone() {
       let milestone = new Rapids(this, 0, 0, "rapids");
-      this.milestone = milestone
+      this.milestone = milestone;
       return [milestone];
    }
 
@@ -488,7 +491,7 @@ class Game extends Phaser.Scene {
    // do fast & slow patches within Rapids, and random variation
    // smaller sprites (tiles) will enable this
    placeRapids(rapidsLine, danger) {
-      rapidsLine.x = bankWidth
+      rapidsLine.x = bankWidth;
       danger.x = bankWidth + Phaser.Math.Between(30, displayWidth - 30);
    }
 
@@ -576,7 +579,7 @@ class Game extends Phaser.Scene {
 
    hitDriftwood(boat, wood) {
       // console.log('Driftwood Hit');
-      wood.setVelocity(0, this.driftSpeed)
+      wood.setVelocity(0, this.driftSpeed);
       this.landCollideSound.play();
       this.player.setVelocity(0, 0);
       this.loseLife();
@@ -584,7 +587,7 @@ class Game extends Phaser.Scene {
 
    hitRock(boat, rock) {
       console.log('Rock Hit', this.rocks);
-      rock.setVelocity(0, this.driftSpeed)
+      rock.setVelocity(0, this.driftSpeed);
       this.landCollideSound.play();
       this.player.setVelocity(0, 0);
       this.loseLife();
@@ -593,15 +596,15 @@ class Game extends Phaser.Scene {
    hitIntel(boat, intel) {
       console.log('Intel found');
       this.intelOverlapSound.play();
-      this.player.intelScore += 1
-      this.updateScoreDisplay()
+      this.player.intelScore += 1;
+      this.updateScoreDisplay();
    }
 
    senseIntel(sensor, intel) {
       //console.log('Intel sensed');
       this.intelOverlapSound.play();
-      this.player.intelScore += 1
-      this.updateScoreDisplay()
+      this.player.intelScore += 1;
+      this.updateScoreDisplay();
    }
 
    hitLand(boat, land) {
@@ -621,7 +624,7 @@ class Game extends Phaser.Scene {
       this.player.life -= 1;
       this.updateLifeDisplay();
       this.cameras.main.shake(500);
-      this.physics.pause()
+      this.physics.pause();
       if (this.player.life > 0) {
          this.time.addEvent({
             delay: 2000,
@@ -636,39 +639,59 @@ class Game extends Phaser.Scene {
 
    newLife() {
       // console.log("New life - fuel restored")
-      this.physics.resume()
-      this.player.fuel = this.player.startFuel
+      this.physics.resume();
+      this.player.fuel = this.player.startFuel;
       this.obstacles.incY(-200); // should be less than interval to avoid collisioon with previous obstacle, though usually X centre empty, except for a closed bridge.
-      this.player.x = this.player.start_x
+      this.player.x = this.player.start_x;
+   }
+
+   makePauseButton() {
+      this.buttonPause = new uiButton(this, gameWidth / 2, 320, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
+         console.log('Pause button pressed');
+         this.physics.pause();
+      });
+      this.hud.add(this.buttonPause);
    }
 
    createGameOverButtons() {
       // const buttonContainer = this.add.container(this.cameras.main.centerX, this.cameras.main.centerY);
-    
+
+      this.buttonReplay = new uiButton(this, 0, 320, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
+         console.log('pointer down -> replay');
+         // reset game state (lives, fuel, position)
+         this.player.health = this.player.initialHealth;
+         this.player.fuel = this.player.initialFuel;
+         this.levelOver = false;
+         this.obstacles.incY(-200);
+         this.physics.resume();
+         this.scene.restart();
+      });
+      this.hud.add(this.buttonReplay);
+
       const replayButton = this.add.text(40, 320, "Replay", { font: "36px Arial", fill: "#fff" })
-        .setInteractive()
-        .on('pointerdown', () => {
-           // reset game state (lives, fuel, position)
-           this.obstacles.incY(-200);
-           this.physics.resume();
-           this.player.health = this.player.initialHealth;
-           this.player.fuel = this.player.initialFuel;
-           this.levelOver = false;
-           this.scene.restart();
-         //  buttonContainer.destroy();
-        });
-    
+         .setInteractive()
+         .on('pointerdown', () => {
+            // reset game state (lives, fuel, position)
+            this.obstacles.incY(-200);
+            this.physics.resume();
+            this.player.health = this.player.initialHealth;
+            this.player.fuel = this.player.initialFuel;
+            this.levelOver = false;
+            this.scene.restart();
+            //  buttonContainer.destroy();
+         });
+
       const menuButton = this.add.text(40, 380, "Menu", { font: "36px Arial", fill: "#fff" })
-        .setInteractive()
-        .on('pointerdown', () => {
-          this.scene.start("Home");
-         //  buttonContainer.destroy();
-        });
-    
+         .setInteractive()
+         .on('pointerdown', () => {
+            this.scene.start("Home");
+            //  buttonContainer.destroy();
+         });
+
       // buttonContainer.add(replayButton);
       // buttonContainer.add(menuButton);
-      replayButton.setDepth(99)
-      menuButton.setDepth(99)
+      replayButton.setDepth(99);
+      menuButton.setDepth(99);
       replayButton.setOrigin(0, 0);
       menuButton.setOrigin(0, 0);
       this.hud.add(replayButton);
@@ -711,23 +734,23 @@ class Game extends Phaser.Scene {
       this.cone_left.x = this.player.x;
       this.cone_left.y = this.player.y - this.player.coneYoffset;
       this.cone_left
-         .setVisible(true)
+         .setVisible(true);
    }
 
    showRightSensorCone() {
       this.cone_right.x = this.player.x;
       this.cone_right.y = this.player.y - this.player.coneYoffset;
       this.cone_right
-         .setVisible(true)
+         .setVisible(true);
    }
 
    hideSensorCone() {
       this.cone_left
          .setVisible(false)
-         .setPosition(-100, 0)
+         .setPosition(-100, 0);
       this.cone_right
          .setVisible(false)
-         .setPosition(-100, 0)
+         .setPosition(-100, 0);
    }
 
    checkIfReachedPier() {
@@ -771,7 +794,7 @@ class Game extends Phaser.Scene {
       this.driftSpeed = speed;
       this.obstacles.setVelocity(0, speed);
       this.features.setVelocity(0, speed);
-      this.waterBG.tilePositionY -= speed/60;
+      this.waterBG.tilePositionY -= speed / 60;
       // this.obstacles.children.iterate((obstacle) => {
       //    obstacle.setVelocityY(speed);
       // });
