@@ -1,15 +1,15 @@
-{
-   "Level_1": {
+[
+   {
       "driftSpeed": 40,
       "ySpacing": [
          240,
          320
       ],
       "variety": [
-         0.2,
-         0.2,
+         0.4,
          0.3,
-         0.3
+         0,
+         0.1
       ],
       "intelAlert": 180,
       "light": [
@@ -27,5 +27,34 @@
       "boomClose": 0,
       "windSpeed": 0,
       "windRose": "W"
+   },
+   {
+      "driftSpeed": 50,
+      "ySpacing": [
+         240,
+         300
+      ],
+      "variety": [
+         0.2,
+         0.2,
+         0.3,
+         0.3
+      ],
+      "intelAlert": 180,
+      "light": [
+         20,
+         50
+      ],
+      "boom": {
+         "gapMin": 90,
+         "gapMax": 130,
+         "lengthMin": 50
+      },
+      "bridge": [],
+      "strayWood": 0,
+      "strayRock": 0,
+      "boomClose": 0,
+      "windSpeed": 0,
+      "windRose": "W"
    }
-}
+]

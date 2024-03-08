@@ -5,7 +5,11 @@ class Game extends Phaser.Scene {
 
    init() {
       this.data = this.cache.json.get('levelData');
-      console.log("Levels", this.data.Level_1.boom.boomGapMin);
+      this.levelNum = 1;
+      let levelObjName = `Level_${this.levelNum}`;
+      console.log(levelObjName, this.data[this.levelNum - 1]);
+      this.level = this.data[this.levelNum - 1];
+      console.log("boomgapmin", this.level.boom.gapMin);
 
       this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
       this.waterBG.setOrigin(0, 0);
@@ -28,8 +32,8 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      //this.obstacle_chances = [0.2, 0.3, 0.1, 0.4]; // demo
-      this.obstacle_chances = [1, 0, 0, 0]; // test one type
+      this.obstacle_chances = [0.3, 0.2, 0.1, 0.4]; // demo
+      // this.obstacle_chances = [1, 0, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
       this.driftSpeed = riverSpeed;
@@ -41,8 +45,10 @@ class Game extends Phaser.Scene {
       this.obstaclesToGoal = 7; // 0 or 1 if testing pier
       this.obstaclesPassedMax = localStorage.getItem('obstaclesPassedMax');
 
-      this.boomGapRange = [this.data.Level_1.boom.gapMin, this.data.Level_1.boom.gapMax];
-      this.boom_length_min = this.data.Level_1.boom.lengthMin;
+      this.boomGapRange = [this.level.boom.gapMin, this.level.boom.gapMax];
+      this.boom_length_min = this.level.boom.lengthMin;
+      // this.boomGapRange = [this.data.Level_1.boom.gapMin, this.data.Level_1.boom.gapMax];
+      // this.boom_length_min = this.data.Level_1.boom.lengthMin;
       // this.boomGapRange = [80, 140];
       // this.boom_length_min = 50;
 
