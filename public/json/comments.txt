@@ -5,12 +5,13 @@ chance of each type of linear obstacle
 
 "intelAlert"
 distance between boat and secret triggering sensor cone visible
- 
+
 Searchlight 
 patrolSpeed, huntSpeed
 
 Boom 
 gapMin, gapMax, minLength, chanceClosable, delay, speed
+minLength: 50 is normal, 100 for easy path
 
 Bridge 
 gapMin, gapMax, delay, speed

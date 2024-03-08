@@ -54,6 +54,9 @@ class Home extends Phaser.Scene {
 
       top += 125;
       this.add.text(gameWidth / 2, top, 'P key to Pause game', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+
+      //top += 155;
+      // this.add.text(gameWidth / 2, top, 'To exit game on mobile device close display', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
    };
 
    makeMenu(menu) {

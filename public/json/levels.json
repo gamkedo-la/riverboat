@@ -16,11 +16,11 @@
          20,
          50
       ],
-      "boom": [
-         80,
-         140,
-         50
-      ],
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 140,
+         "lengthMin": 50
+      },
       "bridge": [],
       "strayWood": 0,
       "strayRock": 0,

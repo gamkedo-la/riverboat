@@ -4,6 +4,9 @@ class Game extends Phaser.Scene {
    }
 
    init() {
+      this.data = this.cache.json.get('levelData');
+      console.log("Levels", this.data.Level_1.boom.boomGapMin);
+
       this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
       this.waterBG.setOrigin(0, 0);
       //make background tileSprite scroll with camera
@@ -25,8 +28,8 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.2, 0.3, 0.1, 0.4]; // demo
-      // this.obstacle_chances = [0, 0, 0, 1]; // test one type
+      //this.obstacle_chances = [0.2, 0.3, 0.1, 0.4]; // demo
+      this.obstacle_chances = [1, 0, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
       this.driftSpeed = riverSpeed;
@@ -38,8 +41,11 @@ class Game extends Phaser.Scene {
       this.obstaclesToGoal = 7; // 0 or 1 if testing pier
       this.obstaclesPassedMax = localStorage.getItem('obstaclesPassedMax');
 
-      this.boomGapRange = [80, 140];
-      this.boom_length_min = 50; // 50 normal, 100 for easy path
+      this.boomGapRange = [this.data.Level_1.boom.gapMin, this.data.Level_1.boom.gapMax];
+      this.boom_length_min = this.data.Level_1.boom.lengthMin;
+      // this.boomGapRange = [80, 140];
+      // this.boom_length_min = 50;
+
 
       this.displayWidth = this.sys.config.width;
       this.displayHeight = this.sys.config.height;
