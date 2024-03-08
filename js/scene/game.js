@@ -6,10 +6,9 @@ class Game extends Phaser.Scene {
    init() {
       this.data = this.cache.json.get('levelData');
       this.levelNum = 1;
-      let levelObjName = `Level_${this.levelNum}`;
-      console.log(levelObjName, this.data[this.levelNum - 1]);
+      //let levelObjName = `Level_${this.levelNum}`;
       this.level = this.data[this.levelNum - 1];
-      console.log("boomgapmin", this.level.boom.gapMin);
+      //console.log("boomgapmin", this.level.boom.gapMin);
 
       this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
       this.waterBG.setOrigin(0, 0);
