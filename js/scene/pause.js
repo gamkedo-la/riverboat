@@ -6,7 +6,6 @@ class Pause extends Phaser.Scene {
    }
 
    create() {
-      console.log("CREATED PAUSE");
       this.input.keyboard.on('keyup', this.anyKey, this);
    }
 
