@@ -558,7 +558,7 @@ class Game extends Phaser.Scene {
    };
 
    hitBridges(boat, bridge) {
-      console.log('Bridge Hit');
+      //console.log('Bridge Hit');
       //bridge.body.enable = false;
       this.bridgeCollideSound.play();
       this.player.setVelocity(0, 0);
@@ -596,7 +596,7 @@ class Game extends Phaser.Scene {
    }
 
    hitRock(boat, rock) {
-      console.log('Rock Hit', this.rocks);
+      //console.log('Rock Hit', this.rocks);
       rock.setVelocity(0, this.driftSpeed);
       this.landCollideSound.play();
       this.player.setVelocity(0, 0);
@@ -604,7 +604,7 @@ class Game extends Phaser.Scene {
    }
 
    hitIntel(boat, intel) {
-      console.log('Intel found');
+      //console.log('Intel found');
       this.intelOverlapSound.play();
       this.player.intelScore += 1;
       this.updateIntelDisplay();
@@ -618,7 +618,7 @@ class Game extends Phaser.Scene {
    }
 
    hitLand(boat, land) {
-      console.log('Land Hit');
+      //console.log('Land Hit');
       land.body.enable = false;
       this.landCollideSound.play();
       this.player.setVelocity(0, 0);
@@ -657,7 +657,7 @@ class Game extends Phaser.Scene {
 
    makePauseButton() {
       this.buttonPause = new uiButton(this, gameWidth / 2, 320, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
-         console.log('Pause button pressed');
+         //console.log('Pause button pressed');
          this.physics.pause();
       });
       this.hud.add(this.buttonPause);
@@ -665,7 +665,7 @@ class Game extends Phaser.Scene {
 
    createGameOverButtons() {
       this.buttonReplay = new uiButton(this, 0, 300, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
-         console.log('pointer down -> replay');
+         //console.log('pointer down -> replay');
          // reset game state (lives, fuel, position)
          this.player.health = this.player.initialHealth;
          this.player.fuel = this.player.initialFuel;
@@ -677,7 +677,7 @@ class Game extends Phaser.Scene {
       this.hud.add(this.buttonReplay);
 
       this.buttonMenu = new uiButton(this, 0, 380, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-         console.log('pointer down -> menu');
+         //console.log('pointer down -> menu');
          this.scene.start("Home");
       });
       this.hud.add(this.buttonMenu);

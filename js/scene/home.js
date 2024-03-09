@@ -30,12 +30,13 @@ class Home extends Phaser.Scene {
       let left = gameWidth / 2 - text.width / 2 - margin;
       let top = 80 - text.height / 2 - margin;
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
+      top += 50;
 
-      top += 120;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Gallery', { font: '32px Arial', color: '#ffffff' })
-         .setOrigin(0.5)
-         .setInteractive();
-      this.buttonPlay.on('pointerdown', () => this.scene.start('Gallery'));
+      // top += 70;
+      // this.buttonPlay = this.add.text(gameWidth / 2, top, 'Gallery', { font: '32px Arial', color: '#ffffff' })
+      //    .setOrigin(0.5)
+      //    .setInteractive();
+      // this.buttonPlay.on('pointerdown', () => this.scene.start('Gallery'));
 
       top += 70;
       this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game', { font: '32px Arial', color: '#ffffff' })

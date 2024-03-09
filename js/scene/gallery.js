@@ -13,7 +13,7 @@ class Gallery extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group();
       this.makeBoomPair();
-      this.makeBridge();
+      // this.makeBridge();
       this.makeRapids();
       this.makeSecret();
       // console.log(this.obstacles);
@@ -55,7 +55,7 @@ class Gallery extends Phaser.Scene {
       let towerBank = (secretBank === 'left') ? 'right' : 'left';
 
       let land_secret = new Land(this, 0, 0, 'land');
-      let secret = new Secret(this, 0, 0, 'secret');
+      let secret = new Secret(this, 0, 0, 'secret', secretBank);
       this.placeSecret(land_secret, secret, secretBank);
 
       let land_tower = new Land(this, 0, 0, 'land');
