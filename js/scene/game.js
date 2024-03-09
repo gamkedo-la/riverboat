@@ -31,8 +31,8 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      this.obstacle_chances = [0.3, 0.2, 0.1, 0.4]; // demo
-      // this.obstacle_chances = [1, 0, 0, 0]; // test one type
+      //this.obstacle_chances = [0.3, 0.2, 0.1, 0.4]; // demo
+      this.obstacle_chances = [1, 0, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
 
       this.driftSpeed = riverSpeed;
@@ -269,7 +269,7 @@ class Game extends Phaser.Scene {
    }
 
    makeLifeDisplay(y) {
-      this.lifeDisplay = this.add.text(0, y, `Lives: ${this.player.life}`, hudStyle);
+      this.lifeDisplay = this.add.text(0, y, `Life: ${this.player.life}`, hudStyle);
       this.lifeDisplay.setOrigin(0.5);
       this.hud.add(this.lifeDisplay);
    };
@@ -316,7 +316,7 @@ class Game extends Phaser.Scene {
    };
    updateLifeDisplay() {
       //if (this.player.health) {
-      this.lifeDisplay.setText(`Lives: ${this.player.life}`);
+      this.lifeDisplay.setText(`Life: ${this.player.life}`);
       //}
    };
 
@@ -355,10 +355,19 @@ class Game extends Phaser.Scene {
       let leftBoom = new Boom(this, 0, 0, 'boom');
       let rightBoom = new Boom(this, 0, 0, 'boom');
       // because X gap measured from leftBoom's right-hand edge
-      leftBoom.setOrigin(1, 0); // class default is 0,0
+      leftBoom.setOrigin(1, 0.5); // class default X origin is 0
       this.booms.add(leftBoom);
       this.booms.add(rightBoom);
-      return [leftBoom, rightBoom];
+
+      // temporarily use Tower until Capstan image exists
+      let leftCapstan = new Tower(this, 0, 0, 'tower_left');
+      let rightCapstan = new Tower(this, 0, 0, 'tower_left');
+      leftCapstan.setScale(0.6);
+      //.setVisible(false)
+      rightCapstan.setScale(0.6);
+      //.setVisible(false)
+
+      return [leftBoom, rightBoom, leftCapstan, rightCapstan];
    }
 
    makeSecret() {
@@ -440,7 +449,7 @@ class Game extends Phaser.Scene {
       return [milestone];
    }
 
-   placeBooms(leftBoom, rightBoom) {
+   placeBooms(leftBoom, rightBoom, leftCapstan, rightCapstan) {
       // gap between left and right booms
       let gapSize = Phaser.Math.Between(...this.boomGapRange);
       // left side of gap's X coordinate i.e. right edge of left boom
@@ -450,6 +459,10 @@ class Game extends Phaser.Scene {
       let xGapLeft = Phaser.Math.Between(...gapLeftRange);
       leftBoom.x = xGapLeft + bankWidth;
       rightBoom.x = xGapLeft + gapSize + bankWidth;
+
+      // need space to walk (push) between capstan and edge of river
+      leftCapstan.x = bankWidth - 30;
+      rightCapstan.x = bankWidth + displayWidth + 30;
    }
 
    placeSecret(secret, intel, tower, land_tower) {
