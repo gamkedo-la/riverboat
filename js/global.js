@@ -13,3 +13,5 @@ const hudStyle = {
    stroke: '#000000',
    strokeThickness: 2
 };
+
+let deviceOS, keyboard;
