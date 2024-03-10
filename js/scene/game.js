@@ -31,8 +31,8 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'rapids'];
-      //this.obstacle_chances = [0.4, 0.2, 0.4]; // demo
-      this.obstacle_chances = [1, 0, 0]; // test one type
+      this.obstacle_chances = [0.2, 0.2, 0.6]; // demo week 4
+      // this.obstacle_chances = [1, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1]; // game-plausible
 
       this.driftSpeed = riverSpeed;

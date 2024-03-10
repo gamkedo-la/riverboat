@@ -50,15 +50,17 @@ class Home extends Phaser.Scene {
       this.buttonCredits.on('pointerdown', () => this.scene.start('Credits'));
 
       top += 90;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Scores', () => { console.log('pointer down -> show High Scores'); });
+      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High Scores', () => this.scene.start('Scores'));
 
-      top += 125;
+      top += 110;
       if (keyboard === 'likely') {
-         this.add.text(gameWidth / 2, top, 'P key to Pause & Restart', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'P key to Pause or Restart.', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
-         this.add.text(gameWidth / 2, top, 'Arrow or WASD keys', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Escape key to return here.', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+         top += 45;
+         this.add.text(gameWidth / 2, top, 'Arrow or WASD keys :', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 35;
-         this.add.text(gameWidth / 2, top, 'Up=fast Down=slow', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Up=fast, Down=slow.', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
       }
       else {
          this.add.text(gameWidth / 2, top, 'Keyboard required currently', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
