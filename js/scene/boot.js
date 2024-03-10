@@ -22,7 +22,7 @@ class Boot extends Phaser.Scene {
       else {
          keyboard = "likely";
       }
-      console.log(deviceOS, keyboard);
+      console.log(`device=${deviceOS}, keyboard=${keyboard}`);
    }
 
    preload() {

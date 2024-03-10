@@ -30,10 +30,10 @@ class Game extends Phaser.Scene {
       this.features = this.physics.add.group({ runChildUpdate: true });
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
-      this.obstacle_types = ['boom', 'secret', 'bridge', 'rapids'];
-      //this.obstacle_chances = [0.3, 0.2, 0.1, 0.4]; // demo
-      this.obstacle_chances = [1, 0, 0, 0]; // test one type
-      // this.obstacle_chances = [0.6, 0.2, 0.1, 0.1]; // game-plausible
+      this.obstacle_types = ['boom', 'secret', 'rapids'];
+      //this.obstacle_chances = [0.4, 0.2, 0.4]; // demo
+      this.obstacle_chances = [1, 0, 0]; // test one type
+      // this.obstacle_chances = [0.6, 0.2, 0.1]; // game-plausible
 
       this.driftSpeed = riverSpeed;
       this.spawnY = -100;
@@ -103,6 +103,7 @@ class Game extends Phaser.Scene {
    create() {
       this.physics.world.bounds.width = gameWidth; // works without these?
       this.physics.world.bounds.height = displayHeight;
+      this.input.scene.active = true;
 
       this.makeBanks();
       this.makePlayer();
@@ -190,11 +191,11 @@ class Game extends Phaser.Scene {
    }
 
    setupSounds() {
-      this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0.5 });
-      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
-      this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0.5 });
-      this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0.5 });
-      this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0.5 });
+      this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0.1 });
+      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.1 });
+      this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0.1 });
+      this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0.1 });
+      this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0.1 });
    }
 
    setupXscroll() {
@@ -255,10 +256,10 @@ class Game extends Phaser.Scene {
    makeHud() {
       // HUD centre at game centre, and don't scroll when river scroll sideways
       this.hud = this.add.container(displayWidth / 2, 0);
-      this.hud.setDepth(9);
+      this.hud.setDepth(99);
       this.hud.setScrollFactor(0);
-      let y_UI_spacing = 40;
-      let y = y_UI_spacing;
+      let y_UI_spacing = 35;
+      let y = 25;
       this.makeIntelDisplay(y);
       y += y_UI_spacing;
       this.makeProgressDisplay(y);
@@ -266,6 +267,39 @@ class Game extends Phaser.Scene {
       this.makeFuelDisplay(y);
       y += y_UI_spacing;
       this.makeLifeDisplay(y);
+      y += y_UI_spacing;
+      this.makeNavigationButtons(y);
+   }
+
+   makeNavigationButtons(y) {
+      // this.buttonLeft = new uiButton(this, 50, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Left', () => {
+      //    console.log('pointer down -> left');
+      //    this.player.setVelocityX(-1 * this.player.sideway_speed);
+
+      // });
+      y += 20;
+      this.buttonFast = this.add.text(0, y, 'Forward', { font: '24px Arial', color: '#ffffff' })
+         .setOrigin(0.5);
+      this.hud.add(this.buttonFast);
+
+      y += 30;
+      this.buttonLeft = this.add.text(-70, y, 'Left', { font: '24px Arial', color: '#ffffff' })
+         .setOrigin(0.5)
+         .setInteractive();
+      this.buttonLeft.on('pointerdown', () => {
+         this.player.body.setVelocityX(-1 * this.player.sideway_speed);
+         console.log(y);
+      });
+      this.hud.add(this.buttonLeft);
+
+      this.buttonRight = this.add.text(70, y, 'Right', { font: '24px Arial', color: '#ffffff' })
+         .setOrigin(0.5);
+      this.hud.add(this.buttonRight);
+
+      y += 30;
+      this.buttonSlow = this.add.text(0, y, 'Slow', { font: '24px Arial', color: '#ffffff' })
+         .setOrigin(0.5);
+      this.hud.add(this.buttonSlow);
    }
 
    makeLifeDisplay(y) {
@@ -359,9 +393,9 @@ class Game extends Phaser.Scene {
       this.booms.add(leftBoom);
       this.booms.add(rightBoom);
 
-      // temporarily use Tower until Capstan image exists
-      let leftCapstan = new Tower(this, 0, 0, 'tower_left');
-      let rightCapstan = new Tower(this, 0, 0, 'tower_left');
+      // chain dragging boom wraps around capstans on both banks
+      let leftCapstan = new Capstan(this, 0, 0, 'capstan');
+      let rightCapstan = new Capstan(this, 0, 0, 'capstan');
       leftCapstan.setScale(0.6);
       //.setVisible(false)
       rightCapstan.setScale(0.6);
@@ -668,16 +702,8 @@ class Game extends Phaser.Scene {
       this.player.x = this.player.start_x;
    }
 
-   makePauseButton() {
-      this.buttonPause = new uiButton(this, gameWidth / 2, 320, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
-         //console.log('Pause button pressed');
-         this.physics.pause();
-      });
-      this.hud.add(this.buttonPause);
-   }
-
    createGameOverButtons() {
-      this.buttonReplay = new uiButton(this, 0, 300, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
+      this.buttonReplay = new uiButton(this, 0, 320, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
          //console.log('pointer down -> replay');
          // reset game state (lives, fuel, position)
          this.player.health = this.player.initialHealth;
@@ -689,7 +715,7 @@ class Game extends Phaser.Scene {
       });
       this.hud.add(this.buttonReplay);
 
-      this.buttonMenu = new uiButton(this, 0, 380, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+      this.buttonMenu = new uiButton(this, 0, 400, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          //console.log('pointer down -> menu');
          this.scene.start("Home");
       });
