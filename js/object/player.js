@@ -120,12 +120,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
          if (this.scene.playerWake.visible) {
             this.stopWake();
-            // this.scene.wake.body.setVelocityY(0);
-            // this.scene.wake.destroy();
-            // earlier effort revealed a 2nd ghost wake but with transparency
-            // which was affected by setVelocity() and destroy() while the
-            // bulkier wake was not: maybe something how Arcade Physics handles
-            // transparency that I don't yet understand.
          }
 
          if (this.y < this.start_y) {
@@ -140,19 +134,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    addWake() {
-      this.scene.playerWake.x = this.x - 4;
-      this.scene.playerWake.y = this.y - 10;
-      this.scene.playerWake.visible = true;
-      this.scene.playerWake.setVelocityY(-this.forward_speed);
-      // this.wake = this.addChild(this.add.image(0, this.body.height, 'wake'));
-      // this.scene.wake = this.scene.physics.add.image(this.x, this.y + this.body.height, 'wake').setVelocityY(-this.forward_speed);
+      this.scene.playerWake.frequency = 50;
    }
 
    stopWake() {
-      this.scene.playerWake
-         .setVisible(false)
-         .setPosition(0, 999);
-      this.scene.playerWake.setVelocityY(0);
+      this.scene.playerWake.frequency = 200;
    }
 
    moveBackToStation() {

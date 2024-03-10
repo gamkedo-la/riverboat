@@ -230,11 +230,23 @@ class Game extends Phaser.Scene {
       //this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
       //this.sensors.add(this.player); // boat move directly over intel zone 
 
-      this.playerWake = this.physics.add.image(0, 0, 'wake');
-      this.playerWake.y = start_y; // unused because player.addWake() sets position
-      this.playerWake.visible = false;
-      this.playerWake.setOrigin(0.5, 0);
-      // this.player.addChild(this.playerWake);
+      // wake is now a particle emitter
+      // see https://newdocs.phaser.io/docs/3.55.2/Phaser.Types.GameObjects.Particles.ParticleEmitterConfig
+      // for all possible particle options
+      this.playerWake = this.add.particles(0, -20, 'wake',
+      {
+          color: [ 0x96e0da, 0x937ef3 ],
+          colorEase: 'quart.out',
+          lifespan: 1000,
+          angle: { min: 80, max: 110 },
+          scale: { start: 0.25, end: 1, ease: 'sine.in' },
+          alpha: { start: 0.5, end: 0, ease: 'sine.in' },
+          speed: { min: 50, max: 150 },
+          frequency: 60, // ms per particle
+          advance: 2000,
+          blendMode: 'ADD',
+          follow:this.player
+      });
 
       this.cone_left = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor')
          .setOrigin(1, 0.5)
