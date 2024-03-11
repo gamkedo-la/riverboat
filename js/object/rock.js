@@ -1,4 +1,4 @@
-class Rock extends Phaser.Physics.Arcade.Image {
+class Rock extends Phaser.Physics.Arcade.Sprite {
    constructor(scene, x, y, texture) {
       super(scene, x, y, texture);
       Object.assign(this, { scene, x, y });
@@ -11,6 +11,7 @@ class Rock extends Phaser.Physics.Arcade.Image {
       let frameHeight = 32
       this.setCrop(0, 0, frameWidth, frameHeight);
       this.body.setSize(frameWidth, frameHeight);
+      this.body.setOffset(0, 0);
       this.setImmovable(true);
       this.setScale(1.2);
       this.setDepth(3);
