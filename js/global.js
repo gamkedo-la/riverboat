@@ -17,3 +17,4 @@ const hudStyle = {
 let deviceOS, keyboard;
 
 let currentZone;
+let zones_quantity;

@@ -59,7 +59,7 @@
          "name": "Bird Rapids"
       },
       "riverSpeed": 60,
-      "intervals": 20,
+      "intervals": 4,
       "obstacle": {
          "secret": 0,
          "boom": 1.0,
@@ -113,10 +113,10 @@
          "name": "Elder Bird Rapids"
       },
       "riverSpeed": 80,
-      "intervals": 10,
+      "intervals": 4,
       "obstacle": {
-         "secret": 0.2,
-         "boom": 0.8,
+         "secret": 1,
+         "boom": 0,
          "rapids": 0
       },
       "ySpacing": {
@@ -129,6 +129,60 @@
          "lengthMin": 50,
          "closable": {
             "chance": 0,
+            "delay": 1000,
+            "speed": 20
+         }
+      },
+      "bridge": {
+         "delay": 1000,
+         "speed": 40,
+         "lengthMin": 50
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 20,
+         "huntSpeed": 50
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 3",
+      "milestone": {
+         "name": "Liddy's Rapids"
+      },
+      "riverSpeed": 60,
+      "intervals": 4,
+      "obstacle": {
+         "secret": 0,
+         "boom": 1.0,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 140,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 1,
             "delay": 1000,
             "speed": 20
          }

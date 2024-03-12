@@ -4,13 +4,19 @@ class Game extends Phaser.Scene {
    }
 
    init() {
+      this.data = this.cache.json.get('zoneData');
+      zones_quantity = this.data.length - 1;
+      console.log(zones_quantity);
       this.setZoneParameters(currentZone);
-      this.obstaclesPassed = 0;
+
+      this.progressInGame = 0;
+      this.progressInZone = 0;
+      this.obstacle_types = ['secret', 'boom', 'rapids'];
 
       // if zone was selected in menu
       if (currentZone > 1) {
          for (let i = 1; i < currentZone; i++) {
-            this.obstaclesPassed += this.data[i].intervals;
+            this.progressInGame += this.data[i].intervals;
          }
       }
 
@@ -32,13 +38,7 @@ class Game extends Phaser.Scene {
 
       // decoration of land and water
       this.features = this.physics.add.group({ runChildUpdate: true });
-
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
-      this.obstacle_types = ['secret', 'boom', 'rapids'];
-      this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
-      // this.obstacle_chances = [0.2, 0.2, 0.6]; // demo week 4
-      // this.obstacle_chances = [1, 0, 0]; // test one type
-      // this.obstacle_chances = [0.6, 0.2, 0.1]; // game-plausible
 
       this.driftSpeed = this.zone.riverSpeed;
       //console.log(this.driftSpeed);
@@ -49,7 +49,7 @@ class Game extends Phaser.Scene {
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
       this.obstaclesToGoal = 999; // 0 or 1 if testing pier
-      this.obstaclesPassedMax = localStorage.getItem('obstaclesPassedMax');
+      this.progressInGameMax = localStorage.getItem('obstaclesPassedMax');
 
       this.boomGapRange = [this.zone.boom.gapMin, this.zone.boom.gapMax];
       this.boom_length_min = this.zone.boom.lengthMin;
@@ -65,7 +65,7 @@ class Game extends Phaser.Scene {
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
       this.intel_alert = 180;
-      this.milestone_interval = this.zone.intervals;
+      // this.milestone_interval = this.zone.intervals;
       this.pierPlaced = false;
       this.gameOver = false;
 
@@ -325,13 +325,15 @@ class Game extends Phaser.Scene {
    };
 
    makeProgressDisplay(y) {
-      this.progressDisplay = this.add.text(0, y, `Passed: ${this.obstaclesPassed}`, hudStyle);
+      this.progressDisplay = this.add.text(0, y, `Passed: ${this.progressInGame}`, hudStyle);
       this.progressDisplay.setOrigin(0.5);
       this.hud.add(this.progressDisplay);
    };
+
    trackProgress() {
-      this.obstaclesPassed += 1;
-      this.progressDisplay.setText(`Passed: ${this.obstaclesPassed}`);
+      this.progressInZone += 1;
+      this.progressInGame += 1;
+      this.progressDisplay.setText(`Passed: ${this.progressInGame}`);
    };
 
    makeFuelDisplay(y) {
@@ -384,16 +386,29 @@ class Game extends Phaser.Scene {
 
    makeObstacle() {
       let chosenObstacleType;
-      // new menu choice will break this
-      if (this.obstaclesPassed === 0 || this.obstaclesPassed % this.milestone_interval > 0) {
+      // within current zone if progress reaches zone's quantity of obstacles then show milestone and increment currentZone (and show message)
+
+      // if (this.progressInZone === 0 || this.progressInZone % this.milestone_interval > 0) {
+      if (this.progressInZone < this.zone.intervals) {
          chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
-      } else {
-         chosenObstacleType = "milestone";
+         const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
+         this.placeObstaclesY(...obstacleSprites);
+         this.placeObstaclesX[chosenObstacleType](obstacleSprites);
       }
-      const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
-      //console.log(chosenObstacleType, obstacleSprites);
-      this.placeObstaclesY(...obstacleSprites);
-      this.placeObstaclesX[chosenObstacleType](obstacleSprites);
+      else {
+         currentZone += 1;
+         if (currentZone > zones_quantity) {
+            this.scene.start("Home");
+         }
+         else {
+            chosenObstacleType = "milestone";
+            this.setZoneParameters(currentZone);
+            const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
+            this.placeObstaclesY(...obstacleSprites);
+            this.placeObstaclesX[chosenObstacleType](obstacleSprites);
+         }
+      }
+      console.log(currentZone, this.zone.intervals);
    }
 
    placeObstaclesY(...components) {
@@ -497,6 +512,7 @@ class Game extends Phaser.Scene {
    makeMilestone() {
       let milestone = new Rapids(this, 0, 0, "rapids");
       this.milestone = milestone;
+      console.log(`Milestone before zone ${currentZone}`);
       return [milestone];
    }
 
@@ -795,7 +811,7 @@ class Game extends Phaser.Scene {
    }
 
    checkIfReachedPier() {
-      if (!this.pierPlaced && this.obstaclesPassed >= this.obstaclesToGoal) {
+      if (!this.pierPlaced && this.progressInZone >= this.obstaclesToGoal) {
          return true;
       }
    };
@@ -860,9 +876,27 @@ class Game extends Phaser.Scene {
    }
 
    setZoneParameters(numZone) {
-      this.data = this.cache.json.get('zoneData');
-      //let levelObjName = `Level_${this.zoneNum}`;
+      //let levelObjName = `Level_${ this.zoneNum }`;
       this.zone = this.data[numZone];
+      this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
+      this.progressInZone = 0;
+      this.debugObstacleChances();
       //console.log("boomgapmin", this.zone.boom.gapMin);
    }
-}
+
+   debugObstacleChances() {
+      console.log(`Secret: ${this.zone.obstacle.secret}, Boom: ${this.zone.obstacle.boom}, Rapids: ${this.zone.obstacle.rapids}`);
+      console.log(`obstacles_chances ${this.obstacle_chances}`);
+   }
+
+   countZones(data) {
+      let zones = 0;
+      for (let i = 0; i < data.length; i++) {
+
+         // if entity is object, increase objectsLen by 1, which is the stores the total number of objects in array.
+         if (myArr[i] instanceof Object) {
+            objectsLen++;
+         }
+      }
+   }
+};
