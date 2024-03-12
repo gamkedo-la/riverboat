@@ -17,7 +17,7 @@ class Home extends Phaser.Scene {
       let gameWidth = this.sys.game.config.width;
       let gameHeight = this.sys.game.config.height;
       let gameCentre = [gameWidth / 2, gameHeight / 2];
-      let titleCentre = [gameWidth / 2, 80];
+      let titleCentre = [gameWidth / 2, 70];
 
       let text = this.add.text(...titleCentre, 'River boat', { font: '36px Arial', color: '#ffffff' })
          .setOrigin(0.5)
@@ -27,12 +27,12 @@ class Home extends Phaser.Scene {
       textPanel.fillStyle(0x000000, 0.7);
       let margin = 12;
       let left = gameWidth / 2 - text.width / 2 - margin;
-      let top = 80 - text.height / 2 - margin;
+      let top = 70 - text.height / 2 - margin;
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
       top += 50;
 
       top += 50;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Test zone', { font: '24px Arial', color: '#ffffff' })
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Test (zone 0)', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonPlay.on('pointerdown', () => {
@@ -41,7 +41,7 @@ class Home extends Phaser.Scene {
       });
 
       top += 50;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game', { font: '24px Arial', color: '#ffffff' })
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game (zone 1)', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonPlay.on('pointerdown', () => {
@@ -50,7 +50,7 @@ class Home extends Phaser.Scene {
       });
 
       top += 50;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Goto Zone 2', { font: '24px Arial', color: '#ffffff' })
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Jump to zone 2 (3,4,...)', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonPlay.on('pointerdown', () => {
@@ -64,10 +64,10 @@ class Home extends Phaser.Scene {
          .setInteractive();
       this.buttonCredits.on('pointerdown', () => this.scene.start('Credits'));
 
-      top += 60;
+      top += 75;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High Scores', () => this.scene.start('Scores'));
 
-      top += 80;
+      top += 70;
       if (keyboard === 'likely') {
          this.add.text(gameWidth / 2, top, 'P key to Pause or Restart.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
