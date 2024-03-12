@@ -4,11 +4,8 @@ class Game extends Phaser.Scene {
    }
 
    init() {
-      this.data = this.cache.json.get('levelData');
-      this.levelNum = 1;
-      //let levelObjName = `Level_${this.levelNum}`;
-      this.level = this.data[this.levelNum - 1];
-      //console.log("boomgapmin", this.level.boom.gapMin);
+      let currentZone = 0;
+      this.setZoneParameters(currentZone);
 
       this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
       this.waterBG.setOrigin(0, 0);
@@ -31,21 +28,25 @@ class Game extends Phaser.Scene {
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.obstacle_types = ['boom', 'secret', 'rapids'];
-      this.obstacle_chances = [0.2, 0.2, 0.6]; // demo week 4
+      this.obstacle_chances = [this.zone.obstacle.boom, this.zone.obstacle.secret, this.zone.obstacle.rapids];
+      // this.obstacle_chances = [0.2, 0.2, 0.6]; // demo week 4
       // this.obstacle_chances = [1, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1]; // game-plausible
 
-      this.driftSpeed = riverSpeed;
+      this.driftSpeed = this.zone.riverSpeed;
+      //console.log(this.driftSpeed);
+
       this.spawnY = -100;
-      this.ySpacingRange = [240, 320];
+      //this.ySpacingRange = [240, 320];
+      this.ySpacingRange = [this.zone.ySpacing.min, this.zone.ySpacing.max];
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
       this.obstaclesPassed = 0;
       this.obstaclesToGoal = 7; // 0 or 1 if testing pier
       this.obstaclesPassedMax = localStorage.getItem('obstaclesPassedMax');
 
-      this.boomGapRange = [this.level.boom.gapMin, this.level.boom.gapMax];
-      this.boom_length_min = this.level.boom.lengthMin;
+      this.boomGapRange = [this.zone.boom.gapMin, this.zone.boom.gapMax];
+      this.boom_length_min = this.zone.boom.lengthMin;
       // this.boomGapRange = [this.data.Level_1.boom.gapMin, this.data.Level_1.boom.gapMax];
       // this.boom_length_min = this.data.Level_1.boom.lengthMin;
       // this.boomGapRange = [80, 140];
@@ -61,7 +62,7 @@ class Game extends Phaser.Scene {
       this.intel_alert = 180;
       this.milestone_interval = 50;
       this.pierPlaced = false;
-      this.levelOver = false;
+      this.gameOver = false;
 
       this.obstacleMaker = {
          boom: () => {
@@ -142,13 +143,13 @@ class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
       this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
 
-      this.setDrift(riverSpeed);
+      this.setDrift(this.zone.riverSpeed);
       this.input.keyboard.on('keyup', this.anyKey, this);
       //this.loseLife()
    };
 
    update() {
-      if (this.levelOver) return;
+      if (this.gameOver) return;
 
       this.setDrift(this.driftSpeed);
       this.player.update(this.cursors);
@@ -228,24 +229,22 @@ class Game extends Phaser.Scene {
       let start_y = displayHeight - 10;
       this.player = new Player(this, start_x, start_y, 'boat');
       //this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
-      //this.sensors.add(this.player); // boat move directly over intel zone 
 
       // wake is now a particle emitter
       // see https://newdocs.phaser.io/docs/3.55.2/Phaser.Types.GameObjects.Particles.ParticleEmitterConfig
       // for all possible particle options
-      this.playerWake = this.add.particles(0, -20, 'wake',
-      {
-          color: [ 0x96e0da, 0x937ef3 ],
-          colorEase: 'quart.out',
-          lifespan: 1000,
-          angle: { min: 80, max: 110 },
-          scale: { start: 0.25, end: 1, ease: 'sine.in' },
-          alpha: { start: 0.5, end: 0, ease: 'sine.in' },
-          speed: { min: 50, max: 150 },
-          frequency: 60, // ms per particle
-          advance: 2000,
-          blendMode: 'ADD',
-          follow:this.player
+      this.playerWake = this.add.particles(0, -20, 'wake', {
+         color: [0x96e0da, 0x937ef3],
+         colorEase: 'quart.out',
+         lifespan: 1000,
+         angle: { min: 80, max: 110 },
+         scale: { start: 0.25, end: 1, ease: 'sine.in' },
+         alpha: { start: 0.5, end: 0, ease: 'sine.in' },
+         speed: { min: 50, max: 150 },
+         frequency: 60, // ms per particle
+         advance: 2000,
+         blendMode: 'ADD',
+         follow: this.player
       });
 
       this.cone_left = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor')
@@ -720,7 +719,7 @@ class Game extends Phaser.Scene {
          // reset game state (lives, fuel, position)
          this.player.health = this.player.initialHealth;
          this.player.fuel = this.player.initialFuel;
-         this.levelOver = false;
+         this.gameOver = false;
          this.obstacles.incY(-200);
          this.physics.resume();
          this.scene.restart();
@@ -735,7 +734,7 @@ class Game extends Phaser.Scene {
    }
 
    endLevel() {
-      this.levelOver = true;
+      this.gameOver = true;
       this.player.setTint(0xff0000);
       this.physics.pause();
       //this.saveBestScore();
@@ -759,7 +758,7 @@ class Game extends Phaser.Scene {
          callback: () => {
             this.player.health = this.player.initialHealth;
             this.player.fuel = this.player.initialFuel;
-            //this.levelOver = false;
+            //this.gameOver = false;
             //this.scene.restart();
          },
          loop: false
@@ -798,7 +797,7 @@ class Game extends Phaser.Scene {
    makePier() {
       this.pier = this.physics.add.sprite(displayWidth / 2, -40, 'pier')
          .setScale(0.8);
-      this.pier.setVelocityY(riverSpeed);
+      this.pier.setVelocityY(this.zone.riverSpeed);
       this.physics.add.collider(this.player, this.pier, this.endLevel, null, this);
       this.pierPlaced = true;
    };
@@ -826,17 +825,10 @@ class Game extends Phaser.Scene {
    }
 
    setDrift(speed) {
-      //console.log(speed);
       this.driftSpeed = speed;
       this.obstacles.setVelocity(0, speed);
       this.features.setVelocity(0, speed);
       this.waterBG.tilePositionY -= speed / 60;
-      // this.obstacles.children.iterate((obstacle) => {
-      //    obstacle.setVelocityY(speed);
-      // });
-      // this.features.children.iterate((feature) => {
-      //    feature.setVelocityY(speed);
-      // });
    }
 
    weightedRandomChoice(items, weights) {
@@ -859,5 +851,12 @@ class Game extends Phaser.Scene {
       }
       // return last item in case of error
       return items[items.length - 1];
+   }
+
+   setZoneParameters(numZone) {
+      this.data = this.cache.json.get('levelData');
+      //let levelObjName = `Level_${this.zoneNum}`;
+      this.zone = this.data[numZone];
+      //console.log("boomgapmin", this.zone.boom.gapMin);
    }
 }

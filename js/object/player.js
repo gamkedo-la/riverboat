@@ -92,7 +92,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.setTint(0xffb38a);
          this.addWake();
          this.useFuel(this.forwardFuel);
-         this.scene.driftSpeed = riverSpeed * this.forward_ratio;
+         this.scene.driftSpeed = this.scene.zone.riverSpeed * this.forward_ratio;
          this.engine = "forward";
       }
 
@@ -100,7 +100,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // less engine if anchor assisted but risk snagging
       else if ((cursors.down.isDown || cursors.keyS.isDown)
          && this.fuel >= this.backwardFuel) {
-         this.scene.driftSpeed = riverSpeed / this.backward_ratio;
+         this.scene.driftSpeed = this.scene.zone.riverSpeed / this.backward_ratio;
          this.engine = "backward";
          //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
 
@@ -115,7 +115,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // when Fuel=0 unable to release; will need explicit keyReleased handling
       else {
          this.setTint(0xffffff);
-         this.scene.driftSpeed = riverSpeed;
+         this.scene.driftSpeed = this.scene.zone.riverSpeed;
          this.engine = "off";
 
          if (this.scene.playerWake.visible) {
@@ -146,7 +146,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
       // river furniture Y change faster to maintain relative motion
 
-      this.scene.driftSpeed = riverSpeed + this.forward_speed * this.rateOfReturnToStation;
+      this.scene.driftSpeed = this.scene.zone.riverSpeed + this.forward_speed * this.rateOfReturnToStation;
       //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
 
       // pier code will move to Pier object
