@@ -29,9 +29,8 @@ class Home extends Phaser.Scene {
       let left = gameWidth / 2 - text.width / 2 - margin;
       let top = 70 - text.height / 2 - margin;
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
-      top += 50;
 
-      top += 50;
+      top += 100;
       this.buttonPlay = this.add.text(gameWidth / 2, top, 'Test (zone 0)', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
@@ -40,34 +39,28 @@ class Home extends Phaser.Scene {
          this.scene.start('Game');
       });
 
-      top += 50;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game (zone 1)', { font: '24px Arial', color: '#ffffff' })
-         .setOrigin(0.5)
-         .setInteractive();
-      this.buttonPlay.on('pointerdown', () => {
+      top += 60;
+      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Play', () => {
          currentZone = 1;
          this.scene.start('Game');
       });
 
-      top += 50;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Jump to zone 2 (3,4,...)', { font: '24px Arial', color: '#ffffff' })
-         .setOrigin(0.5)
-         .setInteractive();
-      this.buttonPlay.on('pointerdown', () => {
+      top += 60;
+      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'To zone 2', () => {
          currentZone = 2;
          this.scene.start('Game');
       });
 
-      top += 50;
-      this.buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '24px Arial', color: '#ffffff' })
-         .setOrigin(0.5)
-         .setInteractive();
-      this.buttonCredits.on('pointerdown', () => this.scene.start('Credits'));
+      top += 60;
+      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High score', () => this.scene.start('Scores'));
 
-      top += 75;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High Scores', () => this.scene.start('Scores'));
+      top += 60;
+      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Credits', () => {
+         currentZone = 1;
+         this.scene.start('Credits');
+      });
 
-      top += 70;
+      top += 60;
       if (keyboard === 'likely') {
          this.add.text(gameWidth / 2, top, 'P key to Pause or Restart.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
@@ -78,11 +71,11 @@ class Home extends Phaser.Scene {
          this.add.text(gameWidth / 2, top, 'Up=fast, Down=slow.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
       }
       else {
+         top += 40; // while fewer text lines for phone than keyboard
          this.add.text(gameWidth / 2, top, 'Keyboard required currently', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         top += 45;
+         this.add.text(gameWidth / 2, top, 'Exit by closing phone display', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
       }
-
-      //top += 155;
-      // this.add.text(gameWidth / 2, top, 'To exit game on mobile device close display', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
    };
 
    makeMenu(menu) {

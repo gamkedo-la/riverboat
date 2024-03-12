@@ -9,7 +9,7 @@ class uiButton extends Phaser.GameObjects.Container {
    createButton() {
       this.button = this.scene.add.image(0, 0, 'placeholderButtonUp')
          .setDepth(99)
-         .setScale(1.2)
+         .setScale(1.3, 1.1)
          .setOrigin(0.5)
          .setInteractive();
 

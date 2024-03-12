@@ -888,15 +888,4 @@ class Game extends Phaser.Scene {
       console.log(`Secret: ${this.zone.obstacle.secret}, Boom: ${this.zone.obstacle.boom}, Rapids: ${this.zone.obstacle.rapids}`);
       console.log(`obstacles_chances ${this.obstacle_chances}`);
    }
-
-   countZones(data) {
-      let zones = 0;
-      for (let i = 0; i < data.length; i++) {
-
-         // if entity is object, increase objectsLen by 1, which is the stores the total number of objects in array.
-         if (myArr[i] instanceof Object) {
-            objectsLen++;
-         }
-      }
-   }
 };
