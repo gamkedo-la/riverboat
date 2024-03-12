@@ -4,8 +4,15 @@ class Game extends Phaser.Scene {
    }
 
    init() {
-      let currentZone = 0;
       this.setZoneParameters(currentZone);
+      this.obstaclesPassed = 0;
+
+      // if zone was selected in menu
+      if (currentZone > 1) {
+         for (let i = 1; i < currentZone; i++) {
+            this.obstaclesPassed += this.data[i].intervals;
+         }
+      }
 
       this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
       this.waterBG.setOrigin(0, 0);
@@ -27,8 +34,8 @@ class Game extends Phaser.Scene {
       this.features = this.physics.add.group({ runChildUpdate: true });
 
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
-      this.obstacle_types = ['boom', 'secret', 'rapids'];
-      this.obstacle_chances = [this.zone.obstacle.boom, this.zone.obstacle.secret, this.zone.obstacle.rapids];
+      this.obstacle_types = ['secret', 'boom', 'rapids'];
+      this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
       // this.obstacle_chances = [0.2, 0.2, 0.6]; // demo week 4
       // this.obstacle_chances = [1, 0, 0]; // test one type
       // this.obstacle_chances = [0.6, 0.2, 0.1]; // game-plausible
@@ -41,8 +48,7 @@ class Game extends Phaser.Scene {
       this.ySpacingRange = [this.zone.ySpacing.min, this.zone.ySpacing.max];
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
-      this.obstaclesPassed = 0;
-      this.obstaclesToGoal = 7; // 0 or 1 if testing pier
+      this.obstaclesToGoal = 999; // 0 or 1 if testing pier
       this.obstaclesPassedMax = localStorage.getItem('obstaclesPassedMax');
 
       this.boomGapRange = [this.zone.boom.gapMin, this.zone.boom.gapMax];
@@ -52,7 +58,6 @@ class Game extends Phaser.Scene {
       // this.boomGapRange = [80, 140];
       // this.boom_length_min = 50;
 
-
       this.displayWidth = this.sys.config.width;
       this.displayHeight = this.sys.config.height;
       this.fontSize = 16;
@@ -60,7 +65,7 @@ class Game extends Phaser.Scene {
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
       this.intel_alert = 180;
-      this.milestone_interval = 50;
+      this.milestone_interval = this.zone.intervals;
       this.pierPlaced = false;
       this.gameOver = false;
 
@@ -371,7 +376,7 @@ class Game extends Phaser.Scene {
       if (previousY - this.spawnY > this.ySpacing) {
          // console.log(previousY, this.ySpacing, this.spawnY);
          this.makeObstacle();
-         // ready for next Obstacle
+         // randomize new Y gap to next Obstacle
          this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
          this.trackProgress();
       }
@@ -379,6 +384,7 @@ class Game extends Phaser.Scene {
 
    makeObstacle() {
       let chosenObstacleType;
+      // new menu choice will break this
       if (this.obstaclesPassed === 0 || this.obstaclesPassed % this.milestone_interval > 0) {
          chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
       } else {
@@ -854,7 +860,7 @@ class Game extends Phaser.Scene {
    }
 
    setZoneParameters(numZone) {
-      this.data = this.cache.json.get('levelData');
+      this.data = this.cache.json.get('zoneData');
       //let levelObjName = `Level_${this.zoneNum}`;
       this.zone = this.data[numZone];
       //console.log("boomgapmin", this.zone.boom.gapMin);

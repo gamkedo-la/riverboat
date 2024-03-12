@@ -15,3 +15,5 @@ const hudStyle = {
 };
 
 let deviceOS, keyboard;
+
+let currentZone;

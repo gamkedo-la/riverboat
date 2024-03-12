@@ -59,7 +59,7 @@
          "name": "Bird Rapids"
       },
       "riverSpeed": 60,
-      "intervals": 10,
+      "intervals": 20,
       "obstacle": {
          "secret": 0,
          "boom": 1.0,
@@ -110,13 +110,13 @@
    {
       "name": "Zone 2",
       "milestone": {
-         "name": "Bird Rapids"
+         "name": "Elder Bird Rapids"
       },
-      "riverSpeed": 60,
+      "riverSpeed": 80,
       "intervals": 10,
-      "obstacleType": {
-         "secret": 0,
-         "boom": 1.0,
+      "obstacle": {
+         "secret": 0.2,
+         "boom": 0.8,
          "rapids": 0
       },
       "ySpacing": {
@@ -128,9 +128,9 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 0.5,
+            "chance": 0,
             "delay": 1000,
-            "speed": 30
+            "speed": 20
          }
       },
       "bridge": {
@@ -157,8 +157,8 @@
          "strayScale": 1.5
       },
       "wind": {
-         "speed": 20,
-         "direction": "E"
+         "speed": 0,
+         "direction": "W"
       }
    }
 ]

@@ -31,39 +31,54 @@ class Home extends Phaser.Scene {
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
       top += 50;
 
-      // top += 70;
-      // this.buttonPlay = this.add.text(gameWidth / 2, top, 'Gallery', { font: '32px Arial', color: '#ffffff' })
-      //    .setOrigin(0.5)
-      //    .setInteractive();
-      // this.buttonPlay.on('pointerdown', () => this.scene.start('Gallery'));
-
-      top += 70;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game', { font: '32px Arial', color: '#ffffff' })
+      top += 50;
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Test zone', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
-      this.buttonPlay.on('pointerdown', () => this.scene.start('Game'));
+      this.buttonPlay.on('pointerdown', () => {
+         currentZone = 0;
+         this.scene.start('Game');
+      });
 
-      top += 70;
-      this.buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '32px Arial', color: '#ffffff' })
+      top += 50;
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Play game', { font: '24px Arial', color: '#ffffff' })
+         .setOrigin(0.5)
+         .setInteractive();
+      this.buttonPlay.on('pointerdown', () => {
+         currentZone = 1;
+         this.scene.start('Game');
+      });
+
+      top += 50;
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Goto Zone 2', { font: '24px Arial', color: '#ffffff' })
+         .setOrigin(0.5)
+         .setInteractive();
+      this.buttonPlay.on('pointerdown', () => {
+         currentZone = 2;
+         this.scene.start('Game');
+      });
+
+      top += 50;
+      this.buttonCredits = this.add.text(gameWidth / 2, top, 'Credits', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonCredits.on('pointerdown', () => this.scene.start('Credits'));
 
-      top += 90;
+      top += 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High Scores', () => this.scene.start('Scores'));
 
-      top += 110;
+      top += 80;
       if (keyboard === 'likely') {
-         this.add.text(gameWidth / 2, top, 'P key to Pause or Restart.', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'P key to Pause or Restart.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
-         this.add.text(gameWidth / 2, top, 'Escape key to return here.', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Escape key to return here.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
-         this.add.text(gameWidth / 2, top, 'Arrow or WASD keys :', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
-         top += 35;
-         this.add.text(gameWidth / 2, top, 'Up=fast, Down=slow.', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Arrow or WASD keys', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         top += 30;
+         this.add.text(gameWidth / 2, top, 'Up=fast, Down=slow.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
       }
       else {
-         this.add.text(gameWidth / 2, top, 'Keyboard required currently', { font: '22px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Keyboard required currently', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
       }
 
       //top += 155;
