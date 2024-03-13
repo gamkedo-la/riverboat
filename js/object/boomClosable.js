@@ -5,7 +5,7 @@ class BoomClosable extends Boom {
 
       //this.scene.obstacles.add(this);
       //this.scene.physics.world.enable(this);
-      // this.setImmovable(true);
+      this.setImmovable(false);
       // this.setOrigin(0, 0);
       // this.setScale(0.7);
       // this.setDepth(3);
@@ -13,5 +13,6 @@ class BoomClosable extends Boom {
       // this.hit = false;
       // this.damage = 1;
       // this.scene.add.existing(this);
+      this.closable = true;
    }
 }

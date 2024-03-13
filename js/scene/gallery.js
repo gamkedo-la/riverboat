@@ -23,8 +23,17 @@ class Gallery extends Phaser.Scene {
    };
 
    makeBoomPair() {
-      let leftBoom = new Boom(this, 0, 0, 'boom');
-      let rightBoom = new Boom(this, 0, 0, 'boom');
+      let leftBoom = null;
+      let rightBoom = null;
+      if (this.zone.boom.closable.chance == 0) {
+         leftBoom = new Boom(this, 0, 0, 'boom');
+         rightBoom = new Boom(this, 0, 0, 'boom');
+      } else {
+         const delay = this.zone.boom.delay;
+         const speed = this.zone.boom.speed;
+         leftBoom = new BoomClosable(this, 0, 0, 'boom', delay, speed);
+         rightBoom = new BoomClosable(this, 0, 0, 'boom', delay, speed);
+      }
       // because X gap measured from leftBoom's right-hand edge
       leftBoom.setOrigin(1, 0); // class default is 0,0
       this.placeBoomPair(leftBoom, rightBoom);

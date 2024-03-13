@@ -53,6 +53,9 @@ class Game extends Phaser.Scene {
 
       this.boomGapRange = [this.zone.boom.gapMin, this.zone.boom.gapMax];
       this.boom_length_min = this.zone.boom.lengthMin;
+      this.boom_closable_chance = this.zone.boom.closable.chance;
+      this.boom_closable_delay = this.zone.boom.closable.delay;
+      this.boom_closable_speed = this.zone.boom.closable.speed;
       // this.boomGapRange = [this.data.Level_1.boom.gapMin, this.data.Level_1.boom.gapMax];
       // this.boom_length_min = this.data.Level_1.boom.lengthMin;
       // this.boomGapRange = [80, 140];
@@ -418,8 +421,17 @@ class Game extends Phaser.Scene {
    }
 
    makeBooms() {
-      let leftBoom = new Boom(this, 0, 0, 'boom');
-      let rightBoom = new Boom(this, 0, 0, 'boom');
+      let leftBoom = null;
+      let rightBoom = null;
+      if (this.zone.boom.closable.chance == 0) {
+         leftBoom = new Boom(this, 0, 0, 'boom');
+         rightBoom = new Boom(this, 0, 0, 'boom');
+      } else {
+         const delay = this.zone.boom.closable.delay;
+         const speed = this.zone.boom.closable.speed;
+         leftBoom = new BoomClosable(this, 0, 0, 'boom', delay, speed);
+         rightBoom = new BoomClosable(this, 0, 0, 'boom', delay, speed);
+      }
       // because X gap measured from leftBoom's right-hand edge
       leftBoom.setOrigin(1, 0.5); // class default X origin is 0
       this.booms.add(leftBoom);
@@ -518,7 +530,16 @@ class Game extends Phaser.Scene {
 
    placeBooms(leftBoom, rightBoom, leftCapstan, rightCapstan) {
       // gap between left and right booms
-      let gapSize = Phaser.Math.Between(...this.boomGapRange);
+      let gapSize = Phaser.Math.Between(...this.boomGapRange);  
+      // add a little gap size and delay if closable
+      if (leftBoom.closable) {
+         gapSize = gapSize + leftBoom.speed > 360 ? gapSize : gapSize + leftBoom.speed;
+         leftBoom.delay *= 1 + Phaser.Math.Between(0, 2);
+      }
+      if (rightBoom.closable) {
+         gapSize = gapSize + rightBoom.speed > 360 ? gapSize : gapSize + rightBoom.speed;
+         rightBoom.delay *= 1 + Phaser.Math.Between(0, 2);
+      }
       // left side of gap's X coordinate i.e. right edge of left boom
       let gapLeftMin = this.boom_length_min;
       let gapLeftMax = 360 - gapSize - this.boom_length_min;
@@ -530,6 +551,27 @@ class Game extends Phaser.Scene {
       // need space to walk (push) between capstan and edge of river
       leftCapstan.x = bankWidth - 30;
       rightCapstan.x = bankWidth + displayWidth + 30;
+
+      if (leftBoom.closable) { 
+         this.time.addEvent({
+            delay: leftBoom.delay,
+            callback: () => {
+               leftBoom.x += leftBoom.speed;
+            },
+            repeat: true,
+            repeatCount: (rightBoom.x - leftBoom.x) / leftBoom.speed / 2,
+         });
+      }
+      if (rightBoom.closable) {
+         this.time.addEvent({
+            delay: rightBoom.delay,
+            callback: () => {
+               rightBoom.x -= rightBoom.speed;
+            },
+            repeat: true,
+            repeatCount: (rightBoom.x - leftBoom.x) / rightBoom.speed / 2,
+         });
+      }
    }
 
    placeSecret(secret, intel, tower, land_tower) {
