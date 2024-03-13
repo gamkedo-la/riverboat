@@ -4,9 +4,13 @@ class Game extends Phaser.Scene {
    }
 
    init() {
+      // this.scene.launch('Controls');
+      // this.scene.add('Controls', Controls);
+      // this.scene.bringToTop('Controls');
+
       this.data = this.cache.json.get('zoneData');
       zones_quantity = this.data.length - 1;
-      console.log(zones_quantity);
+      //console.log(zones_quantity);
       this.setZoneParameters(currentZone);
 
       this.progressInGame = 0;
@@ -118,6 +122,7 @@ class Game extends Phaser.Scene {
       this.makePlayer();
       this.setupXscroll();
       this.makeHud();
+      this.makeArrowButtons();
 
       // this.makeDriftwood(200, 300)
       this.setupSounds();
@@ -287,7 +292,44 @@ class Game extends Phaser.Scene {
       y += y_UI_spacing;
       this.makeLifeDisplay(y);
       y += y_UI_spacing;
-      this.makeNavigationButtons(y);
+      // this.makeNavigationButtons(y);
+   }
+
+   makeArrowButtons() {
+      let top = 190;
+      let centreX = displayWidth / 2;
+
+      this.btnFast = new arrowButton(this, centreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Motor', () => {
+         this.player.body.setVelocityY(-this.player.forward_speed);
+         this.player.setTint(0xffb38a);
+         this.player.addWake();
+         this.player.useFuel(this.player.forwardFuel);
+         this.driftSpeed = this.zone.riverSpeed * this.player.forward_ratio;
+         this.player.engine = "forward";
+      });
+      this.btnFast.scrollFactorX = 0;
+
+      top += 24;
+      this.btnLeft = new arrowButton(this, centreX - 100, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Left', () => {
+         // console.log("Left");
+         this.player.body.setVelocityX(-1 * this.player.sideway_speed);
+      });
+      this.btnLeft.scrollFactorX = 0;
+
+      this.btnRight = new arrowButton(this, centreX + 100, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Right', () => {
+         console.log("Right");
+         this.player.body.setVelocityX(1 * this.player.sideway_speed);
+      });
+      this.btnRight.scrollFactorX = 0;
+
+      top += 28;
+      this.btnSlow = new arrowButton(this, centreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Slow', () => {
+         this.driftSpeed = this.zone.riverSpeed / this.player.backward_ratio;
+         this.player.engine = "backward";
+         this.player.setTint(0xbae946);
+         this.player.useFuel(this.player.backwardFuel);
+      });
+      this.btnSlow.scrollFactorX = 0;
    }
 
    makeNavigationButtons(y) {
@@ -307,7 +349,7 @@ class Game extends Phaser.Scene {
          .setInteractive();
       this.buttonLeft.on('pointerdown', () => {
          this.player.body.setVelocityX(-1 * this.player.sideway_speed);
-         console.log(y);
+         console.log('Left in container', y);
       });
       this.hud.add(this.buttonLeft);
 
@@ -411,7 +453,7 @@ class Game extends Phaser.Scene {
             this.placeObstaclesX[chosenObstacleType](obstacleSprites);
          }
       }
-      console.log(currentZone, this.zone.intervals);
+      //console.log(currentZone, this.zone.intervals);
    }
 
    placeObstaclesY(...components) {
@@ -524,13 +566,13 @@ class Game extends Phaser.Scene {
    makeMilestone() {
       let milestone = new Rapids(this, 0, 0, "rapids");
       this.milestone = milestone;
-      console.log(`Milestone before zone ${currentZone}`);
+      //console.log(`Milestone before zone ${currentZone}`);
       return [milestone];
    }
 
    placeBooms(leftBoom, rightBoom, leftCapstan, rightCapstan) {
       // gap between left and right booms
-      let gapSize = Phaser.Math.Between(...this.boomGapRange);  
+      let gapSize = Phaser.Math.Between(...this.boomGapRange);
       // add a little gap size and delay if closable
       if (leftBoom.closable) {
          gapSize = gapSize + leftBoom.speed > 360 ? gapSize : gapSize + leftBoom.speed;
@@ -552,7 +594,7 @@ class Game extends Phaser.Scene {
       leftCapstan.x = bankWidth - 30;
       rightCapstan.x = bankWidth + displayWidth + 30;
 
-      if (leftBoom.closable) { 
+      if (leftBoom.closable) {
          this.time.addEvent({
             delay: leftBoom.delay,
             callback: () => {
@@ -778,7 +820,7 @@ class Game extends Phaser.Scene {
    }
 
    createGameOverButtons() {
-      this.buttonReplay = new uiButton(this, 0, 320, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
+      this.buttonReplay = new uiButton(this, 0, 340, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
          //console.log('pointer down -> replay');
          // reset game state (lives, fuel, position)
          this.player.health = this.player.initialHealth;
@@ -928,6 +970,6 @@ class Game extends Phaser.Scene {
 
    debugObstacleChances() {
       console.log(`Secret: ${this.zone.obstacle.secret}, Boom: ${this.zone.obstacle.boom}, Rapids: ${this.zone.obstacle.rapids}`);
-      console.log(`obstacles_chances ${this.obstacle_chances}`);
+      // console.log(`obstacles_chances ${this.obstacle_chances}`);
    }
 };

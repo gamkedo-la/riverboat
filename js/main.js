@@ -9,7 +9,7 @@ const config = {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH
    },
-   scene: [Boot, Setup, Home, Gallery, Game, Pause, Credits, Scores],
+   scene: [Boot, Setup, Home, Gallery, Game, Controls, Pause, Credits, Scores],
    title: 'Riverboat',
    pixelArt: true,
    roundPixels: true,
