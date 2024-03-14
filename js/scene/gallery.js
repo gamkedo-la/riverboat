@@ -8,6 +8,10 @@ class Gallery extends Phaser.Scene {
 
    create() {
       this.cameras.main.setBackgroundColor(0x3333dd);
+      if (keyboard != 'likely') {
+         this.makeMenuButton();
+      }
+
       this.add.text(displayWidth / 2, 30, 'Obstacles', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5);
 
