@@ -68,13 +68,13 @@ class Home extends Phaser.Scene {
          top += 45;
          this.add.text(gameWidth / 2, top, 'Arrow or WASD keys', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 30;
-         this.add.text(gameWidth / 2, top, 'Up=fast, Down=slow.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'up=fast, down=slow.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
       }
       else {
          top += 40; // while fewer text lines for phone than keyboard
-         this.add.text(gameWidth / 2, top, 'Navigation buttons on-screen', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Navigation buttons in-game.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
-         this.add.text(gameWidth / 2, top, 'Exit by closing phone display', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Exit by closing phone display.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
       }
    };
 

@@ -320,11 +320,10 @@ class Game extends Phaser.Scene {
       let rightBtnX = cameraCentreX + buttonOffset;
 
       Object.assign(this, { cameraCentreX, gameCentreX, leftBtnX, rightBtnX });
-      console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
+      // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
 
       this.btnFast = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'up', () => {
          this.player.motorForward();
-         console.log("fast");
          // this.player.body.setVelocityY(-this.player.forward_speed);
          // this.player.setTint(0xffb38a);
          // this.player.addWake();
@@ -465,7 +464,7 @@ class Game extends Phaser.Scene {
          this.trackProgress();
 
          if (keyboard != 'likely') {
-            console.log(`scroll: ${this.cameras.main.scrollX}`);
+            //console.log(`scroll: ${this.cameras.main.scrollX}`);
             // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
          }
       }

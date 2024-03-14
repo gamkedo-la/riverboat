@@ -106,22 +106,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // neither up nor down is pressed
       // when Fuel=0 unable to release; will need explicit keyReleased handling
       else {
-         this.setTint(0xffffff);
-         this.scene.driftSpeed = this.scene.zone.riverSpeed;
-         this.engine = "off";
-
-         if (this.scene.playerWake.visible) {
-            this.stopWake();
-         }
-
-         if (this.y < this.start_y) {
-            // boat is above its default position
-            this.moveBackToStation();
-         }
-         else {
-            // boat is at bottom of playarea
-            this.whenOnStation();
-         }
+         this.neitherFastOrSlow();
       }
    }
 
@@ -136,6 +121,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    motorForward() {
+      console.log("fast in Player");
       this.body.setVelocityY(-this.forward_speed);
       this.setTint(0xffb38a);
       this.addWake();
@@ -150,6 +136,25 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    stopWake() {
       this.scene.playerWake.frequency = 200;
+   }
+
+   neitherFastOrSlow() {
+      this.setTint(0xffffff);
+      this.scene.driftSpeed = this.scene.zone.riverSpeed;
+      this.engine = "off";
+
+      if (this.scene.playerWake.visible) {
+         this.stopWake();
+      }
+
+      if (this.y < this.start_y) {
+         // boat is above its default position
+         this.moveBackToStation();
+      }
+      else {
+         // boat is at bottom of playarea
+         this.whenOnStation();
+      }
    }
 
    moveBackToStation() {
