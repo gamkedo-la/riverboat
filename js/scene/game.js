@@ -122,7 +122,9 @@ class Game extends Phaser.Scene {
       this.makePlayer();
       this.setupXscroll();
       this.makeHud();
-      this.makeArrowButtons();
+      if (keyboard != 'likely') {
+         this.makeArrowButtons();
+      }
 
       // this.makeDriftwood(200, 300)
       this.setupSounds();
@@ -297,9 +299,21 @@ class Game extends Phaser.Scene {
 
    makeArrowButtons() {
       let top = 190;
-      let centreX = displayWidth / 2;
+      let cameraCentreX = this.cameras.main.centerX;
+      this.cameras.main.on('camera.scroll', this.updateButtonHitAreas, this);
 
-      this.btnFast = new arrowButton(this, centreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Motor', () => {
+      let gameCentreX = this.cameras.main.scrollX + displayWidth / 2;
+      let scrollFactorX = this.cameras.main.scrollX / (gameWidth - displayWidth);
+      let hitAreaOffsetX = scrollFactorX * displayWidth;
+
+      let leftBtnX = cameraCentreX - 100;
+      let rightBtnX = cameraCentreX + 100;
+
+      Object.assign(this, { cameraCentreX, gameCentreX, leftBtnX, rightBtnX });
+      console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
+
+      this.btnFast = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Motor', () => {
+         console.log("Fast");
          this.player.body.setVelocityY(-this.player.forward_speed);
          this.player.setTint(0xffb38a);
          this.player.addWake();
@@ -310,26 +324,36 @@ class Game extends Phaser.Scene {
       this.btnFast.scrollFactorX = 0;
 
       top += 24;
-      this.btnLeft = new arrowButton(this, centreX - 100, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Left', () => {
-         // console.log("Left");
+      this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Left', () => {
+         console.log("Left");
          this.player.body.setVelocityX(-1 * this.player.sideway_speed);
       });
       this.btnLeft.scrollFactorX = 0;
 
-      this.btnRight = new arrowButton(this, centreX + 100, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Right', () => {
+      this.btnRight = new arrowButton(this, rightBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Right', () => {
          console.log("Right");
          this.player.body.setVelocityX(1 * this.player.sideway_speed);
       });
       this.btnRight.scrollFactorX = 0;
 
       top += 28;
-      this.btnSlow = new arrowButton(this, centreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Slow', () => {
+      this.btnSlow = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Slow', () => {
+         console.log("Slow");
          this.driftSpeed = this.zone.riverSpeed / this.player.backward_ratio;
          this.player.engine = "backward";
          this.player.setTint(0xbae946);
          this.player.useFuel(this.player.backwardFuel);
       });
       this.btnSlow.scrollFactorX = 0;
+
+      // this.btnLeft.setInteractive({ hitArea: new Phaser.Geom.Rectangle(this.btnLeft.width / 2 - hitAreaOffsetX, 0, this.btnLeft.width, this.btnLeft.height) });
+   }
+
+   updateButtonHitAreas() {
+      let scrollFactorX = this.cameras.main.scrollX / (gameWidth - displayWidth);
+      let hitAreaOffsetX = scrollFactorX * displayWidth;
+      this.btnLeft.input.hitArea.x = this.btnLeft.x + hitAreaOffsetX;
+      this.btnRight.input.hitArea.x = this.btnRight.x + hitAreaOffsetX;
    }
 
    makeNavigationButtons(y) {
@@ -426,6 +450,8 @@ class Game extends Phaser.Scene {
          // randomize new Y gap to next Obstacle
          this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
          this.trackProgress();
+
+         console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
       }
    }
 
