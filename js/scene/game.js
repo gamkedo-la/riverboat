@@ -285,7 +285,7 @@ class Game extends Phaser.Scene {
       this.hud.setDepth(99);
       this.hud.setScrollFactor(0);
       let y_UI_spacing = 35;
-      let y = 25;
+      let y = 40;
       this.makeIntelDisplay(y);
       y += y_UI_spacing;
       this.makeProgressDisplay(y);
@@ -298,7 +298,7 @@ class Game extends Phaser.Scene {
    }
 
    makeArrowButtons() {
-      let top = 190;
+      let top = 200;
       let cameraCentreX = this.cameras.main.centerX;
       this.cameras.main.on('camera.scroll', this.updateButtonHitAreas, this);
 
@@ -451,7 +451,9 @@ class Game extends Phaser.Scene {
          this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
          this.trackProgress();
 
-         console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
+         if (keyboard != 'likely') {
+            console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
+         }
       }
    }
 

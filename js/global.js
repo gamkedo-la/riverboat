@@ -18,3 +18,4 @@ let deviceOS, keyboard;
 
 let currentZone;
 let zones_quantity;
+const test_buttons = false;
