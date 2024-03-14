@@ -40,6 +40,12 @@ class Home extends Phaser.Scene {
       });
 
       top += 60;
+      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Help', () => {
+         currentZone = 1;
+         this.scene.start('Help');
+      });
+
+      top += 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Play', () => {
          currentZone = 1;
          this.scene.start('Game');
