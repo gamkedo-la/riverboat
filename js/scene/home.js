@@ -19,7 +19,7 @@ class Home extends Phaser.Scene {
       let gameCentre = [gameWidth / 2, gameHeight / 2];
       let titleCentre = [gameWidth / 2, 60];
 
-      let text = this.add.text(...titleCentre, 'River boat', { font: '36px Arial', color: '#ffffff' })
+      let text = this.add.text(...titleCentre, 'River boat', { font: '36px Verdana', color: '#ffffff' })
          .setOrigin(0.5)
          .setDepth(1);
 
@@ -30,8 +30,8 @@ class Home extends Phaser.Scene {
       let top = 60 - text.height / 2 - margin;
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
 
-      top += 95;
-      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Test (zone 0)', { font: '24px Arial', color: '#ffffff' })
+      top += 100;
+      this.buttonPlay = this.add.text(gameWidth / 2, top, 'Test (zone 0)', { font: '24px Verdana', color: '#ffffff' })
          .setOrigin(0.5)
          .setInteractive();
       this.buttonPlay.on('pointerdown', () => {
@@ -39,7 +39,7 @@ class Home extends Phaser.Scene {
          this.scene.start('Game');
       });
 
-      top += 55;
+      top += 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Help', () => {
          currentZone = 1;
          this.scene.start('Help');
@@ -87,8 +87,8 @@ class Home extends Phaser.Scene {
          currentZone = 7;
          this.scene.start('Game');
       });
-      top += 60;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High score', () => this.scene.start('Scores'));
+      // top += 60;
+      // this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High score', () => this.scene.start('Scores'));
 
       top += 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Credits', () => {
@@ -96,21 +96,21 @@ class Home extends Phaser.Scene {
          this.scene.start('Credits');
       });
 
-      top += 50;
       if (keyboard === 'likely') {
-         this.add.text(gameWidth / 2, top, 'Escape key to return here.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         top += 70;
+         this.add.text(gameWidth / 2, top, 'Escape key to return here.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
          top += 40;
-         this.add.text(gameWidth / 2, top, 'P key to Pause or Resume.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'P key to Pause or Resume.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
          top += 40;
-         this.add.text(gameWidth / 2, top, 'Arrow or WASD keys', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Arrow or WASD keys', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
          top += 25;
-         this.add.text(gameWidth / 2, top, 'up=fast, down=slow.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'up=fast, down=slow.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
       }
       else {
-         top += 40; // while fewer text lines for phone than keyboard
-         this.add.text(gameWidth / 2, top, 'Navigation buttons in-game.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         top += 90; // while fewer text lines for phone than keyboard
+         this.add.text(gameWidth / 2, top, 'Navigation buttons in-game.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
-         this.add.text(gameWidth / 2, top, 'Exit by closing phone display.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Exit by closing phone display.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
       }
    };
 
