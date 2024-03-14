@@ -118,7 +118,7 @@ class Game extends Phaser.Scene {
       this.physics.world.bounds.height = displayHeight;
       this.input.scene.active = true;
 
-      this.makeBanks();
+      // this.makeBanks();
       this.makePlayer();
       this.setupXscroll();
       this.makeHud();

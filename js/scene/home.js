@@ -46,11 +46,41 @@ class Home extends Phaser.Scene {
       });
 
       top += 60;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'To zone 2', () => {
+      // this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'To zone 2', () => {
+      //    currentZone = 2;
+      //    this.scene.start('Game');
+      // });
+      let incremX = 44;
+      let x = 70; //77;
+      this.buttonZone2 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '2', () => {
          currentZone = 2;
          this.scene.start('Game');
       });
-
+      x += incremX;
+      this.buttonZone3 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '3', () => {
+         currentZone = 3;
+         this.scene.start('Game');
+      });
+      x += incremX;
+      this.buttonZone4 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '4', () => {
+         currentZone = 4;
+         this.scene.start('Game');
+      });
+      x += incremX;
+      this.buttonZone5 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '5', () => {
+         currentZone = 5;
+         this.scene.start('Game');
+      });
+      x += incremX;
+      this.buttonZone6 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '6', () => {
+         currentZone = 6;
+         this.scene.start('Game');
+      });
+      x += incremX + 1;
+      this.buttonZone7 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '7', () => {
+         currentZone = 7;
+         this.scene.start('Game');
+      });
       top += 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High score', () => this.scene.start('Scores'));
 

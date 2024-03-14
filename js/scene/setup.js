@@ -35,14 +35,8 @@ class Setup extends Phaser.Scene {
          loadingFile.setText('Loading: ' + file.key);
       });
 
-      // test progress bar
-      for (let i = 0; i < 2; i++) {
-         this.load.image('river' + i, 'public/art/river_0_360x640.png');
-      }
-
-      this.load.image('river', 'public/art/river_0_360x640.png');
-      this.load.image('bank_left', 'public/art/bank_left_120.png');
-      this.load.image('bank_right', 'public/art/bank_right_120.png');
+      // this.load.image('bank_left', 'public/art/bank_left_120.png');
+      // this.load.image('bank_right', 'public/art/bank_right_120.png');
       this.load.image('boat', 'public/art/boat_30x65.png');
       this.load.image('anim_turnBoat', 'public/art/boat_5.png');
       this.load.image('wake', 'public/art/water_wake.png');
