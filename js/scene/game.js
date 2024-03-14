@@ -452,7 +452,8 @@ class Game extends Phaser.Scene {
          this.trackProgress();
 
          if (keyboard != 'likely') {
-            console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
+            console.log(`scroll: ${this.cameras.main.scrollX}`);
+            // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
          }
       }
    }

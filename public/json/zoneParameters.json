@@ -61,9 +61,9 @@
       "riverSpeed": 60,
       "intervals": 999,
       "obstacle": {
-         "secret": 0,
+         "secret": 0.5,
          "boom": 0,
-         "rapids": 1
+         "rapids": 0.5
       },
       "ySpacing": {
          "min": 240,
