@@ -35,10 +35,7 @@ class arrowButton extends Phaser.GameObjects.Container {
       });
 
       this.button.on('pointerup', () => {
-         if (this.repeatEvent) {
-            this.repeatEvent.remove();
-            this.repeatEvent = null;
-         }
+         this.clearEvents();
          // this.scene.time.removeEvent(this.targetCallback);
       });
 
@@ -49,17 +46,13 @@ class arrowButton extends Phaser.GameObjects.Container {
       this.button.on('pointerout', () => {
          this.button.setTexture(this.key);
       });
+   }
 
-      // this.buttonText.once('pointerdown', () => {
-      //    this.button.emit('pointerdown');
-      // });
-
-      // this.buttonText.once('pointerover', () => {
-      //    this.button.emit('pointerover');
-      // });
-
-      // this.buttonText.once('pointerout', () => {
-      //    this.button.emit('pointerout');
-      // });
+   // bug when lose life while button press, repeating event not removed
+   clearEvents() {
+      if (this.repeatEvent) {
+         this.repeatEvent.remove();
+         this.repeatEvent = null;
+      }
    }
 }

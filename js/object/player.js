@@ -74,26 +74,18 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    engineNavigation(cursors) {
       if (cursors.left.isDown || cursors.keyA.isDown) {
-         //this.play('turnLeft');
-         this.body.setVelocityX(-1 * this.sideway_speed);
-         this.useFuel(this.sidewaysFuel);
+         this.turnLeft();
       }
       else if (cursors.right.isDown || cursors.keyD.isDown) {
          //this.play('turnRight');
-         this.body.setVelocityX(this.sideway_speed);
-         this.useFuel(this.sidewaysFuel);
+         this.turnRight();
       }
 
       // forward power, wake behind boat 
       // disallow if boat near top of display
       if ((cursors.up.isDown || cursors.keyW.isDown)
          && this.body.y > this.body.height && this.fuel >= this.forwardFuel) {
-         this.body.setVelocityY(-this.forward_speed);
-         this.setTint(0xffb38a);
-         this.addWake();
-         this.useFuel(this.forwardFuel);
-         this.scene.driftSpeed = this.scene.zone.riverSpeed * this.forward_ratio;
-         this.engine = "forward";
+         this.motorForward();
       }
 
       // slows, reverse engine, wake inverted?
@@ -131,6 +123,25 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.whenOnStation();
          }
       }
+   }
+
+   turnLeft() {
+      this.body.setVelocityX(-1 * this.sideway_speed);
+      this.useFuel(this.sidewaysFuel);
+   }
+
+   turnRight() {
+      this.body.setVelocityX(this.sideway_speed);
+      this.useFuel(this.sidewaysFuel);
+   }
+
+   motorForward() {
+      this.body.setVelocityY(-this.forward_speed);
+      this.setTint(0xffb38a);
+      this.addWake();
+      this.useFuel(this.forwardFuel);
+      this.scene.driftSpeed = this.scene.zone.riverSpeed * this.forward_ratio;
+      this.engine = "forward";
    }
 
    addWake() {

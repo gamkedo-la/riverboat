@@ -323,27 +323,29 @@ class Game extends Phaser.Scene {
       console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
 
       this.btnFast = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'up', () => {
+         this.player.motorForward();
          console.log("fast");
-         console.log(this.player);
-         this.player.body.setVelocityY(-this.player.forward_speed);
-         this.player.setTint(0xffb38a);
-         this.player.addWake();
-         this.player.useFuel(this.player.forwardFuel);
-         this.driftSpeed = this.zone.riverSpeed * this.player.forward_ratio;
-         this.player.engine = "forward";
+         // this.player.body.setVelocityY(-this.player.forward_speed);
+         // this.player.setTint(0xffb38a);
+         // this.player.addWake();
+         // this.player.useFuel(this.player.forwardFuel);
+         // this.driftSpeed = this.zone.riverSpeed * this.player.forward_ratio;
+         // this.player.engine = "forward";
       });
       this.btnFast.scrollFactorX = 0;
 
       top += 24;
       this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '<', () => {
-         console.log("Left");
-         this.player.body.setVelocityX(-1 * this.player.sideway_speed);
+         this.player.turnLeft();
+         // console.log("Left");
+         // this.player.body.setVelocityX(-1 * this.player.sideway_speed);
       });
       this.btnLeft.scrollFactorX = 0;
 
       this.btnRight = new arrowButton(this, rightBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '>', () => {
-         console.log("Right");
-         this.player.body.setVelocityX(1 * this.player.sideway_speed);
+         this.player.turnRight();
+         // console.log("Right");
+         // this.player.body.setVelocityX(1 * this.player.sideway_speed);
       });
       this.btnRight.scrollFactorX = 0;
 
@@ -833,12 +835,22 @@ class Game extends Phaser.Scene {
       //console.log('Obstacle hit', obstacle);
    };
 
+   clearNavButtonEvents() {
+      // to fix bug when lose life while button is pressed its repeating event carries on after respawn
+      this.btnLeft.clearEvents();
+      this.btnRight.clearEvents();
+      this.btnFast.clearEvents();
+      this.btnSlow.clearEvents();
+   }
+
    loseLife() {
       this.invincible = true;
       this.player.life -= 1;
       this.updateLifeDisplay();
       this.cameras.main.shake(500);
       this.physics.pause();
+      this.clearNavButtonEvents();
+
       if (this.player.life > 0) {
          this.time.addEvent({
             delay: 2000,
