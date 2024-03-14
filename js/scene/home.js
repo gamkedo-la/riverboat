@@ -62,9 +62,9 @@ class Home extends Phaser.Scene {
 
       top += 60;
       if (keyboard === 'likely') {
-         this.add.text(gameWidth / 2, top, 'P key to Pause or Restart.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
-         top += 45;
          this.add.text(gameWidth / 2, top, 'Escape key to return here.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         top += 45;
+         this.add.text(gameWidth / 2, top, 'P key to Pause or Resume.', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
          this.add.text(gameWidth / 2, top, 'Arrow or WASD keys', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 30;
@@ -72,7 +72,7 @@ class Home extends Phaser.Scene {
       }
       else {
          top += 40; // while fewer text lines for phone than keyboard
-         this.add.text(gameWidth / 2, top, 'Keyboard required currently', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'Navigation buttons on-screen', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
          top += 45;
          this.add.text(gameWidth / 2, top, 'Exit by closing phone display', { font: '20px Arial', color: '#ffffff' }).setOrigin(0.5);
       }

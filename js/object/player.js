@@ -15,7 +15,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.forwardFuel = 4;
       this.backwardFuel = 2;
       this.sidewaysFuel = 0;
-      this.sideway_speed = 30;
+      this.sideway_speed = 40;
       this.sideway_drag = 120;  //35;
       this.forward_speed = 40;
       this.backward_speed = -40;

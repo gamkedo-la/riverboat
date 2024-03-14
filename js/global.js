@@ -1,7 +1,7 @@
 const displayWidth = 360;
 const displayHeight = 600;
 // reduce bank Width to weaken button hitarea offset error
-const bankWidth = 40; // 100 
+const bankWidth = 0; // 100 
 const gameWidth = displayWidth + bankWidth * 2;
 const riverSpeed = 60; // 20 makes access to riverbank easier
 const intelWidth = 70;
@@ -19,4 +19,5 @@ let deviceOS, keyboard;
 
 let currentZone;
 let zones_quantity;
-const test_buttons = false;
+// const testing = true;
+const testing = false;

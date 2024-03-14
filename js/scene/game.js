@@ -122,7 +122,9 @@ class Game extends Phaser.Scene {
       this.makePlayer();
       this.setupXscroll();
       this.makeHud();
+
       if (keyboard != 'likely') {
+         this.makeMenuButton();
          this.makeArrowButtons();
       }
 
@@ -177,6 +179,13 @@ class Game extends Phaser.Scene {
 
       this.testIfReadyForNextObstacle();
    };
+
+   makeMenuButton() {
+      this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+         console.log('pointer down -> menu');
+         this.scene.start("Home");
+      });
+   }
 
    isIntelWithinRange() {
       // if Intel on screen
@@ -285,14 +294,14 @@ class Game extends Phaser.Scene {
       this.hud.setDepth(99);
       this.hud.setScrollFactor(0);
       let y_UI_spacing = 35;
-      let y = 40;
+      let y = 45;
+      this.makeLifeDisplay(y);
+      y += y_UI_spacing;
       this.makeIntelDisplay(y);
       y += y_UI_spacing;
       this.makeProgressDisplay(y);
       y += y_UI_spacing;
       this.makeFuelDisplay(y);
-      y += y_UI_spacing;
-      this.makeLifeDisplay(y);
       y += y_UI_spacing;
       // this.makeNavigationButtons(y);
    }
@@ -306,14 +315,16 @@ class Game extends Phaser.Scene {
       let scrollFactorX = this.cameras.main.scrollX / (gameWidth - displayWidth);
       let hitAreaOffsetX = scrollFactorX * displayWidth;
 
-      let leftBtnX = cameraCentreX - 100;
-      let rightBtnX = cameraCentreX + 100;
+      let buttonOffset = 40;
+      let leftBtnX = cameraCentreX - buttonOffset; // was 100
+      let rightBtnX = cameraCentreX + buttonOffset;
 
       Object.assign(this, { cameraCentreX, gameCentreX, leftBtnX, rightBtnX });
       console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
 
-      this.btnFast = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Motor', () => {
-         console.log("Fast");
+      this.btnFast = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'up', () => {
+         console.log("fast");
+         console.log(this.player);
          this.player.body.setVelocityY(-this.player.forward_speed);
          this.player.setTint(0xffb38a);
          this.player.addWake();
@@ -324,20 +335,20 @@ class Game extends Phaser.Scene {
       this.btnFast.scrollFactorX = 0;
 
       top += 24;
-      this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Left', () => {
+      this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '<', () => {
          console.log("Left");
          this.player.body.setVelocityX(-1 * this.player.sideway_speed);
       });
       this.btnLeft.scrollFactorX = 0;
 
-      this.btnRight = new arrowButton(this, rightBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Right', () => {
+      this.btnRight = new arrowButton(this, rightBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '>', () => {
          console.log("Right");
          this.player.body.setVelocityX(1 * this.player.sideway_speed);
       });
       this.btnRight.scrollFactorX = 0;
 
       top += 28;
-      this.btnSlow = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Slow', () => {
+      this.btnSlow = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
          console.log("Slow");
          this.driftSpeed = this.zone.riverSpeed / this.player.backward_ratio;
          this.player.engine = "backward";
@@ -363,7 +374,7 @@ class Game extends Phaser.Scene {
 
       // });
       y += 20;
-      this.buttonFast = this.add.text(0, y, 'Forward', { font: '24px Arial', color: '#ffffff' })
+      this.buttonFast = this.add.text(0, y, '^', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5);
       this.hud.add(this.buttonFast);
 
@@ -382,7 +393,7 @@ class Game extends Phaser.Scene {
       this.hud.add(this.buttonRight);
 
       y += 30;
-      this.buttonSlow = this.add.text(0, y, 'Slow', { font: '24px Arial', color: '#ffffff' })
+      this.buttonSlow = this.add.text(0, y, 'v', { font: '24px Arial', color: '#ffffff' })
          .setOrigin(0.5);
       this.hud.add(this.buttonSlow);
    }
@@ -849,8 +860,14 @@ class Game extends Phaser.Scene {
    }
 
    createGameOverButtons() {
-      this.buttonReplay = new uiButton(this, 0, 340, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
-         //console.log('pointer down -> replay');
+      // this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+      //    console.log('pointer down -> menu');
+      //    this.scene.start("Home");
+      // });
+      //this.hud.add(this.buttonMenu);
+
+      this.buttonReplay = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
+         console.log('pointer down -> replay');
          // reset game state (lives, fuel, position)
          this.player.health = this.player.initialHealth;
          this.player.fuel = this.player.initialFuel;
@@ -859,13 +876,7 @@ class Game extends Phaser.Scene {
          this.physics.resume();
          this.scene.restart();
       });
-      this.hud.add(this.buttonReplay);
-
-      this.buttonMenu = new uiButton(this, 0, 400, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-         //console.log('pointer down -> menu');
-         this.scene.start("Home");
-      });
-      this.hud.add(this.buttonMenu);
+      //this.hud.add(this.buttonReplay);
    }
 
    endLevel() {

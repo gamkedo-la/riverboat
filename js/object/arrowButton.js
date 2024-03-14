@@ -9,7 +9,7 @@ class arrowButton extends Phaser.GameObjects.Container {
    createButton() {
       this.button = this.scene.add.image(0, 0, 'placeholderButtonUp')
          .setDepth(99)
-         .setScale(0.5, 0.8)
+         .setScale(0.2, 0.7)
          .setOrigin(0.5)
          .setInteractive();
 
@@ -22,8 +22,24 @@ class arrowButton extends Phaser.GameObjects.Container {
       this.scrollFactorX = 0;
       this.setDepth(99);
 
+      //this.input.hitAreaDebug = true;
+      // this.iterate(function (child) {
+      //    child.input.hitArea.debugBodyColor = 0xffff00; // Yellow 
+      // });
+
       this.button.on('pointerdown', () => {
-         this.targetCallback();
+         // this.targetCallback();
+         if (!this.repeatEvent) {
+            this.repeatEvent = this.scene.time.addEvent({ delay: 100, callback: this.targetCallback, callbackScope: this, loop: true });
+         }
+      });
+
+      this.button.on('pointerup', () => {
+         if (this.repeatEvent) {
+            this.repeatEvent.remove();
+            this.repeatEvent = null;
+         }
+         // this.scene.time.removeEvent(this.targetCallback);
       });
 
       this.button.on('pointerover', () => {

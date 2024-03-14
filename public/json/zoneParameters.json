@@ -5,7 +5,7 @@
          "name": "Testing"
       },
       "riverSpeed": 80,
-      "intervals": 10,
+      "intervals": 999,
       "obstacle": {
          "secret": 0.2,
          "boom": 0.4,
@@ -20,7 +20,7 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 1,
+            "chance": 0,
             "delay": 2000,
             "speed": 20
          }
@@ -59,7 +59,7 @@
          "name": "Bird Rapids"
       },
       "riverSpeed": 60,
-      "intervals": 999,
+      "intervals": 50,
       "obstacle": {
          "secret": 0.5,
          "boom": 0,
