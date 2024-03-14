@@ -125,6 +125,7 @@ class Game extends Phaser.Scene {
 
       if (keyboard != 'likely') {
          this.makeMenuButton();
+         this.makePauseButton();
          this.makeArrowButtons();
       }
 
@@ -182,8 +183,14 @@ class Game extends Phaser.Scene {
 
    makeMenuButton() {
       this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-         console.log('pointer down -> menu');
          this.scene.start("Home");
+      });
+   }
+
+   makePauseButton() {
+      this.buttonPause = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
+         this.scene.pause('Game');
+         this.scene.launch("Pause");
       });
    }
 
@@ -876,6 +883,8 @@ class Game extends Phaser.Scene {
       //    this.scene.start("Home");
       // });
       //this.hud.add(this.buttonMenu);
+
+      this.buttonPause.destroy();
 
       this.buttonReplay = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
          console.log('pointer down -> replay');

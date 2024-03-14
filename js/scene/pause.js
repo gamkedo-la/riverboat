@@ -7,13 +7,21 @@ class Pause extends Phaser.Scene {
 
    create() {
       this.input.keyboard.on('keyup', this.anyKey, this);
+      this.makeResumeButton();
    }
 
    anyKey(event) {
       let code = event.keyCode;
       if (code === Phaser.Input.Keyboard.KeyCodes.P) {
          this.scene.resume('Game');
-	 this.scene.stop('Pause');
+         this.scene.stop('Pause');
       }
    };
+
+   makeResumeButton() {
+      this.buttonResume = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
+         this.scene.resume('Game');
+         this.scene.stop('Pause');
+      });
+   }
 }
