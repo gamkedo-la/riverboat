@@ -9,7 +9,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.invincible = false;
       this.health = 10;
       this.intelScore = 0;
-      this.startFuel = 5000;
+      this.startFuel = 99000;
       this.fuel = this.startFuel;
       this.forwardFuel = 4;
       this.backwardFuel = 2;

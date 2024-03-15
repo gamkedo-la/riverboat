@@ -3,7 +3,7 @@ class Searchlight extends Phaser.Physics.Arcade.Sprite {
       super(scene, x, y, key);
       Object.assign(this, { scene, x, y, key });
       scene.obstacles.add(this);
-      this.scene.lights.add(this);
+      scene.lights.add(this);
       scene.physics.world.enable(this);
       this.setImmovable(false);
       this.setDepth(90);

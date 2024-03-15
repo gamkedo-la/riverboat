@@ -103,7 +103,7 @@
          "name": "Liddy's Rapids"
       },
       "riverSpeed": 80,
-      "intervals": 30,
+      "intervals": 20,
       "obstacle": {
          "secret": 0,
          "boom": 1,
@@ -118,7 +118,7 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 0.4,
+            "chance": 0.3,
             "delay": 2000,
             "speed": 15
          }
@@ -152,10 +152,10 @@
          "name": "Elder Bird Rapids"
       },
       "riverSpeed": 60,
-      "intervals": 40,
+      "intervals": 30,
       "obstacle": {
-         "secret": 0.2,
-         "boom": 0.8,
+         "secret": 0.3,
+         "boom": 0.7,
          "rapids": 0
       },
       "ySpacing": {
@@ -167,7 +167,7 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 0.4,
+            "chance": 0.375,
             "delay": 2000,
             "speed": 15
          }
@@ -201,7 +201,7 @@
          "name": "Fourth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 40,
+      "intervals": 30,
       "obstacle": {
          "secret": 0.3,
          "boom": 0.7,
@@ -216,7 +216,105 @@
          "gapMax": 120,
          "lengthMin": 50,
          "closable": {
-            "chance": 0.5,
+            "chance": 0.4286,
+            "delay": 2000,
+            "speed": 20
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 50,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.5,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 5",
+      "milestone": {
+         "name": "Fifth Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 30,
+      "obstacle": {
+         "secret": 0.3,
+         "boom": 0.7,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 120,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.572,
+            "delay": 2000,
+            "speed": 20
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 50,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.5,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 6",
+      "milestone": {
+         "name": "Sixth Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 30,
+      "obstacle": {
+         "secret": 0.3,
+         "boom": 0.7,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 120,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.7143,
             "delay": 2000,
             "speed": 20
          }
@@ -240,14 +338,14 @@
          "strayScale": 1.5
       },
       "wind": {
-         "speed": 0,
+         "speed": 40,
          "direction": "W"
       }
    },
    {
-      "name": "Zone 4",
+      "name": "Zone 7",
       "milestone": {
-         "name": "Fifth Rapids"
+         "name": "Seventh Rapids"
       },
       "riverSpeed": 70,
       "intervals": 40,
@@ -265,7 +363,7 @@
          "gapMax": 120,
          "lengthMin": 50,
          "closable": {
-            "chance": 0.7,
+            "chance": 0.834,
             "delay": 2000,
             "speed": 20
          }
@@ -280,12 +378,12 @@
       },
       "wood": {
          "scale": 1.5,
-         "driftChance": 0.0,
+         "driftChance": 0.3,
          "driftScale": 1.5
       },
       "rock": {
          "scale": 1.5,
-         "strayChance": 0.0,
+         "strayChance": 0.3,
          "strayScale": 1.5
       },
       "wind": {
