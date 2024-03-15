@@ -102,7 +102,7 @@
       "milestone": {
          "name": "Liddy's Rapids"
       },
-      "riverSpeed": 80,
+      "riverSpeed": 60,
       "intervals": 20,
       "obstacle": {
          "secret": 0,
@@ -118,7 +118,7 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 0.3,
+            "chance": 1,
             "delay": 2000,
             "speed": 15
          }
@@ -168,7 +168,7 @@
          "lengthMin": 50,
          "closable": {
             "chance": 0.375,
-            "delay": 2000,
+            "delay": 1500,
             "speed": 15
          }
       },
@@ -177,7 +177,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 50,
+         "patrolSpeed": 40,
          "huntSpeed": 100
       },
       "wood": {
@@ -217,7 +217,7 @@
          "lengthMin": 50,
          "closable": {
             "chance": 0.4286,
-            "delay": 2000,
+            "delay": 1500,
             "speed": 20
          }
       },
@@ -226,7 +226,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 50,
+         "patrolSpeed": 45,
          "huntSpeed": 100
       },
       "wood": {
@@ -266,8 +266,8 @@
          "lengthMin": 50,
          "closable": {
             "chance": 0.572,
-            "delay": 2000,
-            "speed": 20
+            "delay": 1300,
+            "speed": 23
          }
       },
       "secret": {
@@ -315,7 +315,7 @@
          "lengthMin": 50,
          "closable": {
             "chance": 0.7143,
-            "delay": 2000,
+            "delay": 1500,
             "speed": 20
          }
       },
@@ -324,7 +324,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 50,
+         "patrolSpeed": 45,
          "huntSpeed": 100
       },
       "wood": {
@@ -364,8 +364,8 @@
          "lengthMin": 50,
          "closable": {
             "chance": 0.834,
-            "delay": 2000,
-            "speed": 20
+            "delay": 1100,
+            "speed": 25
          }
       },
       "secret": {
@@ -373,7 +373,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 50,
+         "patrolSpeed": 55,
          "huntSpeed": 100
       },
       "wood": {

@@ -159,7 +159,7 @@ class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
       this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
       this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
-      //this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
+      this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
       this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
       this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
@@ -972,8 +972,8 @@ class Game extends Phaser.Scene {
       this.cone_left.x = this.player.x;
       this.cone_left.y = this.player.y - this.player.coneYoffset;
       this.cone_left
-         .setVisible(true);
-      setScale(0.7, 0.7);
+         .setVisible(true)
+         .setScale(0.7, 0.7);
    }
 
    showRightSensorCone() {
