@@ -7,6 +7,7 @@ class Pause extends Phaser.Scene {
 
    create() {
       this.input.keyboard.on('keyup', this.anyKey, this);
+      this.makeMenuButton();
       this.makeResumeButton();
    }
 
@@ -17,6 +18,14 @@ class Pause extends Phaser.Scene {
          this.scene.stop('Pause');
       }
    };
+
+   makeMenuButton() {
+      this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+         this.scene.stop('Game');
+         this.scene.stop('Pause');
+         this.scene.start("Home");
+      });
+   }
 
    makeResumeButton() {
       this.buttonResume = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
