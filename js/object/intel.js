@@ -7,7 +7,8 @@ class Intel extends Phaser.Physics.Arcade.Image {
       scene.physics.world.enable(this);
       this.setImmovable(true);
       this.setOrigin(0.5, 0.5);
-      this.setScale(0.8, 0.7);
-      this.scene.add.existing(this);
+      this.setAlpha(0.7);
+      this.setScale(0.7, 0.7);
+      scene.add.existing(this);
    }
 }

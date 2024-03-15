@@ -124,8 +124,8 @@ class Game extends Phaser.Scene {
       this.setupXscroll();
       this.makeHud();
 
+      this.makeMenuButton();
       if (keyboard != 'likely') {
-         this.makeMenuButton();
          this.makePauseButton();
          this.makeArrowButtons();
       }
@@ -156,9 +156,9 @@ class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
       this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
       this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
-      this.physics.add.overlap(this.player, this.intel, this.hitIntel, null, this);
+      this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
       this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
-      this.physics.add.overlap(this.sensors, this.intel, this.senseIntel, null, this);
+      this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
       this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
       this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
@@ -765,16 +765,18 @@ class Game extends Phaser.Scene {
    };
 
    boatSeen(boat, searchlight) {
-      let overlapX = Math.min(searchlight.right, boat.right) - Math.max(searchlight.left, boat.left);
-      let overlapY = Math.min(searchlight.bottom, boat.bottom) - Math.max(searchlight.top, boat.top);
-      console.log(`Light/boat`, searchlight.right, boat.right, searchlight.bottom, boat.bottom);
-      console.log(`Light/boat overlap: ${overlapX} ${overlapY}`);
-      if (overlapX > 40 && overlapY > 30) {
-         this.searchAlarmSound.play();
-         this.loseLife();
-         // delay before tower gun fires on boat
-         // this.scene.time.addEvent({ delay: 1000, callback: this.loseLife, callbackScope: this });
-      }
+      this.searchAlarmSound.play();
+      this.loseLife();
+      // let overlapX = Math.min(searchlight.right, boat.right) - Math.max(searchlight.left, boat.left);
+      // let overlapY = Math.min(searchlight.bottom, boat.bottom) - Math.max(searchlight.top, boat.top);
+      // console.log(`Light/boat`, searchlight.right, boat.right, searchlight.bottom, boat.bottom);
+      // console.log(`Light/boat overlap: ${overlapX} ${overlapY}`);
+      // if (overlapX > 40 && overlapY > 30) {
+      //    this.searchAlarmSound.play();
+      //    this.loseLife();
+      //    // delay before tower gun fires on boat
+      //    this.scene.time.addEvent({ delay: 1000, callback: this.loseLife, callbackScope: this });
+      // }
    }
 
    // if player health, but multiple hits on impact is a problem
