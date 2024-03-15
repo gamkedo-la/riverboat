@@ -1,7 +1,7 @@
 class arrowButton extends Phaser.GameObjects.Container {
-   constructor(scene, x, y, key, hoverKey, text, targetCallback) {
+   constructor(scene, x, y, key, hoverKey, text, targetCallback, callbackOnRelease) {
       super(scene, x, y);
-      Object.assign(this, { scene, x, y, key, hoverKey, text, targetCallback });
+      Object.assign(this, { scene, x, y, key, hoverKey, text, targetCallback, callbackOnRelease });
       this.createButton();
       scene.add.existing(this);
    }
@@ -36,6 +36,7 @@ class arrowButton extends Phaser.GameObjects.Container {
 
       this.button.on('pointerup', () => {
          this.clearEvents();
+         this.callbackOnRelease();
          // this.scene.time.removeEvent(this.targetCallback);
       });
 

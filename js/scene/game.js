@@ -331,37 +331,30 @@ class Game extends Phaser.Scene {
 
       this.btnFast = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'up', () => {
          this.player.motorForward();
-         // this.player.body.setVelocityY(-this.player.forward_speed);
-         // this.player.setTint(0xffb38a);
-         // this.player.addWake();
-         // this.player.useFuel(this.player.forwardFuel);
-         // this.driftSpeed = this.zone.riverSpeed * this.player.forward_ratio;
-         // this.player.engine = "forward";
+      }, () => {
+         this.player.neitherFastOrSlow();
       });
       this.btnFast.scrollFactorX = 0;
 
       top += 24;
       this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '<', () => {
          this.player.turnLeft();
-         // console.log("Left");
-         // this.player.body.setVelocityX(-1 * this.player.sideway_speed);
-      });
+      }, () => { });
       this.btnLeft.scrollFactorX = 0;
 
       this.btnRight = new arrowButton(this, rightBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '>', () => {
          this.player.turnRight();
-         // console.log("Right");
-         // this.player.body.setVelocityX(1 * this.player.sideway_speed);
-      });
+      }, () => { });
       this.btnRight.scrollFactorX = 0;
 
       top += 28;
       this.btnSlow = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
-         console.log("Slow");
          this.driftSpeed = this.zone.riverSpeed / this.player.backward_ratio;
          this.player.engine = "backward";
          this.player.setTint(0xbae946);
          this.player.useFuel(this.player.backwardFuel);
+      }, () => {
+         this.player.neitherFastOrSlow();
       });
       this.btnSlow.scrollFactorX = 0;
 
@@ -845,8 +838,8 @@ class Game extends Phaser.Scene {
       // to fix bug when lose life while button is pressed its repeating event carries on after respawn
       this.btnLeft.clearEvents();
       this.btnRight.clearEvents();
-      this.btnFast.clearEvents();
-      this.btnSlow.clearEvents();
+      // this.btnFast.clearEvents();
+      // this.btnSlow.clearEvents();
    }
 
    loseLife() {
@@ -855,7 +848,9 @@ class Game extends Phaser.Scene {
       this.updateLifeDisplay();
       this.cameras.main.shake(500);
       this.physics.pause();
-      this.clearNavButtonEvents();
+      if (keyboard != 'likely') {
+         this.clearNavButtonEvents();
+      }
 
       if (this.player.life > 0) {
          this.time.addEvent({
@@ -884,7 +879,9 @@ class Game extends Phaser.Scene {
       // });
       //this.hud.add(this.buttonMenu);
 
-      this.buttonPause.destroy();
+      if (keyboard != 'likely') {
+         this.buttonPause.destroy();
+      }
 
       this.buttonReplay = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
          console.log('pointer down -> replay');

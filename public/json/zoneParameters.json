@@ -2,14 +2,14 @@
    {
       "name": "Zone 0",
       "milestone": {
-         "name": "Testing"
+         "name": "Testing Zone"
       },
       "riverSpeed": 80,
       "intervals": 999,
       "obstacle": {
          "secret": 0.2,
-         "boom": 0.4,
-         "rapids": 0.4
+         "boom": 0.6,
+         "rapids": 0.2
       },
       "ySpacing": {
          "min": 240,
@@ -20,15 +20,10 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 0,
+            "chance": 1,
             "delay": 2000,
             "speed": 20
          }
-      },
-      "bridge": {
-         "delay": 1000,
-         "speed": 40,
-         "lengthMin": 50
       },
       "secret": {
          "bankGap": 20,
@@ -59,11 +54,11 @@
          "name": "Bird Rapids"
       },
       "riverSpeed": 60,
-      "intervals": 50,
+      "intervals": 20,
       "obstacle": {
-         "secret": 0.5,
-         "boom": 0,
-         "rapids": 0.5
+         "secret": 0,
+         "boom": 1,
+         "rapids": 0
       },
       "ySpacing": {
          "min": 240,
@@ -78,11 +73,6 @@
             "delay": 2000,
             "speed": 20
          }
-      },
-      "bridge": {
-         "delay": 1000,
-         "speed": 40,
-         "lengthMin": 50
       },
       "secret": {
          "bankGap": 20,
@@ -110,13 +100,13 @@
    {
       "name": "Zone 2",
       "milestone": {
-         "name": "Elder Bird Rapids"
+         "name": "Liddy's Rapids"
       },
       "riverSpeed": 80,
-      "intervals": 4,
+      "intervals": 30,
       "obstacle": {
-         "secret": 1,
-         "boom": 0,
+         "secret": 0,
+         "boom": 1,
          "rapids": 0
       },
       "ySpacing": {
@@ -128,15 +118,10 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 0,
+            "chance": 0.4,
             "delay": 2000,
-            "speed": 20
+            "speed": 15
          }
-      },
-      "bridge": {
-         "delay": 1000,
-         "speed": 40,
-         "lengthMin": 50
       },
       "secret": {
          "bankGap": 20,
@@ -164,13 +149,13 @@
    {
       "name": "Zone 3",
       "milestone": {
-         "name": "Liddy's Rapids"
+         "name": "Elder Bird Rapids"
       },
       "riverSpeed": 60,
-      "intervals": 4,
+      "intervals": 40,
       "obstacle": {
-         "secret": 0,
-         "boom": 1.0,
+         "secret": 0.2,
+         "boom": 0.8,
          "rapids": 0
       },
       "ySpacing": {
@@ -182,15 +167,108 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 1,
+            "chance": 0.4,
+            "delay": 2000,
+            "speed": 15
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 20,
+         "huntSpeed": 50
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 4",
+      "milestone": {
+         "name": "Fourth Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 40,
+      "obstacle": {
+         "secret": 0.3,
+         "boom": 0.7,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 120,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.5,
             "delay": 2000,
             "speed": 20
          }
       },
-      "bridge": {
-         "delay": 1000,
-         "speed": 40,
-         "lengthMin": 50
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 20,
+         "huntSpeed": 50
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 4",
+      "milestone": {
+         "name": "Fifth Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 40,
+      "obstacle": {
+         "secret": 0.4,
+         "boom": 0.6,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 120,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.7,
+            "delay": 2000,
+            "speed": 20
+         }
       },
       "secret": {
          "bankGap": 20,

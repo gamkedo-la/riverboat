@@ -1,4 +1,3 @@
-// class Player extends Phaser.Physics.Arcade.Image {
 class Player extends Phaser.Physics.Arcade.Sprite {
 
    constructor(scene, x, y, key, frame) {
@@ -35,7 +34,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    update(cursors) {
-      this.engineNavigation(cursors);
+      if (keyboard === "likely") {
+         this.engineNavigation(cursors);
+      } else {
+         // No, this breaks motorForward()
+         //   has to be integrated in pointerup somehow
+         // this.checkOnStation();
+      }
 
       if (this.fuel < 1) {
          console.log('Fuel empty');
@@ -121,13 +126,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    motorForward() {
-      console.log("fast in Player");
-      this.body.setVelocityY(-this.forward_speed);
+      //console.log(this);
       this.setTint(0xffb38a);
+      this.body.setVelocityY(this.forward_speed * -1);
       this.addWake();
       this.useFuel(this.forwardFuel);
       this.scene.driftSpeed = this.scene.zone.riverSpeed * this.forward_ratio;
       this.engine = "forward";
+      console.log("fast in Player");
    }
 
    addWake() {
@@ -146,7 +152,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       if (this.scene.playerWake.visible) {
          this.stopWake();
       }
+      this.checkOnStation(); // if Touch device is also called by update
+   }
 
+   checkOnStation() {
       if (this.y < this.start_y) {
          // boat is above its default position
          this.moveBackToStation();
