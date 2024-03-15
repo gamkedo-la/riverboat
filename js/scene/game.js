@@ -159,7 +159,7 @@ class Game extends Phaser.Scene {
       this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
       this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
       this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
-      this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
+      //this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
       this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
       this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
@@ -330,9 +330,10 @@ class Game extends Phaser.Scene {
       let scrollFactorX = this.cameras.main.scrollX / (gameWidth - displayWidth);
       let hitAreaOffsetX = scrollFactorX * displayWidth;
 
-      let buttonOffset = 40;
-      let leftBtnX = cameraCentreX - buttonOffset; // was 100
-      let rightBtnX = cameraCentreX + buttonOffset;
+      let buttonXoffset = 38;
+      let buttonYoffset = 60;
+      let leftBtnX = cameraCentreX - buttonXoffset; // was 100
+      let rightBtnX = cameraCentreX + buttonXoffset;
 
       Object.assign(this, { cameraCentreX, gameCentreX, leftBtnX, rightBtnX });
       // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
@@ -344,7 +345,7 @@ class Game extends Phaser.Scene {
       });
       this.btnFast.scrollFactorX = 0;
 
-      top += 24;
+      top += buttonYoffset;
       this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '<', () => {
          this.player.turnLeft();
       }, () => { });
@@ -355,7 +356,7 @@ class Game extends Phaser.Scene {
       }, () => { });
       this.btnRight.scrollFactorX = 0;
 
-      top += 28;
+      top += buttonYoffset;
       this.btnSlow = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
          this.driftSpeed = this.zone.riverSpeed / this.player.backward_ratio;
          this.player.engine = "backward";
@@ -972,13 +973,15 @@ class Game extends Phaser.Scene {
       this.cone_left.y = this.player.y - this.player.coneYoffset;
       this.cone_left
          .setVisible(true);
+      setScale(0.7, 0.7);
    }
 
    showRightSensorCone() {
       this.cone_right.x = this.player.x;
       this.cone_right.y = this.player.y - this.player.coneYoffset;
       this.cone_right
-         .setVisible(true);
+         .setVisible(true)
+         .setScale(0.7, 0.7);
    }
 
    hideSensorCone() {
