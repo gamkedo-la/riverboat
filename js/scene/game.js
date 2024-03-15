@@ -158,6 +158,7 @@ class Game extends Phaser.Scene {
       this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
       this.physics.add.overlap(this.player, this.intel, this.hitIntel, null, this);
       this.physics.add.overlap(this.sensors, this.secrets, this.senseIntel, null, this);
+      this.physics.add.overlap(this.lights, this.secrets, this.senseIntel, null, this);
       this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
       this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
       this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
@@ -679,6 +680,8 @@ class Game extends Phaser.Scene {
       //console.log(`X velocity after reset in placeSecret(): ${light.body.velocity.x}`);
       //console.log("temp array of lights", lightsArray);
 
+      light.x = Phaser.Math.Between(bankWidth + light.width / 2, gameWidth + bankWidth - light.width / 2);
+
       if (this.bank === "left") {
          intel.setOrigin(0, 0.5).setAlpha(0.3);
          secret.setOrigin(0, 0.5);
@@ -961,10 +964,10 @@ class Game extends Phaser.Scene {
    hideSensorCone() {
       this.cone_left
          .setVisible(false)
-         .setPosition(-100, 0);
+         .setPosition(-100, -100);
       this.cone_right
          .setVisible(false)
-         .setPosition(-100, 0);
+         .setPosition(-100, -100);
    }
 
    checkIfReachedPier() {
