@@ -21,3 +21,5 @@ let currentZone;
 let zones_quantity;
 // const testing = true;
 const testing = false;
+let lightID = 0;
+let lightsArray = [];

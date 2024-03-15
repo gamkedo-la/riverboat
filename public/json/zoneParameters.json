@@ -7,9 +7,9 @@
       "riverSpeed": 80,
       "intervals": 999,
       "obstacle": {
-         "secret": 0.2,
-         "boom": 0.6,
-         "rapids": 0.2
+         "secret": 1,
+         "boom": 0,
+         "rapids": 0
       },
       "ySpacing": {
          "min": 240,
@@ -30,8 +30,8 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 20,
-         "huntSpeed": 50
+         "patrolSpeed": 50,
+         "huntSpeed": 100
       },
       "wood": {
          "scale": 1.5,
@@ -79,8 +79,8 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 20,
-         "huntSpeed": 50
+         "patrolSpeed": 50,
+         "huntSpeed": 100
       },
       "wood": {
          "scale": 1.5,
@@ -128,8 +128,8 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 20,
-         "huntSpeed": 50
+         "patrolSpeed": 50,
+         "huntSpeed": 100
       },
       "wood": {
          "scale": 1.5,
@@ -177,8 +177,8 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 20,
-         "huntSpeed": 50
+         "patrolSpeed": 50,
+         "huntSpeed": 100
       },
       "wood": {
          "scale": 1.5,
@@ -226,8 +226,8 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 20,
-         "huntSpeed": 50
+         "patrolSpeed": 50,
+         "huntSpeed": 100
       },
       "wood": {
          "scale": 1.5,
@@ -275,8 +275,8 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 20,
-         "huntSpeed": 50
+         "patrolSpeed": 50,
+         "huntSpeed": 100
       },
       "wood": {
          "scale": 1.5,

@@ -38,7 +38,8 @@ class Game extends Phaser.Scene {
       this.rocks = this.physics.add.group({ runChildUpdate: true });
       this.sensors = this.physics.add.group({ runChildUpdate: true });
       this.secrets = this.physics.add.group({ runChildUpdate: true });
-      this.intels = this.physics.add.group();
+      this.intels = this.physics.add.group({ runChildUpdate: true });
+      this.lights = this.physics.add.group({ runChildUpdate: true });
 
       // decoration of land and water
       this.features = this.physics.add.group({ runChildUpdate: true });
@@ -179,6 +180,10 @@ class Game extends Phaser.Scene {
       this.destroyPassedObstacle();
 
       this.testIfReadyForNextObstacle();
+
+      // if (lightsArray.length > 0) {
+      //    console.log(lightsArray[0].body.velocity.x);
+      // }
    };
 
    makeMenuButton() {
@@ -494,7 +499,6 @@ class Game extends Phaser.Scene {
             this.placeObstaclesX[chosenObstacleType](obstacleSprites);
          }
       }
-      //console.log(currentZone, this.zone.intervals);
    }
 
    placeObstaclesY(...components) {
@@ -538,7 +542,6 @@ class Game extends Phaser.Scene {
       //let land_secret = new Land(this, 0, 0, 'land');
       let intel = new Intel(this, 0, 0, 'intel');
       this.intels.add(intel);
-
       let secret = new Secret(this, 0, 0, 'secret');
 
       //let land_tower = new Land(this, 0, 0, 'land');
@@ -549,7 +552,10 @@ class Game extends Phaser.Scene {
       } else {
          tower = new Tower(this, 0, 0, 'tower_right');
       }
-      return [secret, intel, tower];
+
+      let light = new Searchlight(this, 0, 0, 'searchlight');
+
+      return [secret, intel, tower, light];
       // return [secret, intel, tower, land_tower];
    }
 
@@ -657,10 +663,21 @@ class Game extends Phaser.Scene {
       }
    }
 
-   placeSecret(secret, intel, tower, land_tower) {
+   // was also land_tower
+   placeSecret(secret, intel, tower, light) {
       let x;
       let distSecretFromRiver = 45;
       let distTowerFromRiver = 40;
+
+      //console.log(`X velocity at placeSecret(): ${light.body.velocity.x}`);
+
+      //light.setVelocityX(200);// scene.zone.searchlight.patrolSpeed
+      // lightsArray[lightID] = light;
+      // lightID += 1;
+      // this.lights.add(light);
+
+      //console.log(`X velocity after reset in placeSecret(): ${light.body.velocity.x}`);
+      //console.log("temp array of lights", lightsArray);
 
       if (this.bank === "left") {
          intel.setOrigin(0, 0.5).setAlpha(0.3);
@@ -884,8 +901,7 @@ class Game extends Phaser.Scene {
       }
 
       this.buttonReplay = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
-         console.log('pointer down -> replay');
-         // reset game state (lives, fuel, position)
+         // reset game (lives, fuel, position)
          this.player.health = this.player.initialHealth;
          this.player.fuel = this.player.initialFuel;
          this.gameOver = false;
@@ -989,8 +1005,8 @@ class Game extends Phaser.Scene {
 
    setDrift(speed) {
       this.driftSpeed = speed;
-      this.obstacles.setVelocity(0, speed);
-      this.features.setVelocity(0, speed);
+      this.obstacles.setVelocityY(speed);
+      this.features.setVelocityY(speed);
       this.waterBG.tilePositionY -= speed / 60;
    }
 
@@ -1026,7 +1042,6 @@ class Game extends Phaser.Scene {
    }
 
    debugObstacleChances() {
-      console.log(`Secret: ${this.zone.obstacle.secret}, Boom: ${this.zone.obstacle.boom}, Rapids: ${this.zone.obstacle.rapids}`);
-      // console.log(`obstacles_chances ${this.obstacle_chances}`);
+      console.log(`Zone ${currentZone} obstacles ${this.zone.intervals}: Secret = ${this.zone.obstacle.secret}, Boom = ${this.zone.obstacle.boom}, closable ${this.zone.boom.closable.chance}`);
    }
 };

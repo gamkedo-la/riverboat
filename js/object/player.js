@@ -16,7 +16,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.sidewaysFuel = 0;
       this.sideway_speed = 40;
       this.sideway_drag = 120;  //35;
-      this.forward_speed = 40;
+      this.forward_speed = 60;
       this.backward_speed = -40;
       this.forward_ratio = 2;
       this.backward_ratio = 3;
@@ -133,7 +133,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.useFuel(this.forwardFuel);
       this.scene.driftSpeed = this.scene.zone.riverSpeed * this.forward_ratio;
       this.engine = "forward";
-      console.log("fast in Player");
    }
 
    addWake() {
