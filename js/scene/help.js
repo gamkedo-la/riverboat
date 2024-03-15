@@ -33,7 +33,6 @@ class Help extends Phaser.Scene {
 
    makeMenuButton() {
       this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-         console.log('pointer down -> menu');
          this.scene.start("Home");
       });
    }

@@ -154,8 +154,8 @@
       "riverSpeed": 60,
       "intervals": 30,
       "obstacle": {
-         "secret": 0.3,
-         "boom": 0.7,
+         "secret": 0.4,
+         "boom": 0.6,
          "rapids": 0
       },
       "ySpacing": {
@@ -167,7 +167,7 @@
          "gapMax": 140,
          "lengthMin": 50,
          "closable": {
-            "chance": 0.375,
+            "chance": 0.4,
             "delay": 1500,
             "speed": 15
          }
@@ -203,8 +203,8 @@
       "riverSpeed": 70,
       "intervals": 30,
       "obstacle": {
-         "secret": 0.3,
-         "boom": 0.7,
+         "secret": 0.4,
+         "boom": 0.6,
          "rapids": 0
       },
       "ySpacing": {
@@ -216,7 +216,7 @@
          "gapMax": 120,
          "lengthMin": 50,
          "closable": {
-            "chance": 0.4286,
+            "chance": 0.45,
             "delay": 1500,
             "speed": 20
          }
@@ -252,8 +252,8 @@
       "riverSpeed": 70,
       "intervals": 30,
       "obstacle": {
-         "secret": 0.3,
-         "boom": 0.7,
+         "secret": 0.4,
+         "boom": 0.6,
          "rapids": 0
       },
       "ySpacing": {
@@ -301,8 +301,8 @@
       "riverSpeed": 70,
       "intervals": 30,
       "obstacle": {
-         "secret": 0.3,
-         "boom": 0.7,
+         "secret": 0.4,
+         "boom": 0.6,
          "rapids": 0
       },
       "ySpacing": {

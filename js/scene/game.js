@@ -230,12 +230,12 @@ class Game extends Phaser.Scene {
    }
 
    setupSounds() {
-      this.searchAlarmSound = this.sound.add('snd_bridgeCollide', { volume: 0.2 });
-      this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0.1 });
-      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.1 });
-      this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0.1 });
-      this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0.1 });
-      this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0.1 });
+      this.searchAlarmSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
+      this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0 });
+      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0 });
+      this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
+      this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0 });
+      this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
    }
 
    setupXscroll() {
@@ -312,12 +312,13 @@ class Game extends Phaser.Scene {
       let y = 45;
       this.makeLifeDisplay(y);
       y += y_UI_spacing;
-      this.makeIntelDisplay(y);
+      this.makeFuelDisplay(y);
       y += y_UI_spacing;
       this.makeProgressDisplay(y);
       y += y_UI_spacing;
-      this.makeFuelDisplay(y);
+      this.makeIntelDisplay(y);
       y += y_UI_spacing;
+
       // this.makeNavigationButtons(y);
    }
 
