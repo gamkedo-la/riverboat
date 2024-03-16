@@ -516,13 +516,13 @@ class Game extends Phaser.Scene {
       let leftBoom = null;
       let rightBoom = null;
       if (this.zone.boom.closable.chance == 0) {
-         leftBoom = new Boom(this, 0, 0, 'boom');
-         rightBoom = new Boom(this, 0, 0, 'boom');
+         leftBoom = new Boom(this, 0, 0, 'boomUnitChain');
+         rightBoom = new Boom(this, 0, 0, 'boomUnitChain');
       } else {
          const delay = this.zone.boom.closable.delay;
          const speed = this.zone.boom.closable.speed;
-         leftBoom = new BoomClosable(this, 0, 0, 'boom', delay, speed);
-         rightBoom = new BoomClosable(this, 0, 0, 'boom', delay, speed);
+         leftBoom = new BoomClosable(this, 0, 0, 'boomUnit', delay, speed);
+         rightBoom = new BoomClosable(this, 0, 0, 'boomUnitChain', delay, speed);
       }
       // because X gap measured from leftBoom's right-hand edge
       leftBoom.setOrigin(1, 0.5); // class default X origin is 0
