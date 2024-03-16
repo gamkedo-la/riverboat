@@ -43,7 +43,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       }
 
       if (this.fuel < 1) {
-         console.log('Fuel empty');
+         // console.log('Fuel empty');
          this.setTint(0xffffff);
          this.stopWake(); // unsure why this needs calling here but it does
       }

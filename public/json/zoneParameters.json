@@ -7,8 +7,8 @@
       "riverSpeed": 80,
       "intervals": 999,
       "obstacle": {
-         "secret": 1,
-         "boom": 0,
+         "secret": 0,
+         "boom": 1,
          "rapids": 0
       },
       "ySpacing": {
@@ -53,8 +53,8 @@
       "milestone": {
          "name": "Bird Rapids"
       },
-      "riverSpeed": 60,
-      "intervals": 20,
+      "riverSpeed": 70,
+      "intervals": 8,
       "obstacle": {
          "secret": 0,
          "boom": 1,
@@ -102,8 +102,8 @@
       "milestone": {
          "name": "Liddy's Rapids"
       },
-      "riverSpeed": 60,
-      "intervals": 20,
+      "riverSpeed": 70,
+      "intervals": 10,
       "obstacle": {
          "secret": 0,
          "boom": 1,
@@ -151,7 +151,7 @@
       "milestone": {
          "name": "Elder Bird Rapids"
       },
-      "riverSpeed": 60,
+      "riverSpeed": 70,
       "intervals": 30,
       "obstacle": {
          "secret": 0.4,

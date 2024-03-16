@@ -13,7 +13,7 @@ class arrowButton extends Phaser.GameObjects.Container {
          .setOrigin(0.5)
          .setInteractive();
 
-      this.buttonText = this.scene.add.text(0, 0, this.text, { fontSize: '24px', color: '#000' });
+      this.buttonText = this.scene.add.text(0, 0, this.text, { fontSize: '24px Arial', color: '#000' });
 
       Phaser.Display.Align.In.Center(this.buttonText, this.button, 0, -2);
 

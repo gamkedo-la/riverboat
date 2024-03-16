@@ -24,7 +24,7 @@ class Help extends Phaser.Scene {
          }
       };
       let top = 60;
-      this.add.text(gameWidth / 2, top, "You control a boat moving with river's flow. Steer (left & right) to avoid obstacles. Motoring forward, or slow against flow (up & down) both use fuel. Edges = riverbank, and proximity of a Secret is INTEL icon. Spy by bringing your sensor cone over icon, and slow down for extra score aka 'Intel'. Number of obstacles 'Passed' is also tracked.", { font: '24px Verdana', color: '#000000', wordWrap: { width: 280 } }).setOrigin(0.5, 0);
+      this.add.text(gameWidth / 2, top, "You control a boat moving with river's flow. Steer to avoid obstacles. Motor fast forward, or slow against flow (up & down) both use fuel. Spy by bringing your sensor cone - slow down for extra score - over an INTEL icon: means a secret is near on land. 'Intel' is your score; though number of obstacles 'Passed' is also tracked.", { font: '24px Verdana', color: '#000000', wordWrap: { width: 280 } }).setOrigin(0.5, 0);
       // if (keyboard === 'likely') {
       // }
       // else {q
