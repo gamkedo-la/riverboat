@@ -152,10 +152,10 @@
          "name": "Elder Bird Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 30,
+      "intervals": 10,
       "obstacle": {
-         "secret": 0.4,
-         "boom": 0.6,
+         "secret": 1,
+         "boom": 0,
          "rapids": 0
       },
       "ySpacing": {

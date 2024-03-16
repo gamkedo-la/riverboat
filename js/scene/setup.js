@@ -43,7 +43,7 @@ class Setup extends Phaser.Scene {
       this.load.image('sensor', 'public/art/sensor_cone.png');
 
       this.load.image('boom', 'public/art/boom_480x50.png');
-      this.load.image('boomUnit', 'public/art/BoomUnit0.png')
+      this.load.image('boomUnit', 'public/art/BoomUnit0.png');
       this.load.image('capstan', 'public/art/capstan.png');
       this.load.image('land', 'public/art/land.png');
       this.load.image('rock_ph', 'public/art/rock.png');
@@ -83,7 +83,8 @@ class Setup extends Phaser.Scene {
          margin: 1
       });
 
-      this.load.audio('snd_searchAlarm', ['public/sound/land_hit_placeholder.mp3']);
+      this.load.audio('snd_searchProximity', ['public/sound/searchlight_near.mp3']);
+      this.load.audio('snd_searchContact', ['public/sound/searchlight_near.mp3']);
       this.load.audio('snd_landCollide', ['public/sound/land_hit_placeholder.mp3']);
       this.load.audio('snd_boomCollide', ['public/sound/boom_hit_placeholder.mp3']);
       this.load.audio('snd_bridgeCollide', ['public/sound/bridge_hit_placeholder.mp3']);

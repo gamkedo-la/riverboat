@@ -73,6 +73,7 @@ class Game extends Phaser.Scene {
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
 
       this.intel_alert = 180;
+      this.light_alert = 250;
       // this.milestone_interval = this.zone.intervals;
       this.pierPlaced = false;
       this.gameOver = false;
@@ -131,6 +132,7 @@ class Game extends Phaser.Scene {
       }
 
       // this.makeDriftwood(200, 300)
+      // this.sound.manager.maxSounds = 3;
       this.setupSounds();
 
       // create first 2 obstacles, using same method as update()
@@ -176,6 +178,7 @@ class Game extends Phaser.Scene {
       this.player.update(this.cursors);
 
       this.isIntelWithinRange();
+      this.isSearchlightNear();
 
       this.updateFuelDisplay();
 
@@ -229,10 +232,27 @@ class Game extends Phaser.Scene {
       }
    }
 
+   isSearchlightNear() {
+      if (this.lights) {
+         let nearest_light_dist = 800;
+         this.lights.getChildren().forEach(light => {
+            // console.log(this.player.x, this.player.y, intel.x, intel.y)
+            let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, light.x, light.y);
+            if (dist < nearest_light_dist) {
+               nearest_light_dist = dist;
+            }
+         });
+         if (nearest_light_dist < this.light_alert) {
+            this.lightNearSound.play();
+         }
+      }
+   }
+
    setupSounds() {
-      this.searchAlarmSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
+      this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.05, loop: false });
+      this.searchContactSound = this.sound.add('snd_searchProximity', { volume: 0 }); // snd_searchContact
       this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0 });
-      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0 });
+      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.1 });
       this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0 });
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
@@ -767,7 +787,7 @@ class Game extends Phaser.Scene {
    };
 
    boatSeen(boat, searchlight) {
-      this.searchAlarmSound.play();
+      //this.searchContactSound.play();
       this.loseLife();
       // let overlapX = Math.min(searchlight.right, boat.right) - Math.max(searchlight.left, boat.left);
       // let overlapY = Math.min(searchlight.bottom, boat.bottom) - Math.max(searchlight.top, boat.top);
@@ -849,14 +869,14 @@ class Game extends Phaser.Scene {
 
    hitIntel(boat, intel) {
       //console.log('Intel run-over');
-      this.intelOverlapSound.play();
+      //this.intelOverlapSound.play();
       this.player.intelScore += 3;
       this.updateIntelDisplay();
    }
 
    senseIntel(sensor, intel) {
       //console.log('Intel sensed');
-      this.intelOverlapSound.play();
+      //this.intelOverlapSound.play();
       this.player.intelScore += 1;
       this.updateIntelDisplay();
    }
@@ -867,7 +887,7 @@ class Game extends Phaser.Scene {
    hitLand(boat, land) {
       //console.log('Land Hit');
       land.body.enable = false;
-      this.landCollideSound.play();
+      //this.landCollideSound.play();
       this.player.setVelocity(0, 0);
       // this.player.updateHealth(land.damage);
    }
