@@ -256,6 +256,7 @@ class Game extends Phaser.Scene {
       this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0 });
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
+      this.boomChainSound = this.sound.add('snd_boomChain', { volume: 0 });
    }
 
    setupXscroll() {
@@ -541,7 +542,7 @@ class Game extends Phaser.Scene {
       } else {
          const delay = this.zone.boom.closable.delay;
          const speed = this.zone.boom.closable.speed;
-         leftBoom = new BoomClosable(this, 0, 0, 'boomUnit', delay, speed);
+         leftBoom = new BoomClosable(this, 0, 0, 'boomUnitChain', delay, speed);
          rightBoom = new BoomClosable(this, 0, 0, 'boomUnitChain', delay, speed);
       }
       // because X gap measured from leftBoom's right-hand edge
@@ -670,6 +671,7 @@ class Game extends Phaser.Scene {
          this.time.addEvent({
             delay: leftBoom.delay,
             callback: () => {
+               this.boomChainSound.play();
                leftBoom.x += leftBoom.speed;
             },
             repeat: true,
@@ -680,6 +682,7 @@ class Game extends Phaser.Scene {
          this.time.addEvent({
             delay: rightBoom.delay,
             callback: () => {
+               this.boomChainSound.play();
                rightBoom.x -= rightBoom.speed;
             },
             repeat: true,
