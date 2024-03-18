@@ -307,14 +307,14 @@ class Game extends Phaser.Scene {
          follow: this.player
       });
 
-      this.cone_left = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor')
+      this.cone_left = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor2')
          .setOrigin(1, 0.5)
          .setVisible(false)
          .setDepth(9)
          .setAlpha(0.5)
          .setScale(1.1, 0.7)
          .setFlipX(true);
-      this.cone_right = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor')
+      this.cone_right = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor2')
          .setOrigin(0, 0.5)
          .setVisible(false)
          .setAlpha(0.5)

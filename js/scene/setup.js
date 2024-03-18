@@ -41,6 +41,7 @@ class Setup extends Phaser.Scene {
       this.load.image('anim_turnBoat', 'public/art/boat_5.png');
       this.load.image('wake', 'public/art/water_wake.png');
       this.load.image('sensor', 'public/art/sensor_cone.png');
+      this.load.image('sensor2', 'public/art/BoatSensor_YellowCone.png');
 
       this.load.image('boom', 'public/art/boom_480x50.png');
       this.load.image('boomUnit', 'public/art/BoomUnit0.png');
