@@ -186,6 +186,10 @@ class Game extends Phaser.Scene {
 
       this.testIfReadyForNextObstacle();
 
+      if (this.player.engine == 'off') {
+         this.player.neitherFastOrSlow();
+      }
+      
       // if (lightsArray.length > 0) {
       //    console.log(lightsArray[0].body.velocity.x);
       // }
