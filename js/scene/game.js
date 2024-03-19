@@ -53,6 +53,7 @@ class Game extends Phaser.Scene {
       this.ySpacingRange = [this.zone.ySpacing.min, this.zone.ySpacing.max];
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
+      this.newestObstacleID = 0;
       this.obstaclesToGoal = 999; // 0 or 1 if testing pier
       this.progressInGameMax = localStorage.getItem('obstaclesPassedMax');
 
@@ -131,20 +132,21 @@ class Game extends Phaser.Scene {
          this.makeArrowButtons();
       }
 
-      // this.makeDriftwood(200, 300)
       // this.sound.manager.maxSounds = 3;
       this.setupSounds();
 
-      // create first 2 obstacles, using same method as update()
-      this.makeObstacle();
-      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-      this.obstacles.incY(this.ySpacing + 1); // ? forgot why +1
-      this.makeObstacle();
-      this.obstacles.incY(100); // start closer 
+      // at game start, and when menu jumps to a zone start, create first 2 obstacles - using same method as update() - so they can move down from spawnY to visible starting positions.
+      if (currentZone != 4) {
+         this.makeObstacle();
+         // manually move obstacle to where it would be in play when trigger next obstacle, unsure if that +1 is necessary
+         this.obstacles.incY(this.ySpacing + 1);
+         this.makeObstacle();
+      }
 
-      if (this.checkIfReachedPier()) {
-         this.makePier();
-         this.pierPlaced = true;
+      // driftwood and boulders between obstacles are placed above associated obstacle, but this is a WIP and seems to affect vertical spacing so I switched off the initial move-down.
+      else if (currentZone === 4) {
+         this.whenObstacleMaking();
+         // this.moveFurnitureY(this.ySpacing + 1);
       }
 
       this.cursors = this.input.keyboard.createCursorKeys();
@@ -189,11 +191,18 @@ class Game extends Phaser.Scene {
       if (this.player.engine == 'off') {
          this.player.neitherFastOrSlow();
       }
-      
+
       // if (lightsArray.length > 0) {
       //    console.log(lightsArray[0].body.velocity.x);
       // }
    };
+
+   moveFurnitureY(y) {
+      // at start of game move obstacles and associated furniture down from spawnY to player visible starting positions
+      this.obstacles.incY(y);
+      this.woods.incY(y);
+      this.rocks.incY(y);
+   }
 
    makeMenuButton() {
       this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
@@ -260,7 +269,7 @@ class Game extends Phaser.Scene {
       this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0 });
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
-      this.boomChainSound = this.sound.add('snd_boomChain', { volume: 0 });
+      this.boomChainSound = this.sound.add('snd_boomChain', { volume: 0.1 });
    }
 
    setupXscroll() {
@@ -493,16 +502,48 @@ class Game extends Phaser.Scene {
       // console.log(previousY, this.ySpacing);
       if (previousY - this.spawnY > this.ySpacing) {
          // console.log(previousY, this.ySpacing, this.spawnY);
-         this.makeObstacle();
-         // randomize new Y gap to next Obstacle
-         this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-         this.trackProgress();
+         this.whenObstacleMaking();
 
          if (keyboard != 'likely') {
             //console.log(`scroll: ${this.cameras.main.scrollX}`);
             // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
          }
       }
+   }
+
+   // separated so that first 2 obstacles can also get stray things
+   // would be a problem if Zone 1 ever had strays because the first 2 obstacles start at Y values visible on screen
+   whenObstacleMaking() {
+      this.newestObstacleID += 1;
+      this.makeObstacle();
+      // randomize new Y gap to next Obstacle
+      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+      this.trackProgress();
+      this.checkIfDriftwood();
+      this.checkIfBoulder();
+   }
+
+   checkIfDriftwood() {
+      // let randomValue = Math.random();
+      if (this.zone.wood.minQuantity > 0) {
+         this.makeDriftwood();
+         // placeDriftwood();
+      }
+   }
+   checkIfBoulder() {
+
+   }
+
+   makeDriftwood() {
+      console.log('wood when making obstacle', this.newestObstacleID, 'at', this.spawnY);
+      let wood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
+      let ratioSpacingY = randomBiasMiddle();
+      wood.x = bankWidth + randomAvoidMiddle() * displayWidth;
+      let offsetY = ratioSpacingY * this.ySpacing;
+      wood.y = this.spawnY - offsetY;
+      wood.setVelocityY(this.driftSpeed);
+      this.woods.add(wood);
+      console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
    }
 
    makeObstacle() {
@@ -529,12 +570,15 @@ class Game extends Phaser.Scene {
             this.placeObstaclesX[chosenObstacleType](obstacleSprites);
          }
       }
+      // randomize Y spacing to next Obstacle 
+      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
    }
 
    placeObstaclesY(...components) {
       components.forEach((item) => {
          item.y = this.spawnY;
       });
+      //console.log('placing obstacle', this.newestObstacleID, 'at', this.spawnY);
    }
 
    makeBooms() {
@@ -622,28 +666,14 @@ class Game extends Phaser.Scene {
          danger = new Rock(this, 0, 0, "rock", 0);
       }
       this.rapids.add(danger);
-      // let driftwood = this.add.sprite(0, 0, 'anim_driftwood', 0);
-      // let driftwood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
-      // this.rapids.add(driftwood);
-      // driftwood.play('splash_driftwood');
-      // driftwood.setDepth(100)
-      // driftwood.setScale(1.0);
-      // this.obstacles.add(driftwood);
+
       return [rapidsLine, danger];
    }
-
-   // makeDriftwood(x, y) {
-   //    this.wood = this.add.sprite(x, y, 'anim_driftwood', 0);
-   //    this.wood.setDepth(99)
-   //    this.wood.play('splash_driftwood');
-   //    console.log(this.wood)
-   //    //this.wood.setVelocity(0, this.driftSpeed);
-   // }
 
    makeMilestone() {
       let milestone = new Rapids(this, 0, 0, "rapids");
       this.milestone = milestone;
-      //console.log(`Milestone before zone ${currentZone}`);
+      // console.log(`Milestone before zone ${currentZone}`);
       return [milestone];
    }
 

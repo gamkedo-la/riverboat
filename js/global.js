@@ -23,3 +23,28 @@ let zones_quantity;
 const testing = false;
 let lightID = 0;
 let lightsArray = [];
+
+// generate number between 0 and 1 with distribution biased toward 0.5
+const randomBias2Middle = function () {
+   let u = Math.random();
+   let v = Math.random();
+   let z = (u + v) / 2.0;
+   return z;
+};
+
+// generate number between 0 and 1 with distribution more biased toward 0.5
+const randomBiasMiddle = function () {
+   let u = Math.random();
+   let v = Math.random();
+   let w = Math.random();
+   let z = (u + v + w) / 3.0;
+   return z;
+};
+
+// generate a number between 0 and 1 with distribution biased toward either 0.25 or 0.75
+const randomAvoidMiddle = function () {
+   let half = Math.random() < 0.5 ? 0 : 0.5;
+   let z = half + (randomBiasMiddle() / 2);
+   return z;
+}
+

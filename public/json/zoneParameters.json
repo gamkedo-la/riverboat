@@ -159,7 +159,7 @@
          "rapids": 0
       },
       "ySpacing": {
-         "min": 240,
+         "min": 320,
          "max": 320
       },
       "boom": {
@@ -208,8 +208,8 @@
          "rapids": 0
       },
       "ySpacing": {
-         "min": 240,
-         "max": 320
+         "min": 300,
+         "max": 300
       },
       "boom": {
          "gapMin": 80,
@@ -230,14 +230,16 @@
          "huntSpeed": 100
       },
       "wood": {
-         "scale": 1.5,
-         "driftChance": 0.5,
-         "driftScale": 1.5
+         "minQuantity": 1,
+         "maxQuantity": 2,
+         "minScale": 0.8,
+         "maxScale": 1.5
       },
       "rock": {
-         "scale": 1.5,
-         "strayChance": 0.0,
-         "strayScale": 1.5
+         "minQuantity": 0,
+         "maxQuantity": 0,
+         "minScale": 0,
+         "maxScale": 0
       },
       "wind": {
          "speed": 0,
