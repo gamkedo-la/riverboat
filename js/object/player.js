@@ -36,10 +36,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    update(cursors) {
       if (keyboard === "likely") {
          this.engineNavigation(cursors);
-      } else {
-         // No, this breaks motorForward()
-         //   has to be integrated in pointerup somehow
-         // this.checkOnStation();
       }
 
       if (this.fuel < 1) {
@@ -48,7 +44,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.stopWake(); // unsure why this needs calling here but it does
       }
 
-      // bounce off side of river
+      // bounce off banks of river
       //console.log(this.x, this.body.velocity);
       let bankLeftX = bankWidth + this.body.width / 2;
       let bankRightX = bankWidth + displayWidth - this.body.width / 2;
@@ -101,9 +97,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.engine = "backward";
          //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
 
-         if (this.pierPlaced) {
-            this.scene.pier.setVelocityY(this.scene.obstacleSpeed);
-         }
          this.setTint(0xbae946);
          this.useFuel(this.backwardFuel);
       }
@@ -172,11 +165,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
       this.scene.driftSpeed = this.scene.zone.riverSpeed + this.forward_speed * this.rateOfReturnToStation;
       //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
-
-      // pier code will move to Pier object
-      if (this.scene.pierPlaced) {
-         this.scene.pier.setVelocityY(this.scene.obstacleSpeed);
-      }
    }
 
    whenOnStation() {
@@ -185,11 +173,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // river furniture's relative motion needs no adjustment
       //this.scene.driftSpeed = scene.driftSpeed;
       //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
-
-      // pier code will move to Pier object
-      if (this.scene.pierPlaced) {
-         this.scene.pier.setVelocityY(this.scene.obstacleSpeed);
-      }
    }
 
    updateHealth(damage) {

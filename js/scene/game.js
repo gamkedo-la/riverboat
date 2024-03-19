@@ -54,8 +54,7 @@ class Game extends Phaser.Scene {
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
       this.newestObstacleID = 0;
-      this.obstaclesToGoal = 999; // 0 or 1 if testing pier
-      this.progressInGameMax = localStorage.getItem('obstaclesPassedMax');
+      //this.progressInGameMax = localStorage.getItem('obstaclesPassedMax');
 
       this.boomGapRange = [this.zone.boom.gapMin, this.zone.boom.gapMax];
       this.boom_length_min = this.zone.boom.lengthMin;
@@ -76,7 +75,6 @@ class Game extends Phaser.Scene {
       this.intel_alert = 180;
       this.light_alert = 250;
       // this.milestone_interval = this.zone.intervals;
-      this.pierPlaced = false;
       this.gameOver = false;
 
       this.obstacleMaker = {
@@ -796,7 +794,6 @@ class Game extends Phaser.Scene {
    }
 
    destroyPassedObstacle() {
-      //if (this.pierPlaced) return; // does the run carry on after pier?
       // let tempObstacles = [];
       this.obstacles.getChildren().forEach(obstacle => {
          if (obstacle.getBounds().top > displayHeight) {
@@ -805,14 +802,7 @@ class Game extends Phaser.Scene {
             obstacle.destroy();
          }
       });
-
       // this.saveBestScore();
-      // if (!this.pierPlaced) {
-      //    if (this.checkIfReachedPier()) {
-      //       this.makePier();
-      //       this.pierPlaced = true;
-      //    }
-      // }
    };
 
    saveBestScore() {
@@ -1056,20 +1046,6 @@ class Game extends Phaser.Scene {
          .setVisible(false)
          .setPosition(-100, -100);
    }
-
-   checkIfReachedPier() {
-      if (!this.pierPlaced && this.progressInZone >= this.obstaclesToGoal) {
-         return true;
-      }
-   };
-
-   makePier() {
-      this.pier = this.physics.add.sprite(displayWidth / 2, -40, 'pier')
-         .setScale(0.8);
-      this.pier.setVelocityY(this.zone.riverSpeed);
-      this.physics.add.collider(this.player, this.pier, this.endLevel, null, this);
-      this.pierPlaced = true;
-   };
 
    resetGame() {
    };
