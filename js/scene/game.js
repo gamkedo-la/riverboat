@@ -829,7 +829,7 @@ class Game extends Phaser.Scene {
       let overlapX = Math.min(lightBounds.right, boatBounds.right) - Math.max(lightBounds.left, boatBounds.left);
       let overlapY = Math.min(lightBounds.bottom, boatBounds.bottom) - Math.max(lightBounds.top, boatBounds.top);
       if (overlapX > 20 && overlapY > 20) {
-         console.log('Boat seen by light');
+         //console.log('Boat seen by light');
          this.searchContactSound.play();
          this.loseLife();
          // delay before tower's gun fires on boat
