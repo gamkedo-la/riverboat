@@ -85,7 +85,7 @@ class Setup extends Phaser.Scene {
       });
 
       this.load.audio('snd_searchProximity', ['public/sound/searchlight_near.mp3']);
-      this.load.audio('snd_searchContact', ['public/sound/searchlight_near.mp3']);
+      this.load.audio('snd_searchContact', ['public/sound/searchlight_contact_2.mp3']);
       this.load.audio('snd_landCollide', ['public/sound/land_hit_placeholder.mp3']);
       this.load.audio('snd_boomCollide', ['public/sound/boom_hit_placeholder.mp3']);
       this.load.audio('snd_bridgeCollide', ['public/sound/bridge_hit_placeholder.mp3']);

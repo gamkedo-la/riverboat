@@ -263,7 +263,7 @@ class Game extends Phaser.Scene {
 
    setupSounds() {
       this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.05, loop: false });
-      this.searchContactSound = this.sound.add('snd_searchProximity', { volume: 0 }); // snd_searchContact
+      this.searchContactSound = this.sound.add('snd_searchContact', { volume: 0.1 });
       this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0 });
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.1 });
       this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
@@ -697,7 +697,7 @@ class Game extends Phaser.Scene {
       leftBoom.x = xGapLeft + bankWidth;
       rightBoom.x = xGapLeft + gapSize + bankWidth;
 
-      // need space to walk (push) between capstan and edge of river
+      // need space to walk between capstan and edge of river (if manually turned)
       leftCapstan.x = bankWidth - 30;
       rightCapstan.x = bankWidth + displayWidth + 30;
 
@@ -823,19 +823,24 @@ class Game extends Phaser.Scene {
       }
    };
 
-   boatSeen(boat, searchlight) {
-      //this.searchContactSound.play();
-      this.loseLife();
-      // let overlapX = Math.min(searchlight.right, boat.right) - Math.max(searchlight.left, boat.left);
-      // let overlapY = Math.min(searchlight.bottom, boat.bottom) - Math.max(searchlight.top, boat.top);
-      // console.log(`Light/boat`, searchlight.right, boat.right, searchlight.bottom, boat.bottom);
+   boatSeen(boat, light) {
+      let boatBounds = boat.getBounds();
+      let lightBounds = light.getBounds();
+      let overlapX = Math.min(lightBounds.right, boatBounds.right) - Math.max(lightBounds.left, boatBounds.left);
+      let overlapY = Math.min(lightBounds.bottom, boatBounds.bottom) - Math.max(lightBounds.top, boatBounds.top);
+      if (overlapX > 20 && overlapY > 20) {
+         console.log('Boat seen by light');
+         this.searchContactSound.play();
+         this.loseLife();
+         // delay before tower's gun fires on boat
+         // this.scene.time.addEvent({ delay: 1000, callback: this.loseLife, callbackScope: this });
+      }
+      else {
+         // this.thatWasClose.play(); 
+      }
+      // console.log(`Light`, lightBounds.left, lightBounds.right, lightBounds.top, lightBounds.bottom);
+      // console.log(`Boat`, boatBounds.left, boatBounds.right, boatBounds.top, boatBounds.bottom);
       // console.log(`Light/boat overlap: ${overlapX} ${overlapY}`);
-      // if (overlapX > 40 && overlapY > 30) {
-      //    this.searchAlarmSound.play();
-      //    this.loseLife();
-      //    // delay before tower gun fires on boat
-      //    this.scene.time.addEvent({ delay: 1000, callback: this.loseLife, callbackScope: this });
-      // }
    }
 
    // if player health, but multiple hits on impact is a problem
@@ -942,14 +947,15 @@ class Game extends Phaser.Scene {
    }
 
    loseLife() {
-      this.invincible = true;
-      this.player.life -= 1;
       this.updateLifeDisplay();
       this.cameras.main.shake(500);
       this.physics.pause();
       if (keyboard != 'likely') {
          this.clearNavButtonEvents();
       }
+
+      this.invincible = true;
+      this.player.life -= 1;
 
       if (this.player.life > 0) {
          this.time.addEvent({
