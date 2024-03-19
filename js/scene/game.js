@@ -136,15 +136,24 @@ class Game extends Phaser.Scene {
       // at game start, and when menu jumps to a zone start, create first 2 obstacles - using same method as update() - so they can move down from spawnY to visible starting positions.
       if (currentZone != 4) {
          this.makeObstacle();
+         this.newestObstacleID += 1;
+
          // manually move obstacle to where it would be in play when trigger next obstacle, unsure if that +1 is necessary
          this.obstacles.incY(this.ySpacing + 1);
+         this.previousY = this.getPreviousObstacleY();
+
+         console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
+
          this.makeObstacle();
+         this.previousY = this.getPreviousObstacleY();
+         this.newestObstacleID += 1; // manual because not using whenObstacleMaking()
       }
 
       // driftwood and boulders between obstacles are placed above associated obstacle, but this is a WIP and seems to affect vertical spacing so I switched off the initial move-down.
       else if (currentZone === 4) {
          this.whenObstacleMaking();
          // this.moveFurnitureY(this.ySpacing + 1);
+         console.log('Yspacing:', this.ySpacing, 'previous Obstacle ID:', this.newestObstacleID);
       }
 
       this.cursors = this.input.keyboard.createCursorKeys();
@@ -154,17 +163,9 @@ class Game extends Phaser.Scene {
       this.cursors.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
       this.cursors.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 
-      this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
-      this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
-      this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
-      this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
-      this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
-      this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
-      this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
-      this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
-      this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
-      this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
-      this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
+      if (withColliders) {
+         this.setupColliders();
+      }
 
       this.setDrift(this.zone.riverSpeed);
       this.input.keyboard.on('keyup', this.anyKey, this);
@@ -189,10 +190,6 @@ class Game extends Phaser.Scene {
       if (this.player.engine == 'off') {
          this.player.neitherFastOrSlow();
       }
-
-      // if (lightsArray.length > 0) {
-      //    console.log(lightsArray[0].body.velocity.x);
-      // }
    };
 
    moveFurnitureY(y) {
@@ -200,6 +197,20 @@ class Game extends Phaser.Scene {
       this.obstacles.incY(y);
       this.woods.incY(y);
       this.rocks.incY(y);
+   }
+
+   setupColliders() {
+      this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
+      this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
+      this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
+      this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
+      this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
+      this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
+      this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
+      this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
+      this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
+      this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
+      this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
    }
 
    makeMenuButton() {
@@ -496,16 +507,16 @@ class Game extends Phaser.Scene {
    };
 
    testIfReadyForNextObstacle() {
-      let previousY = this.getPreviousObstacleY();
+      this.previousY = this.getPreviousObstacleY();
       // console.log(previousY, this.ySpacing);
-      if (previousY - this.spawnY > this.ySpacing) {
-         // console.log(previousY, this.ySpacing, this.spawnY);
+      if (this.previousY - this.spawnY > this.ySpacing) {
+         console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
          this.whenObstacleMaking();
 
-         if (keyboard != 'likely') {
-            //console.log(`scroll: ${this.cameras.main.scrollX}`);
-            // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
-         }
+         // if (keyboard != 'likely') {
+         //    console.log(`scroll: ${this.cameras.main.scrollX}`);
+         //    console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
+         // }
       }
    }
 
@@ -533,15 +544,16 @@ class Game extends Phaser.Scene {
    }
 
    makeDriftwood() {
-      console.log('wood when making obstacle', this.newestObstacleID, 'at', this.spawnY);
+      //console.log('wood when making obstacle', this.newestObstacleID, 'at', this.spawnY);
       let wood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
       let ratioSpacingY = randomBiasMiddle();
-      wood.x = bankWidth + randomAvoidMiddle() * displayWidth;
+      let offsetX = randomAvoidMiddle();
+      wood.x = bankWidth + offsetX * displayWidth;
       let offsetY = ratioSpacingY * this.ySpacing;
       wood.y = this.spawnY - offsetY;
       wood.setVelocityY(this.driftSpeed);
       this.woods.add(wood);
-      console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
+      console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
    }
 
    makeObstacle() {
@@ -723,21 +735,11 @@ class Game extends Phaser.Scene {
       }
    }
 
-   // was also land_tower
+   // There was also a search-tower, land-based, which helps player understand what the light circle is and where it comes from.
    placeSecret(secret, intel, tower, light) {
       let x;
       let distSecretFromRiver = 45;
       let distTowerFromRiver = 40;
-
-      //console.log(`X velocity at placeSecret(): ${light.body.velocity.x}`);
-
-      //light.setVelocityX(200);// scene.zone.searchlight.patrolSpeed
-      // lightsArray[lightID] = light;
-      // lightID += 1;
-      // this.lights.add(light);
-
-      //console.log(`X velocity after reset in placeSecret(): ${light.body.velocity.x}`);
-      //console.log("temp array of lights", lightsArray);
 
       light.x = Phaser.Math.Between(bankWidth + light.width / 2, gameWidth + bankWidth - light.width / 2);
 

@@ -19,10 +19,12 @@ let deviceOS, keyboard;
 
 let currentZone;
 let zones_quantity;
+
 // const testing = true;
 const testing = false;
-let lightID = 0;
-let lightsArray = [];
+
+const withColliders = true;
+// const withColliders = false;
 
 // generate number between 0 and 1 with distribution biased toward 0.5
 const randomBias2Middle = function () {
