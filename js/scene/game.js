@@ -78,6 +78,10 @@ class Game extends Phaser.Scene {
       // this.milestone_interval = this.zone.intervals;
       this.gameOver = false;
 
+      // play the sound of water on loop
+      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.15, loop: true });
+      this.waterSound.play();
+
       this.obstacleMaker = {
          boom: () => {
             return this.makeBooms();

@@ -93,6 +93,7 @@ class Setup extends Phaser.Scene {
       this.load.audio('snd_intelOverlap', ['public/sound/collider_placeholder.mp3']);
       this.load.audio('snd_boomChain', ['public/sound/boomChainSound.wav']);
       this.load.audio('snd_motorLoop', ['public/sound/motor_loop.wav']);
+      this.load.audio('snd_waterLoop', ['public/sound/flowing_stream_Argal.mp3']);
 
       if (testing) {
          this.load.json('zoneData', 'public/json/testZoneParams.json');
