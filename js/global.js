@@ -1,6 +1,6 @@
-const testing = true; // jump into game & zone
-const testZone = 4; // zone to test
-const withColliders = false; // no need to navigate 
+const testing = false; // jump into game & zone when true
+const testZone = 5; // zone to test
+const withColliders = true; // no need to navigate when false
 
 const displayWidth = 360;
 const displayHeight = 600;

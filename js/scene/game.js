@@ -135,7 +135,7 @@ class Game extends Phaser.Scene {
       this.setupSounds();
 
       // at game start, and when menu jumps to a zone start, create first 2 obstacles - using same method as update() - so they can move down from spawnY to visible starting positions.
-      if (currentZone != 4) {
+      if (currentZone < 4 && currentZone > 5) {
          this.newestObstacleID += 1; // set manually because here not using whenObstacleMaking()
 
          this.makeObstacle();
@@ -157,8 +157,8 @@ class Game extends Phaser.Scene {
          this.previousY = this.getPreviousObstacleY();
       }
 
-      // driftwood and boulders between obstacles are placed above associated obstacle, but this is a WIP and seems to affect vertical spacing so I switched off the initial move-down.
-      else if (currentZone === 4) {
+      // driftwood and boulders between obstacles are placed above associated obstacle, but this is a WIP and seems to affect vertical spacing so I switched off initial move down to bring closer to boat.
+      else {
          this.whenObstacleMaking();
          // this.moveFurnitureY(this.ySpacing + 1);
          console.log('Yspacing:', this.ySpacing, 'previous Obstacle ID:', this.newestObstacleID);
@@ -187,7 +187,6 @@ class Game extends Phaser.Scene {
       this.player.update(this.cursors);
 
       this.isIntelWithinRange();
-      this.isSearchlightNear();
 
       this.updateFuelDisplay();
 
@@ -574,7 +573,21 @@ class Game extends Phaser.Scene {
       }
    }
    checkIfBoulder() {
+      if (this.zone.rock.minQuantity > 0) {
+         this.makeStrayRock();
+      }
+   }
 
+   makeStrayRock() {
+      let rock = new Rock(this, 0, 0, "rock", 0);
+      let ratioSpacingY = randomBiasMiddle();
+      let offsetX = randomAvoidMiddle();
+      rock.x = bankWidth + offsetX * displayWidth;
+      let offsetY = ratioSpacingY * this.ySpacing;
+      rock.y = this.spawnY - offsetY;
+      rock.setVelocityY(this.driftSpeed);
+      this.rocks.add(rock);
+      console.log('placed rock at', Math.trunc(rock.x), Math.trunc(rock.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
    }
 
    makeDriftwood() {
@@ -589,6 +602,7 @@ class Game extends Phaser.Scene {
       // wood.input.hitArea.setTo(0, 20, 40, 20);
       // wood.setHitArea(0, 20, 40, 20);
       wood.angle = 90;
+      wood.play('splash_driftwood');
       this.woods.add(wood);
       console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
    }
@@ -640,6 +654,9 @@ class Game extends Phaser.Scene {
       }
 
       let light = new Searchlight(this, 0, 0, 'searchlight');
+
+      // can sound be delayed until light on screen, but without checking distance in update() which seems to truncate sound, and would play too often.
+      // this.lightNearSound.play();
 
       return [secret, intel, tower, light];
       // return [secret, intel, tower, land_tower];
