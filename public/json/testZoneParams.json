@@ -1,0 +1,396 @@
+[
+   {
+      "name": "Zone 0",
+      "milestone": {
+         "name": "Testing Zone"
+      },
+      "riverSpeed": 80,
+      "intervals": 999,
+      "obstacle": {
+         "secret": 0,
+         "boom": 1,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 140,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 1,
+            "delay": 2000,
+            "speed": 20
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 50,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 1",
+      "milestone": {
+         "name": "Bird Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 5,
+      "obstacle": {
+         "secret": 0,
+         "boom": 1,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 140,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0,
+            "delay": 2000,
+            "speed": 20
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 50,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 2",
+      "milestone": {
+         "name": "Liddy's Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 5,
+      "obstacle": {
+         "secret": 0,
+         "boom": 1,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 140,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 1,
+            "delay": 2000,
+            "speed": 15
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 50,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 3",
+      "milestone": {
+         "name": "Elder Bird Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 5,
+      "obstacle": {
+         "secret": 1,
+         "boom": 0,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 320,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 140,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.4,
+            "delay": 1500,
+            "speed": 15
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 40,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 4",
+      "milestone": {
+         "name": "Fourth Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 5,
+      "obstacle": {
+         "secret": 0.4,
+         "boom": 0.6,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 300,
+         "max": 300
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 120,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.45,
+            "delay": 1500,
+            "speed": 20
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 45,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "minQuantity": 1,
+         "maxQuantity": 2,
+         "minScale": 0.8,
+         "maxScale": 1.5
+      },
+      "rock": {
+         "minQuantity": 0,
+         "maxQuantity": 0,
+         "minScale": 0,
+         "maxScale": 0
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 5",
+      "milestone": {
+         "name": "Fifth Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 5,
+      "obstacle": {
+         "secret": 0.4,
+         "boom": 0.6,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 120,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.572,
+            "delay": 1300,
+            "speed": 23
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 50,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.5,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 6",
+      "milestone": {
+         "name": "Sixth Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 5,
+      "obstacle": {
+         "secret": 0.4,
+         "boom": 0.6,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 120,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.7143,
+            "delay": 1500,
+            "speed": 20
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 45,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 40,
+         "direction": "W"
+      }
+   },
+   {
+      "name": "Zone 7",
+      "milestone": {
+         "name": "Seventh Rapids"
+      },
+      "riverSpeed": 70,
+      "intervals": 5,
+      "obstacle": {
+         "secret": 0.4,
+         "boom": 0.6,
+         "rapids": 0
+      },
+      "ySpacing": {
+         "min": 240,
+         "max": 320
+      },
+      "boom": {
+         "gapMin": 80,
+         "gapMax": 120,
+         "lengthMin": 50,
+         "closable": {
+            "chance": 0.834,
+            "delay": 1100,
+            "speed": 25
+         }
+      },
+      "secret": {
+         "bankGap": 20,
+         "alertRange": 180
+      },
+      "searchlight": {
+         "patrolSpeed": 55,
+         "huntSpeed": 100
+      },
+      "wood": {
+         "scale": 1.5,
+         "driftChance": 0.3,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.3,
+         "strayScale": 1.5
+      },
+      "wind": {
+         "speed": 0,
+         "direction": "W"
+      }
+   }
+]

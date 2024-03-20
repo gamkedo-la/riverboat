@@ -93,7 +93,11 @@ class Setup extends Phaser.Scene {
       this.load.audio('snd_intelOverlap', ['public/sound/collider_placeholder.mp3']);
       this.load.audio('snd_boomChain', ['public/sound/boomChainSound.wav']);
 
-      this.load.json('zoneData', 'public/json/zoneParameters.json');
+      if (testing) {
+         this.load.json('zoneData', 'public/json/testZoneParams.json');
+      } else {
+         this.load.json('zoneData', 'public/json/zoneParameters.json');
+      }
 
       this.load.once('complete', () => {
          let canvas = document.createElement('canvas');

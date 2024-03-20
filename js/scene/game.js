@@ -227,8 +227,7 @@ class Game extends Phaser.Scene {
          item.y = this.spawnY;
       });
       if (testing) {
-         let idLabel = this.add.text(bankWidth + 100, this.spawnY, this.newestObstacleID, { font: '48px Verdana', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
-         this.idLabels.add(idLabel);
+         this.labelObstacleAndZoneID();
       }
       //console.log('placing obstacle', this.newestObstacleID, 'at', this.spawnY);
    }
@@ -1115,5 +1114,14 @@ class Game extends Phaser.Scene {
 
    debugObstacleChances() {
       console.log(`Zone ${currentZone} obstacles ${this.zone.intervals}: Secret = ${this.zone.obstacle.secret}, Boom = ${this.zone.obstacle.boom}, closable ${this.zone.boom.closable.chance}`);
+      //if (currentZone > 2) {
+      // closable ${this.zone.boom.closable.chance}
+   }
+
+   labelObstacleAndZoneID() {
+      let idLabel = this.add.text(bankWidth + 100, this.spawnY, this.newestObstacleID, { font: '48px Verdana', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
+      this.idLabels.add(idLabel);
+      let zoneLabel = this.add.text(bankWidth + displayWidth - 57, this.spawnY, `z${currentZone}`, { font: '48px Times', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      this.idLabels.add(zoneLabel);
    }
 };
