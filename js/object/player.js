@@ -33,9 +33,31 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocity(0, 0);
       this.depth = 7;
       this.coneYoffset = 35;
+      
+      this.setupMotorSound();
       scene.add.existing(this);
       this.scene = scene;
    }
+
+    setupMotorSound() {
+
+      // fade in and out
+      // NOTE: currently min and max are the same because
+      // volume changes made the rev effect sound less cool
+      this.motorVolumeMin = 0.05; // 0.05;
+      this.motorVolumeMax = 0.05; // 0.20;
+      this.motorVolumeChangeSpeed = 0.005;
+
+      // vroom vroom the pitch
+      this.motorSamplerateMin = 0.75;
+      this.motorSamplerateMax = 1.5;
+      this.motorSamplerateChangeSpeed = 0.015;
+
+      // init
+      this.motorSound = this.scene.sound.add('snd_motorLoop', { volume: this.motorVolumeMin, loop: true });
+      this.motorSound.play();
+    }      
+
 
    update(cursors) {
       if (keyboard === "likely") {
@@ -133,10 +155,26 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    addWake() {
+      // fade in volume
+      this.motorSound.volume += this.motorVolumeChangeSpeed;
+      if (this.motorSound.volume > this.motorVolumeMax) this.motorSound.volume = this.motorVolumeMax;
+      // rev up sound loop      
+      this.motorSound.rate += this.motorSamplerateChangeSpeed;
+      if (this.motorSound.rate > this.motorSamplerateMax) this.motorSound.rate = this.motorSamplerateMax;
+
+      console.log(this.motorSound.rate);
+
       this.scene.playerWake.frequency = 50;
    }
 
    stopWake() {
+      // fade out volume
+      this.motorSound.volume -= this.motorVolumeChangeSpeed;
+      if (this.motorSound.volume < this.motorVolumeMin) this.motorSound.volume = this.motorVolumeMin;
+      // rev down sound loop      
+      this.motorSound.rate -= this.motorSamplerateChangeSpeed;
+      if (this.motorSound.rate < this.motorSamplerateMin) this.motorSound.rate = this.motorSamplerateMin;
+
       this.scene.playerWake.frequency = 200;
    }
 
