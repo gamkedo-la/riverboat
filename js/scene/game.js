@@ -232,7 +232,6 @@ class Game extends Phaser.Scene {
       //console.log('placing obstacle', this.newestObstacleID, 'at', this.spawnY);
    }
 
-
    testIfReadyForNextObstacle() {
       this.previousY = this.getPreviousObstacleY();
       // console.log(previousY, this.ySpacing);
@@ -587,6 +586,9 @@ class Game extends Phaser.Scene {
       let offsetY = ratioSpacingY * this.ySpacing;
       wood.y = this.spawnY - offsetY;
       wood.setVelocityY(this.driftSpeed);
+      // wood.input.hitArea.setTo(0, 20, 40, 20);
+      // wood.setHitArea(0, 20, 40, 20);
+      wood.angle = 90;
       this.woods.add(wood);
       console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
    }

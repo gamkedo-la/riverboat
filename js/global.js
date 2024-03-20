@@ -1,5 +1,5 @@
 const testing = true; // jump into game & zone
-const testZone = 1; // zone to test
+const testZone = 4; // zone to test
 const withColliders = false; // no need to navigate 
 
 const displayWidth = 360;
