@@ -44,6 +44,7 @@ class Game extends Phaser.Scene {
       // decoration of land and water
       this.features = this.physics.add.group({ runChildUpdate: true });
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
+      this.idLabels = this.physics.add.group({ runChildUpdate: true });
 
       this.driftSpeed = this.zone.riverSpeed;
       //console.log(this.driftSpeed);
@@ -135,18 +136,25 @@ class Game extends Phaser.Scene {
 
       // at game start, and when menu jumps to a zone start, create first 2 obstacles - using same method as update() - so they can move down from spawnY to visible starting positions.
       if (currentZone != 4) {
-         this.makeObstacle();
-         this.newestObstacleID += 1;
+         this.newestObstacleID += 1; // set manually because here not using whenObstacleMaking()
 
-         // manually move obstacle to where it would be in play when trigger next obstacle, unsure if that +1 is necessary
+         this.makeObstacle();
+
+         // manually move obstacle by spacing Y 
+         // unsure if that + 1 is necessary
          this.obstacles.incY(this.ySpacing + 1);
-         this.previousY = this.getPreviousObstacleY();
 
-         console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
+         if (testing) {
+            this.idLabels.incY(this.ySpacing + 1);
 
+            this.previousY = this.getPreviousObstacleY();
+            console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
+         }
+
+         // 2nd pre-made obstacle
+         this.newestObstacleID += 1;
          this.makeObstacle();
          this.previousY = this.getPreviousObstacleY();
-         this.newestObstacleID += 1; // manual because not using whenObstacleMaking()
       }
 
       // driftwood and boulders between obstacles are placed above associated obstacle, but this is a WIP and seems to affect vertical spacing so I switched off the initial move-down.
@@ -191,6 +199,60 @@ class Game extends Phaser.Scene {
          this.player.neitherFastOrSlow();
       }
    };
+
+   makeObstacle() {
+      let chosenObstacleType;
+
+      if (this.progressInZone < this.zone.intervals) {
+         chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
+      }
+      // if progress reaches zone's quantity of obstacles then show milestone, and increment currentZone      
+      else {
+         currentZone += 1;
+         if (currentZone > zones_quantity) {
+            this.scene.start("Home");
+         }
+         else {
+            chosenObstacleType = "milestone";
+            this.setZoneParameters(currentZone);
+         }
+      }
+      const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
+      this.placeObstaclesY(...obstacleSprites);
+      this.placeObstaclesX[chosenObstacleType](obstacleSprites);
+   }
+
+   placeObstaclesY(...components) {
+      components.forEach((item) => {
+         item.y = this.spawnY;
+      });
+      if (testing) {
+         let idLabel = this.add.text(bankWidth + 100, this.spawnY, this.newestObstacleID, { font: '48px Verdana', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
+         this.idLabels.add(idLabel);
+      }
+      //console.log('placing obstacle', this.newestObstacleID, 'at', this.spawnY);
+   }
+
+
+   testIfReadyForNextObstacle() {
+      this.previousY = this.getPreviousObstacleY();
+      // console.log(previousY, this.ySpacing);
+      if (this.previousY - this.spawnY > this.ySpacing) {
+         console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
+         this.whenObstacleMaking();
+      }
+   }
+
+   // separated so initial obstacles createed before gameplay can also get in-between objects.
+   whenObstacleMaking() {
+      this.newestObstacleID += 1;
+      this.makeObstacle();
+      // randomize new Y gap to next Obstacle
+      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+      this.trackProgress();
+      this.checkIfDriftwood();
+      this.checkIfBoulder();
+   }
 
    moveFurnitureY(y) {
       // at start of game move obstacles and associated furniture down from spawnY to player visible starting positions
@@ -506,32 +568,6 @@ class Game extends Phaser.Scene {
       //}
    };
 
-   testIfReadyForNextObstacle() {
-      this.previousY = this.getPreviousObstacleY();
-      // console.log(previousY, this.ySpacing);
-      if (this.previousY - this.spawnY > this.ySpacing) {
-         console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
-         this.whenObstacleMaking();
-
-         // if (keyboard != 'likely') {
-         //    console.log(`scroll: ${this.cameras.main.scrollX}`);
-         //    console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${this.cameraCentreX}, gameCentreX ${this.gameCentreX}, leftBtnX ${this.leftBtnX}, rightBtnX ${this.rightBtnX}`);
-         // }
-      }
-   }
-
-   // separated so that first 2 obstacles can also get stray things
-   // would be a problem if Zone 1 ever had strays because the first 2 obstacles start at Y values visible on screen
-   whenObstacleMaking() {
-      this.newestObstacleID += 1;
-      this.makeObstacle();
-      // randomize new Y gap to next Obstacle
-      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-      this.trackProgress();
-      this.checkIfDriftwood();
-      this.checkIfBoulder();
-   }
-
    checkIfDriftwood() {
       // let randomValue = Math.random();
       if (this.zone.wood.minQuantity > 0) {
@@ -554,41 +590,6 @@ class Game extends Phaser.Scene {
       wood.setVelocityY(this.driftSpeed);
       this.woods.add(wood);
       console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
-   }
-
-   makeObstacle() {
-      let chosenObstacleType;
-      // within current zone if progress reaches zone's quantity of obstacles then show milestone and increment currentZone (and show message)
-
-      // if (this.progressInZone === 0 || this.progressInZone % this.milestone_interval > 0) {
-      if (this.progressInZone < this.zone.intervals) {
-         chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
-         const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
-         this.placeObstaclesY(...obstacleSprites);
-         this.placeObstaclesX[chosenObstacleType](obstacleSprites);
-      }
-      else {
-         currentZone += 1;
-         if (currentZone > zones_quantity) {
-            this.scene.start("Home");
-         }
-         else {
-            chosenObstacleType = "milestone";
-            this.setZoneParameters(currentZone);
-            const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
-            this.placeObstaclesY(...obstacleSprites);
-            this.placeObstaclesX[chosenObstacleType](obstacleSprites);
-         }
-      }
-      // randomize Y spacing to next Obstacle 
-      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-   }
-
-   placeObstaclesY(...components) {
-      components.forEach((item) => {
-         item.y = this.spawnY;
-      });
-      //console.log('placing obstacle', this.newestObstacleID, 'at', this.spawnY);
    }
 
    makeBooms() {
@@ -1076,6 +1077,9 @@ class Game extends Phaser.Scene {
       this.obstacles.setVelocityY(speed);
       this.features.setVelocityY(speed);
       this.waterBG.tilePositionY -= speed / 60;
+      if (testing) {
+         this.idLabels.incY(speed / 60);
+      }
    }
 
    weightedRandomChoice(items, weights) {

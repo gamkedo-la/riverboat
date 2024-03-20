@@ -1,3 +1,7 @@
+const testing = true; // jump into game & zone
+const testZone = 1; // zone to test
+const withColliders = false; // no need to navigate 
+
 const displayWidth = 360;
 const displayHeight = 600;
 // reduce bank Width to weaken button hitarea offset error
@@ -19,12 +23,6 @@ let deviceOS, keyboard;
 
 let currentZone;
 let zones_quantity;
-
-// const testing = true;
-const testing = false;
-
-const withColliders = true;
-// const withColliders = false;
 
 // generate number between 0 and 1 with distribution biased toward 0.5
 const randomBias2Middle = function () {
