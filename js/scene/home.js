@@ -20,7 +20,7 @@ class Home extends Phaser.Scene {
       let titleTop = 60;
       let titleCentre = [gameWidth / 2, titleTop];
 
-      let text = this.add.text(...titleCentre, 'River boat', { font: '36px Verdana', color: '#ffffff' })
+      let text = this.add.text(...titleCentre, 'River Spy', { font: '36px Verdana', color: '#ffffff' })
          .setOrigin(0.5)
          .setDepth(1);
 

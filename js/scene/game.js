@@ -256,7 +256,6 @@ class Game extends Phaser.Scene {
       this.checkIfDriftwood();
       this.checkIfBoulder();
 
-      console.log('lightPrev', this.previousObstacleWasLight);
       if (this.previousObstacleWasLight) {
          this.lightNearSound.play();
          this.previousObstacleWasLight = false;
@@ -614,9 +613,8 @@ class Game extends Phaser.Scene {
       let offsetY = ratioSpacingY * this.ySpacing;
       wood.y = this.spawnY - offsetY;
       wood.setVelocityY(this.driftSpeed);
-      // wood.input.hitArea.setTo(0, 20, 40, 20);
-      // wood.setHitArea(0, 20, 40, 20);
       wood.angle = 90;
+      wood.setSize(18, 30, true); // set hitbox size, centred
       wood.play('splash_driftwood');
       this.woods.add(wood);
       console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
