@@ -2,7 +2,7 @@ class Driftwood extends Phaser.Physics.Arcade.Sprite {
    constructor(scene, x, y, texture) {
       super(scene, x, y, texture);
       Object.assign(this, { scene, x, y });
-      this.scene.obstacles.add(this);
+      // this.scene.obstacles.add(this);
       this.scene.woods.add(this);
       this.scene.physics.world.enable(this);
       this.setImmovable(true);

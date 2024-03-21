@@ -164,7 +164,7 @@ class Game extends Phaser.Scene {
       // driftwood and boulders between obstacles are placed above associated obstacle, but this is a WIP and seems to affect vertical spacing so I switched off initial move down to bring closer to boat.
       else {
          this.whenObstacleMaking();
-         // this.moveFurnitureY(this.ySpacing + 1);
+         this.moveFurnitureY(this.ySpacing);
          console.log('Yspacing:', this.ySpacing, 'previous Obstacle ID:', this.newestObstacleID);
       }
 
@@ -239,7 +239,10 @@ class Game extends Phaser.Scene {
       this.previousY = this.getPreviousObstacleY();
       // console.log(previousY, this.ySpacing);
       if (this.previousY - this.spawnY > this.ySpacing) {
+
          console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
+
+
          this.whenObstacleMaking();
       }
    }
@@ -260,6 +263,9 @@ class Game extends Phaser.Scene {
       this.obstacles.incY(y);
       this.woods.incY(y);
       this.rocks.incY(y);
+      if (testing) {
+         this.idLabels.incY(y);
+      }
    }
 
    setupColliders() {
@@ -827,6 +833,16 @@ class Game extends Phaser.Scene {
             obstacle.destroy();
          }
       });
+      this.rocks.getChildren().forEach(child => {
+         if (child.getBounds().top > displayHeight) {
+            child.destroy();
+         }
+      });
+      this.woods.getChildren().forEach(child => {
+         if (child.getBounds().top > displayHeight) {
+            child.destroy();
+         }
+      });
       // this.saveBestScore();
    };
 
@@ -989,6 +1005,8 @@ class Game extends Phaser.Scene {
       this.physics.resume();
       this.player.fuel = this.player.startFuel;
       this.obstacles.incY(-200); // should be less than interval to avoid collisioon with previous obstacle, though usually X centre empty, except for a closed bridge.
+      this.rocks.incY(-200);
+      this.woods.incY(-200);
       this.player.x = this.player.start_x;
    }
 
@@ -1008,7 +1026,7 @@ class Game extends Phaser.Scene {
          this.player.health = this.player.initialHealth;
          this.player.fuel = this.player.initialFuel;
          this.gameOver = false;
-         this.obstacles.incY(-200);
+         //this.obstacles.incY(-200);
          this.physics.resume();
          this.scene.restart();
       });
@@ -1097,6 +1115,8 @@ class Game extends Phaser.Scene {
    setDrift(speed) {
       this.driftSpeed = speed;
       this.obstacles.setVelocityY(speed);
+      this.rocks.setVelocityY(speed);
+      this.woods.setVelocityY(speed);
       this.features.setVelocityY(speed);
       this.waterBG.tilePositionY -= speed / 60;
       if (testing) {
