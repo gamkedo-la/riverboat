@@ -33,13 +33,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocity(0, 0);
       this.depth = 7;
       this.coneYoffset = 35;
-      
+
       this.setupMotorSound();
       scene.add.existing(this);
       this.scene = scene;
    }
 
-    setupMotorSound() {
+   setupMotorSound() {
 
       // fade in and out
       // note: currently unused - it sounded better without it
@@ -56,8 +56,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.motorSound = this.scene.sound.add('snd_motorLoop', { volume: this.motorVolumeMin, loop: true });
       this.motorSound.play();
 
-    }      
-
+   }
 
    update(cursors) {
       if (keyboard === "likely") {
@@ -119,12 +118,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // less engine if anchor assisted but risk snagging
       else if ((cursors.down.isDown || cursors.keyS.isDown)
          && this.fuel >= this.backwardFuel) {
-         this.scene.driftSpeed = this.scene.zone.riverSpeed / this.backward_ratio;
-         this.engine = "backward";
-         //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
-
-         this.setTint(0xbae946);
-         this.useFuel(this.backwardFuel);
+         this.motorBackward();
       }
 
       // neither up nor down is pressed
@@ -145,13 +139,22 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    motorForward() {
-      //console.log(this);
       this.setTint(0xffb38a);
       this.body.setVelocityY(this.forward_speed * -1);
       this.addWake();
-      this.useFuel(this.forwardFuel);
       this.scene.driftSpeed = this.scene.zone.riverSpeed * this.forward_ratio;
       this.engine = "forward";
+      this.useFuel(this.forwardFuel);
+   }
+
+   motorBackward() {
+      this.setTint(0xbae946);
+      this.scene.driftSpeed = this.scene.zone.riverSpeed / this.backward_ratio;
+      this.engine = "backward";
+      this.useFuel(this.backwardFuel);
+
+      this.motorSound.rate += this.motorSamplerateChangeSpeed;
+      if (this.motorSound.rate > this.motorSamplerateMax) this.motorSound.rate = this.motorSamplerateMax;
    }
 
    addWake() {
@@ -179,6 +182,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    neitherFastOrSlow() {
       this.setTint(0xffffff);
       this.scene.driftSpeed = this.scene.zone.riverSpeed;
+
+      if (this.engine === "backward") {
+         this.motorSound.rate -= this.motorSamplerateChangeSpeed;
+         if (this.motorSound.rate < 0) this.motorSound.rate = 0;
+      }
+
       this.engine = "off";
 
       if (this.scene.playerWake.visible) {

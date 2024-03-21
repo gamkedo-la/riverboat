@@ -242,7 +242,6 @@ class Game extends Phaser.Scene {
 
          console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
 
-
          this.whenObstacleMaking();
       }
    }
