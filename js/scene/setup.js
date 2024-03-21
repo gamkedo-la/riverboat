@@ -96,7 +96,7 @@ class Setup extends Phaser.Scene {
       this.load.audio('snd_waterLoop', ['public/sound/flowing_stream_Argal.mp3']);
 
       if (testing) {
-         this.load.json('zoneData', 'public/json/testZoneParams.json');
+         this.load.json('zoneData', 'public/json/test_zoneParams.json');
       } else {
          this.load.json('zoneData', 'public/json/zoneParameters.json');
       }
@@ -150,7 +150,7 @@ class Setup extends Phaser.Scene {
       });
 
       if (testing) {
-         currentZone = testZone;
+         currentZone = test_zone;
          this.scene.start('Game');
       } else {
          this.scene.start('Home');

@@ -1,16 +1,21 @@
-const testing = true; // jump into game & zone when true
-const testZone = 4; // zone to test
-const withColliders = false; // no need to navigate when false
+const testing = false; // jump into game & zone when true
+const test_zone = 1; // zone to test
+const test_no_colliders = true; // no need to navigate when false
+const test_river_speed = 100; // 20 makes access to riverbank easier
+const fuel_for_testing = 9999;
 
 const displayWidth = 360;
 const displayHeight = 600;
 // reduce bank Width to weaken button hitarea offset error
 const bankWidth = 0; // 100 
 const gameWidth = displayWidth + bankWidth * 2;
-const riverSpeed = 60; // 20 makes access to riverbank easier
+
+const waterColor = 0x0000ff;
+
+const start_obstacles_n = 2;
+const spawn_above_screen_Y = -100;
 const intelWidth = 70;
 const intelDepth = 50;
-const waterColor = 0x0000ff;
 
 const hudStyle = {
    font: '22px Arial',

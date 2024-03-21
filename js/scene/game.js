@@ -4,13 +4,10 @@ class Game extends Phaser.Scene {
    }
 
    init() {
-      // this.scene.launch('Controls');
-      // this.scene.add('Controls', Controls);
-      // this.scene.bringToTop('Controls');
+      this.gameOver = false;
 
       this.data = this.cache.json.get('zoneData');
       zones_quantity = this.data.length - 1;
-      //console.log(zones_quantity);
       this.setZoneParameters(currentZone);
 
       this.progressInGame = 0;
@@ -23,6 +20,11 @@ class Game extends Phaser.Scene {
             this.progressInGame += this.data[i].intervals;
          }
       }
+      this.newestObstacleID = this.progressInGame + 1;
+
+      // pre-placed obstacles at start of game must be deducted
+      this.newestObstacleID += start_obstacles_n;
+      this.obstaclesInZone = this.zone.intervals - start_obstacles_n;
 
       this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
       this.waterBG.setOrigin(0, 0);
@@ -46,15 +48,17 @@ class Game extends Phaser.Scene {
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.idLabels = this.physics.add.group({ runChildUpdate: true });
 
-      this.driftSpeed = this.zone.riverSpeed;
-      //console.log(this.driftSpeed);
+      if (testing) {
+         this.riverSpeed = test_river_speed; // global test speed 
+      } else {
+         this.riverSpeed = this.zone.riverSpeed;
+      }
 
-      this.spawnY = -100;
-      //this.ySpacingRange = [240, 320];
+      this.spawnY = spawn_above_screen_Y;
+
       this.ySpacingRange = [this.zone.ySpacing.min, this.zone.ySpacing.max];
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
 
-      this.newestObstacleID = 0;
       //this.progressInGameMax = localStorage.getItem('obstaclesPassedMax');
 
       this.boomGapRange = [this.zone.boom.gapMin, this.zone.boom.gapMax];
@@ -75,8 +79,6 @@ class Game extends Phaser.Scene {
 
       this.intel_alert = 180;
       this.light_alert = 250;
-      // this.milestone_interval = this.zone.intervals;
-      this.gameOver = false;
 
       // play the sound of water on loop
       this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.15, loop: true });
@@ -140,9 +142,8 @@ class Game extends Phaser.Scene {
 
       // at game start, and when menu jumps to a zone start, create first 2 obstacles - using same method as update() - so they can move down from spawnY to visible starting positions.
       if (currentZone < 4 && currentZone > 5) {
-         this.newestObstacleID += 1; // set manually because here not using whenObstacleMaking()
-
-         this.makeObstacle();
+         // this.makeObstacle();
+         this.whenObstacleMaking();
 
          // manually move obstacle by spacing Y 
          // unsure if that + 1 is necessary
@@ -156,8 +157,9 @@ class Game extends Phaser.Scene {
          }
 
          // 2nd pre-made obstacle
-         this.newestObstacleID += 1;
-         this.makeObstacle();
+         //this.newestObstacleID += 1;
+         // this.makeObstacle();
+         this.whenObstacleMaking();
          this.previousY = this.getPreviousObstacleY();
       }
 
@@ -175,19 +177,16 @@ class Game extends Phaser.Scene {
       this.cursors.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
       this.cursors.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 
-      if (withColliders) {
+      if (!testing) {
          this.setupColliders();
       }
-
-      this.setDrift(this.zone.riverSpeed);
       this.input.keyboard.on('keyup', this.anyKey, this);
-      //this.loseLife()
    };
 
    update() {
       if (this.gameOver) return;
 
-      this.setDrift(this.driftSpeed);
+      this.applyRiverDrift(this.driftSpeed);
       this.player.update(this.cursors);
 
       this.isIntelWithinRange();
@@ -206,7 +205,7 @@ class Game extends Phaser.Scene {
    makeObstacle() {
       let chosenObstacleType;
 
-      if (this.progressInZone < this.zone.intervals) {
+      if (this.progressInZone < this.obstaclesInZone) {
          chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
       }
       // if progress reaches zone's quantity of obstacles then show milestone, and increment currentZone      
@@ -470,7 +469,7 @@ class Game extends Phaser.Scene {
 
       top += buttonYoffset;
       this.btnSlow = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
-         this.driftSpeed = this.zone.riverSpeed / this.player.backward_ratio;
+         this.driftSpeed = this.riverSpeed / this.player.backward_ratio;
          this.player.engine = "backward";
          this.player.setTint(0xbae946);
          this.player.useFuel(this.player.backwardFuel);
@@ -1111,7 +1110,7 @@ class Game extends Phaser.Scene {
       return yPrevious;
    }
 
-   setDrift(speed) {
+   applyRiverDrift(speed) {
       this.driftSpeed = speed;
       this.obstacles.setVelocityY(speed);
       this.rocks.setVelocityY(speed);
@@ -1156,14 +1155,15 @@ class Game extends Phaser.Scene {
 
    debugObstacleChances() {
       console.log(`Zone ${currentZone} obstacles ${this.zone.intervals}: Secret = ${this.zone.obstacle.secret}, Boom = ${this.zone.obstacle.boom}, closable ${this.zone.boom.closable.chance}`);
-      //if (currentZone > 2) {
+      // Omitting unused parameters from JSON easily causes bugs!
+      // if (currentZone > 2) {
       // closable ${this.zone.boom.closable.chance}
    }
 
    labelObstacleAndZoneID() {
-      let idLabel = this.add.text(bankWidth + 100, this.spawnY, this.newestObstacleID, { font: '48px Verdana', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
+      let idLabel = this.add.text(bankWidth + 12, this.spawnY, `${this.newestObstacleID} ${this.progressInGame}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
       this.idLabels.add(idLabel);
-      let zoneLabel = this.add.text(bankWidth + displayWidth - 57, this.spawnY, `z${currentZone}`, { font: '48px Times', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${currentZone}-${this.progressInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
       this.idLabels.add(zoneLabel);
    }
 };

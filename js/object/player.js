@@ -1,12 +1,11 @@
 class Player extends Phaser.Physics.Arcade.Sprite {
-
    constructor(scene, x, y, key, frame) {
       super(scene, x, y, key, frame);
       this.start_x = x;
       this.start_y = y;
       this.key = key; // name of texture
       if (testing) {
-         this.startFuel = 99999;
+         this.startFuel = fuel_for_testing;
       } else {
          this.startFuel = 2000;
       }
@@ -139,7 +138,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    motorForward() {
-      this.setTint(0xffb38a);
+      // tint same colour as Fuel display
+      this.setTint(0xff0000); // was 0xffb38a
       this.body.setVelocityY(this.forward_speed * -1);
       this.addWake();
       this.scene.driftSpeed = this.scene.zone.riverSpeed * this.forward_ratio;
@@ -148,7 +148,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    motorBackward() {
-      this.setTint(0xbae946);
+      // tint same colour as Fuel display
+      this.setTint(0xff7f50); // was 0xbae946
       this.scene.driftSpeed = this.scene.zone.riverSpeed / this.backward_ratio;
       this.engine = "backward";
       this.useFuel(this.backwardFuel);
