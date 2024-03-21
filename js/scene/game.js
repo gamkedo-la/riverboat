@@ -5,6 +5,7 @@ class Game extends Phaser.Scene {
 
    init() {
       this.gameOver = false;
+      this.previousObstacleWasLight = false;
 
       this.data = this.cache.json.get('zoneData');
       zones_quantity = this.data.length - 1;
@@ -254,6 +255,12 @@ class Game extends Phaser.Scene {
       this.trackProgress();
       this.checkIfDriftwood();
       this.checkIfBoulder();
+
+      console.log('lightPrev', this.previousObstacleWasLight);
+      if (this.previousObstacleWasLight) {
+         this.lightNearSound.play();
+         this.previousObstacleWasLight = false;
+      }
    }
 
    moveFurnitureY(y) {
@@ -321,31 +328,31 @@ class Game extends Phaser.Scene {
       }
    }
 
-   isSearchlightNear() {
-      if (this.lights) {
-         let nearest_light_dist = 800;
-         this.lights.getChildren().forEach(light => {
-            // console.log(this.player.x, this.player.y, intel.x, intel.y)
-            let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, light.x, light.y);
-            if (dist < nearest_light_dist) {
-               nearest_light_dist = dist;
-            }
-         });
-         if (nearest_light_dist < this.light_alert) {
-            this.lightNearSound.play();
-         }
-      }
-   }
+   // isSearchlightNear() {
+   //    if (this.lights) {
+   //       let nearest_light_dist = 800;
+   //       this.lights.getChildren().forEach(light => {
+   //          // console.log(this.player.x, this.player.y, intel.x, intel.y)
+   //          let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, light.x, light.y);
+   //          if (dist < nearest_light_dist) {
+   //             nearest_light_dist = dist;
+   //          }
+   //       });
+   //       if (nearest_light_dist < this.light_alert) {
+   //          this.lightNearSound.play();
+   //       }
+   //    }
+   // }
 
    setupSounds() {
-      this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.05, loop: false });
-      this.searchContactSound = this.sound.add('snd_searchContact', { volume: 0.1 });
+      this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.5, loop: false });
+      this.searchContactSound = this.sound.add('snd_searchContact', { volume: 0.2 });
       this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0 });
-      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.1 });
+      this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
       this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0 });
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
-      this.boomChainSound = this.sound.add('snd_boomChain', { volume: 0.1 });
+      this.boomChainSound = this.sound.add('snd_boomChain', { volume: 0.15 });
    }
 
    setupXscroll() {
@@ -663,8 +670,8 @@ class Game extends Phaser.Scene {
 
       let light = new Searchlight(this, 0, 0, 'searchlight');
 
-      // can sound be delayed until light on screen, but without checking distance in update() which seems to truncate sound, and would play too often.
-      // this.lightNearSound.play();
+      // instead of checking in update() distance player to light, which would play too often, and seems to truncate sound, instead play once per light creation - but should delay until light is near player or at least visible on screen (spawns above screen)
+      this.previousObstacleWasLight = true;
 
       return [secret, intel, tower, light];
       // return [secret, intel, tower, land_tower];
