@@ -141,34 +141,21 @@ class Game extends Phaser.Scene {
       // this.sound.manager.maxSounds = 3;
       this.setupSounds();
 
-      // at game start, and when menu jumps to a zone start, create first 2 obstacles - using same method as update() - so they can move down from spawnY to visible starting positions.
-      if (currentZone < 4 && currentZone > 5) {
-         // this.makeObstacle();
-         this.whenObstacleMaking();
+      // at game start, and when menu jumps to a zone start, create first obstacle
 
-         // manually move obstacle by spacing Y 
-         // unsure if that + 1 is necessary
-         this.obstacles.incY(this.ySpacing + 1);
+      this.whenObstacleMaking();
 
-         if (testing) {
-            this.idLabels.incY(this.ySpacing + 1);
+      // move it down from spawnY to visible starting position, by call sameing method as update()
+      this.moveFurnitureY(this.ySpacing);
+      
+      this.previousY = this.getPreviousObstacleY();
+      //console.log('Yspacing:', this.ySpacing, 'previous Obstacle ID:', this.newestObstacleID);
 
-            this.previousY = this.getPreviousObstacleY();
-            console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
-         }
+      if (testing) {
+         this.idLabels.incY(this.ySpacing + 1);
 
-         // 2nd pre-made obstacle
-         //this.newestObstacleID += 1;
-         // this.makeObstacle();
-         this.whenObstacleMaking();
          this.previousY = this.getPreviousObstacleY();
-      }
-
-      // driftwood and boulders between obstacles are placed above associated obstacle, but this is a WIP and seems to affect vertical spacing so I switched off initial move down to bring closer to boat.
-      else {
-         this.whenObstacleMaking();
-         this.moveFurnitureY(this.ySpacing);
-         console.log('Yspacing:', this.ySpacing, 'previous Obstacle ID:', this.newestObstacleID);
+         console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
       }
 
       this.cursors = this.input.keyboard.createCursorKeys();
