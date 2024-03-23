@@ -96,7 +96,8 @@ class Setup extends Phaser.Scene {
       this.load.audio('snd_waterLoop', ['public/sound/flowing_stream_Argal.mp3']);
 
       if (testing) {
-         this.load.json('zoneData', 'public/json/test_zoneParams.json');
+         this.load.json('zoneData', 'public/json/zoneParameters.json');
+         // this.load.json('zoneData', 'public/json/test_zoneParams.json');
       } else {
          this.load.json('zoneData', 'public/json/zoneParameters.json');
       }

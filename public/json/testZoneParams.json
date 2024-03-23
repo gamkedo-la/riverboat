@@ -201,7 +201,7 @@
          "name": "Fourth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 30,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -252,7 +252,7 @@
          "name": "Fifth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 30,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -303,7 +303,7 @@
          "name": "Sixth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 30,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -331,17 +331,15 @@
          "patrolSpeed": 45,
          "huntSpeed": 100
       },
-      "rock": {
-         "minQuantity": 1,
-         "maxQuantity": 1,
-         "minScale": 0.8,
-         "maxScale": 1.5
-      },
       "wood": {
-         "minQuantity": 1,
-         "maxQuantity": 1,
-         "minScale": 0.8,
-         "maxScale": 1
+         "scale": 1.5,
+         "driftChance": 0.0,
+         "driftScale": 1.5
+      },
+      "rock": {
+         "scale": 1.5,
+         "strayChance": 0.0,
+         "strayScale": 1.5
       },
       "wind": {
          "speed": 40,
@@ -354,7 +352,7 @@
          "name": "Seventh Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 40,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
