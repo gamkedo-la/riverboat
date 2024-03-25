@@ -3,6 +3,7 @@ const test_zone = 1; // zone to test
 const test_no_colliders = true; // no need to navigate when false
 const test_river_speed = 100; // 20 makes access to riverbank easier
 const fuel_for_testing = 9999;
+const zone_quantity_for_test = 3;
 
 const displayWidth = 360;
 const displayHeight = 600;
@@ -12,7 +13,7 @@ const gameWidth = displayWidth + bankWidth * 2;
 
 const waterColor = 0x0000ff;
 
-const start_obstacles_n = 2;
+const start_obstacles_n = 1;
 const spawn_above_screen_Y = -100;
 const intelWidth = 70;
 const intelDepth = 50;

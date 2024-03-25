@@ -54,7 +54,7 @@
          "name": "Bird Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 3,
       "obstacle": {
          "secret": 0,
          "boom": 1,
@@ -103,7 +103,7 @@
          "name": "Liddy's Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 3,
       "obstacle": {
          "secret": 0,
          "boom": 1,
@@ -152,7 +152,7 @@
          "name": "Elder Bird Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 3,
       "obstacle": {
          "secret": 1,
          "boom": 0,

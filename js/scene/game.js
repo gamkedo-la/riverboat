@@ -9,7 +9,13 @@ class Game extends Phaser.Scene {
       this.previousObstacleWasLight = false;
 
       this.data = this.cache.json.get('zoneData');
-      zones_quantity = this.data.length - 1;
+      if (!testing) {
+         zones_quantity = this.data.length - 1;
+      } else {
+         zones_quantity = zone_quantity_for_test;
+      }
+      console.log(zones_quantity, "zones in game");
+
       this.setZoneParameters(currentZone);
 
       this.numObstaclesCreatedInGame = 0;
@@ -78,8 +84,8 @@ class Game extends Phaser.Scene {
       this.intel_alert = 180;
       this.light_alert = 250;
 
-      // play the sound of water on loop
-      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.15, loop: true });
+      // play the sound of water on loop, volume 0.15
+      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.05, loop: true });
       this.waterSound.play();
 
       this.applyRiverDrift(this.riverSpeed);
@@ -146,10 +152,10 @@ class Game extends Phaser.Scene {
       // move it down from spawnY to visible starting position, by call sameing method as update()
       this.moveFurnitureY(this.ySpacing);
 
-      if (testing) {
-         this.previousY = this.getPreviousObstacleY();
-         console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
-      }
+      // if (testing) {
+      //    this.previousY = this.getPreviousObstacleY();
+      //    console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
+      // }
 
       this.cursors = this.input.keyboard.createCursorKeys();
       // add W,A,S,D to cursors so they work in addition to the arrow keys
@@ -161,6 +167,7 @@ class Game extends Phaser.Scene {
       if (!testing) {
          this.setupColliders();
       }
+      this.physics.add.overlap(this.player, this.milestones, this.reachMilestone, null, this);
       this.input.keyboard.on('keyup', this.anyKey, this);
 
       this.logging();
@@ -193,19 +200,21 @@ class Game extends Phaser.Scene {
       }
       // if progress reaches zone's quantity of obstacles then show milestone, and increment currentZone      
       else {
-         currentZone += 1;
          if (currentZone > zones_quantity) {
             this.waterSound.stop;
             this.scene.start("Home");
          }
          else {
             chosenObstacleType = "milestone";
-            this.setZoneParameters(currentZone);
+            //this.setZoneParameters(currentZone);
          }
       }
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
       this.placeObstaclesY(...obstacleSprites);
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
+      if (testing) {
+         console.log(this.numObstaclesCreatedInZone, 'obstacles created in zone', currentZone);
+      }
    }
 
    placeObstaclesY(...components) {
@@ -222,16 +231,15 @@ class Game extends Phaser.Scene {
       this.previousY = this.getPreviousObstacleY();
       // console.log(previousY, this.ySpacing);
       if (this.previousY - this.spawnY > this.ySpacing) {
-
-         console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
-
+         // console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
          this.whenObstacleMaking();
       }
    }
 
-   // separated so initial obstacles createed before gameplay can also get in-between objects.
+   // separated so initial obstacles created before gameplay can also get in-between objects.
    whenObstacleMaking() {
-      this.newestObstacleID += 1;
+      //this.newestObstacleID += 1;
+      //console.log('newestObstacleID', this.newestObstacleID);
       this.makeObstacle();
       // randomize new Y gap to next Obstacle
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
@@ -243,6 +251,7 @@ class Game extends Phaser.Scene {
          this.lightNearSound.play();
          this.previousObstacleWasLight = false;
       }
+      //console.log(this.milestones);
    }
 
    moveFurnitureY(y) {
@@ -327,23 +336,6 @@ class Game extends Phaser.Scene {
       this.cameras.main.setBackgroundColor(0x0000ff);
       this.cameras.main.startFollow(this.player, true, 1, 0);
       // roundPixels=true reduces jitter, LERP=1, Y-axis-following=0
-   }
-
-   makeBanks() {
-      let bank_left = this.add.image(bankWidth, 0, 'bank_left')
-         .setOrigin(1, 0)
-         .setDepth(4);
-      this.land.add(bank_left);
-      let bank_right = this.add.image(gameWidth - bankWidth, 0, 'bank_right')
-         .setOrigin(0, 0)
-         .setDepth(4);
-      this.land.add(bank_right);
-
-      // below was in create() but image not showing
-      // this.bank_left = new Bank(this, 0, 0, 'bank_left_120');
-      // this.bank_left.setOrigin(0, 0);
-      // this.bank_right = new Bank(this, gameWidth, 0, 'bank_right_120');
-      // this.bank_right.setOrigin(1, 0);
    }
 
    makePlayer() {
@@ -681,6 +673,7 @@ class Game extends Phaser.Scene {
 
    makeMilestone() {
       let milestone = new Rapids(this, 0, 0, "rapids");
+      this.milestones.add(milestone);
       this.milestone = milestone;
       // console.log(`Milestone before zone ${currentZone}`);
       return [milestone];
@@ -839,6 +832,28 @@ class Game extends Phaser.Scene {
       // console.log(`Light`, lightBounds.left, lightBounds.right, lightBounds.top, lightBounds.bottom);
       // console.log(`Boat`, boatBounds.left, boatBounds.right, boatBounds.top, boatBounds.bottom);
       // console.log(`Light/boat overlap: ${overlapX} ${overlapY}`);
+   }
+
+   reachMilestone(player, milestone) {
+      if (!this.milestoneTriggered[currentZone]) {
+         this.milestoneTriggered[currentZone] = true;
+         console.log('reached milestone', currentZone);
+         console.log(this.milestoneTriggered);
+         if (this.isZoneLastInGame() === false) {
+            currentZone += 1;
+            console.log('Zone incremented to', currentZone);
+            this.setZoneParameters(currentZone);
+            this.numObstaclesCreatedInZone = 0;
+            this.obstaclesInZone = this.zone.intervals;
+         } else {
+            console.log('Game Over');
+            this.physics.pause();
+            // this.scene.start("Home");
+         }
+      }
+      else {
+         //console.log('at milestone', currentZone);
+      }
    }
 
    // if player health, but multiple hits on impact is a problem
@@ -1115,7 +1130,6 @@ class Game extends Phaser.Scene {
       //let levelObjName = `Level_${ this.zoneNum }`;
       this.zone = this.data[numZone];
       this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
-      this.numObstaclesCreatedInZone = 0;
       this.debugObstacleChances();
       //console.log("boomgapmin", this.zone.boom.gapMin);
    }
@@ -1132,6 +1146,20 @@ class Game extends Phaser.Scene {
       this.idLabels.add(idLabel);
       let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${currentZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
       this.idLabels.add(zoneLabel);
+   }
+
+   isYspaceReadyForNextObstacle() {
+      this.previousY = this.getPreviousObstacleY();
+      // console.log('previousY:', this.previousY.toFixed(0), 'curr Yspacing:', this.ySpacing, 'prev obstacle ID:', this.madeInGame, 'prev in zone:', this.madeInZone);
+      return this.previousY - this.spawnY > this.ySpacing;
+   }
+
+   isObstacleRemainingInZone() {
+      return this.obstaclesInZone > this.numObstaclesCreatedInZone;
+   }
+
+   isZoneLastInGame() {
+      return currentZone === zones_quantity;
    }
 
    logging() {
