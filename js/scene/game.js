@@ -5,6 +5,7 @@ class Game extends Phaser.Scene {
 
    init() {
       this.gameOver = false;
+      this.milestoneTriggered = [false, false, false, false, false, false, false, false, false, false, false, false, false];
       this.previousObstacleWasLight = false;
 
       this.data = this.cache.json.get('zoneData');
@@ -45,7 +46,7 @@ class Game extends Phaser.Scene {
       this.lights = this.physics.add.group({ runChildUpdate: true });
 
       // decoration of land and water
-      this.features = this.physics.add.group({ runChildUpdate: true });
+      this.milestones = this.physics.add.group({ runChildUpdate: true });
       this.obstacles = this.physics.add.group({ runChildUpdate: true });
       this.idLabels = this.physics.add.group({ runChildUpdate: true });
 
@@ -67,10 +68,6 @@ class Game extends Phaser.Scene {
       this.boom_closable_chance = this.zone.boom.closable.chance;
       this.boom_closable_delay = this.zone.boom.closable.delay;
       this.boom_closable_speed = this.zone.boom.closable.speed;
-      // this.boomGapRange = [this.data.Level_1.boom.gapMin, this.data.Level_1.boom.gapMax];
-      // this.boom_length_min = this.data.Level_1.boom.lengthMin;
-      // this.boomGapRange = [80, 140];
-      // this.boom_length_min = 50;
 
       this.displayWidth = this.sys.config.width;
       this.displayHeight = this.sys.config.height;
@@ -149,11 +146,7 @@ class Game extends Phaser.Scene {
       // move it down from spawnY to visible starting position, by call sameing method as update()
       this.moveFurnitureY(this.ySpacing);
 
-      this.previousY = this.getPreviousObstacleY();
-
       if (testing) {
-         this.idLabels.incY(this.ySpacing + 1);
-
          this.previousY = this.getPreviousObstacleY();
          console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
       }
@@ -202,6 +195,7 @@ class Game extends Phaser.Scene {
       else {
          currentZone += 1;
          if (currentZone > zones_quantity) {
+            this.waterSound.stop;
             this.scene.start("Home");
          }
          else {
@@ -277,6 +271,7 @@ class Game extends Phaser.Scene {
 
    makeMenuButton() {
       this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+         this.waterSound.stop();
          this.scene.start("Home");
       });
    }
@@ -316,22 +311,6 @@ class Game extends Phaser.Scene {
       }
    }
 
-   // isSearchlightNear() {
-   //    if (this.lights) {
-   //       let nearest_light_dist = 800;
-   //       this.lights.getChildren().forEach(light => {
-   //          // console.log(this.player.x, this.player.y, intel.x, intel.y)
-   //          let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, light.x, light.y);
-   //          if (dist < nearest_light_dist) {
-   //             nearest_light_dist = dist;
-   //          }
-   //       });
-   //       if (nearest_light_dist < this.light_alert) {
-   //          this.lightNearSound.play();
-   //       }
-   //    }
-   // }
-
    setupSounds() {
       this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.5, loop: false });
       this.searchContactSound = this.sound.add('snd_searchContact', { volume: 0.2 });
@@ -347,8 +326,7 @@ class Game extends Phaser.Scene {
       this.cameras.main.setBounds(0, 0, gameWidth, displayHeight);
       this.cameras.main.setBackgroundColor(0x0000ff);
       this.cameras.main.startFollow(this.player, true, 1, 0);
-      // roundPixels=true reduces jitter 
-      // LERP=1,0 prevents Y-axis following
+      // roundPixels=true reduces jitter, LERP=1, Y-axis-following=0
    }
 
    makeBanks() {
@@ -466,7 +444,7 @@ class Game extends Phaser.Scene {
       this.btnSlow = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
          this.driftSpeed = this.riverSpeed / this.player.backward_ratio;
          this.player.engine = "backward";
-         this.player.setTint(0xbae946);
+         this.player.setTint(0xff00ff); // was bae946
          this.player.useFuel(this.player.backwardFuel);
       }, () => {
          this.player.neitherFastOrSlow();
@@ -549,7 +527,7 @@ class Game extends Phaser.Scene {
          this.fuelDisplay.setTint(0xff0000);
       }
       else if (this.player.engine === 'backward') {
-         this.fuelDisplay.setTint(0xff7f50);
+         this.fuelDisplay.setTint(0xff00ff);
       }
       else {
          this.fuelDisplay.setTint(0xffffff);
@@ -1105,7 +1083,6 @@ class Game extends Phaser.Scene {
       this.obstacles.setVelocityY(speed);
       this.rocks.setVelocityY(speed);
       this.woods.setVelocityY(speed);
-      this.features.setVelocityY(speed);
       this.waterBG.tilePositionY -= speed / 60;
       if (testing) {
          this.idLabels.incY(speed / 60);

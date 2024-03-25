@@ -39,10 +39,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    setupMotorSound() {
-
       // fade in and out
       // note: currently unused - it sounded better without it
-      this.motorVolumeMin = 0.25;
+      this.motorVolumeMin = 0;  // 0.25;
       this.motorVolumeMax = 0.5;
       this.motorVolumeChangeSpeed = 0.005;
 
@@ -54,7 +53,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // init
       this.motorSound = this.scene.sound.add('snd_motorLoop', { volume: this.motorVolumeMin, loop: true });
       this.motorSound.play();
-
    }
 
    update(cursors) {
@@ -149,7 +147,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    motorBackward() {
       // tint same colour as Fuel display
-      this.setTint(0xff7f50); // was 0xbae946
+      this.setTint(0xff00ff); // was 0xbae946
       this.scene.driftSpeed = this.scene.riverSpeed / this.backward_ratio;
       this.engine = "backward";
       this.useFuel(this.backwardFuel);
