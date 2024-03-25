@@ -75,6 +75,8 @@ class Home extends Phaser.Scene {
          currentZone = 7;
          this.scene.start('Game');
       });
+
+      // show personal High Scores to help player understand aim of game
       // top += 60;
       // this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High score', () => this.scene.start('Scores'));
 
@@ -113,5 +115,4 @@ class Home extends Phaser.Scene {
 
       });
    }
-
 }

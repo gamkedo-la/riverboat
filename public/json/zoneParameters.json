@@ -8,8 +8,8 @@
       "intervals": 999,
       "obstacle": {
          "secret": 0,
-         "boom": 1,
-         "rapids": 0
+         "boom": 0,
+         "rapids": 1
       },
       "ySpacing": {
          "min": 240,
@@ -54,7 +54,7 @@
          "name": "Bird Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 10,
       "obstacle": {
          "secret": 0,
          "boom": 1,
@@ -103,10 +103,10 @@
          "name": "Liddy's Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 10,
       "obstacle": {
-         "secret": 0,
-         "boom": 1,
+         "secret": 1,
+         "boom": 0,
          "rapids": 0
       },
       "ySpacing": {
@@ -152,10 +152,10 @@
          "name": "Elder Bird Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 5,
+      "intervals": 10,
       "obstacle": {
-         "secret": 1,
-         "boom": 0,
+         "secret": 0,
+         "boom": 1,
          "rapids": 0
       },
       "ySpacing": {
@@ -201,7 +201,7 @@
          "name": "Fourth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 30,
+      "intervals": 20,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -252,7 +252,7 @@
          "name": "Fifth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 30,
+      "intervals": 20,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -303,7 +303,7 @@
          "name": "Sixth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 30,
+      "intervals": 20,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -352,7 +352,7 @@
          "name": "Seventh Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 40,
+      "intervals": 20,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,

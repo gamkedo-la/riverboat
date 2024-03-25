@@ -85,6 +85,8 @@ class Game extends Phaser.Scene {
       this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.15, loop: true });
       this.waterSound.play();
 
+      this.applyRiverDrift(this.riverSpeed);
+
       this.obstacleMaker = {
          boom: () => {
             return this.makeBooms();
@@ -142,14 +144,12 @@ class Game extends Phaser.Scene {
       this.setupSounds();
 
       // at game start, and when menu jumps to a zone start, create first obstacle
-
       this.whenObstacleMaking();
 
       // move it down from spawnY to visible starting position, by call sameing method as update()
       this.moveFurnitureY(this.ySpacing);
 
       this.previousY = this.getPreviousObstacleY();
-      //console.log('Yspacing:', this.ySpacing, 'previous Obstacle ID:', this.newestObstacleID);
 
       if (testing) {
          this.idLabels.incY(this.ySpacing + 1);
@@ -169,6 +169,8 @@ class Game extends Phaser.Scene {
          this.setupColliders();
       }
       this.input.keyboard.on('keyup', this.anyKey, this);
+
+      this.logging();
    };
 
    update() {
@@ -953,7 +955,6 @@ class Game extends Phaser.Scene {
    }
 
    hitObstacles(boat, obstacle) {
-      //console.log('Obstacle hit', obstacle);
    };
 
    clearNavButtonEvents() {
@@ -1154,5 +1155,8 @@ class Game extends Phaser.Scene {
       this.idLabels.add(idLabel);
       let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${currentZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
       this.idLabels.add(zoneLabel);
+   }
+
+   logging() {
    }
 };

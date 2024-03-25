@@ -7,7 +7,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       if (testing) {
          this.startFuel = fuel_for_testing;
       } else {
-         this.startFuel = 2000;
+         this.startFuel = 7000;
       }
       this.fuel = this.startFuel;
       this.life = 3;
@@ -142,7 +142,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setTint(0xff0000); // was 0xffb38a
       this.body.setVelocityY(this.forward_speed * -1);
       this.addWake();
-      this.scene.driftSpeed = this.scene.zone.riverSpeed * this.forward_ratio;
+      this.scene.driftSpeed = this.scene.riverSpeed * this.forward_ratio;
       this.engine = "forward";
       this.useFuel(this.forwardFuel);
    }
@@ -150,7 +150,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    motorBackward() {
       // tint same colour as Fuel display
       this.setTint(0xff7f50); // was 0xbae946
-      this.scene.driftSpeed = this.scene.zone.riverSpeed / this.backward_ratio;
+      this.scene.driftSpeed = this.scene.riverSpeed / this.backward_ratio;
       this.engine = "backward";
       this.useFuel(this.backwardFuel);
 
@@ -182,7 +182,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    neitherFastOrSlow() {
       this.setTint(0xffffff);
-      this.scene.driftSpeed = this.scene.zone.riverSpeed;
+      this.scene.driftSpeed = this.scene.riverSpeed;
 
       if (this.engine === "backward") {
          this.motorSound.rate -= this.motorSamplerateChangeSpeed;
@@ -213,7 +213,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
       // river furniture Y change faster to maintain relative motion
 
-      this.scene.driftSpeed = this.scene.zone.riverSpeed + this.forward_speed * this.rateOfReturnToStation;
+      this.scene.driftSpeed = this.scene.riverSpeed + this.forward_speed * this.rateOfReturnToStation;
       //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
    }
 

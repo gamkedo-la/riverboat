@@ -6,7 +6,8 @@ class Setup extends Phaser.Scene {
    preload() {
       let width = this.cameras.main.width;
       let height = this.cameras.main.height;
-      // console.log(width, height, this.sys.game.config.width, this.sys.game.config.height);
+      // this.sys.game.config.width is the same as this.cameras.main.width
+      // elsewhere using global const displayWidth but may revisit these
 
       const barW = 150;
       const barH = 30;
@@ -35,8 +36,6 @@ class Setup extends Phaser.Scene {
          loadingFile.setText('Loading: ' + file.key);
       });
 
-      // this.load.image('bank_left', 'public/art/bank_left_120.png');
-      // this.load.image('bank_right', 'public/art/bank_right_120.png');
       this.load.image('boat', 'public/art/boat_30x65.png');
       this.load.image('anim_turnBoat', 'public/art/boat_5.png');
       this.load.image('wake', 'public/art/water_wake.png');
@@ -96,8 +95,7 @@ class Setup extends Phaser.Scene {
       this.load.audio('snd_waterLoop', ['public/sound/flowing_stream_Argal.mp3']);
 
       if (testing) {
-         this.load.json('zoneData', 'public/json/zoneParameters.json');
-         // this.load.json('zoneData', 'public/json/test_zoneParams.json');
+         this.load.json('zoneData', 'public/json/testzoneParams.json');
       } else {
          this.load.json('zoneData', 'public/json/zoneParameters.json');
       }
