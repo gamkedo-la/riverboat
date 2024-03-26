@@ -132,7 +132,6 @@ class Game extends Phaser.Scene {
       this.physics.world.bounds.height = displayHeight;
       this.input.scene.active = true;
 
-      // this.makeBanks();
       this.makePlayer();
       this.setupXscroll();
       this.makeHud();
@@ -264,34 +263,6 @@ class Game extends Phaser.Scene {
       }
    }
 
-   setupColliders() {
-      this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
-      this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
-      this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
-      this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
-      this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
-      this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
-      this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
-      this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
-      this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
-      this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
-      this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
-   }
-
-   makeMenuButton() {
-      this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-         this.waterSound.stop();
-         this.scene.start("Home");
-      });
-   }
-
-   makePauseButton() {
-      this.buttonPause = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
-         this.scene.pause('Game');
-         this.scene.launch("Pause");
-      });
-   }
-
    isIntelWithinRange() {
       // if Intel on screen
       if (this.intels) {
@@ -338,6 +309,7 @@ class Game extends Phaser.Scene {
       // roundPixels=true reduces jitter, LERP=1, Y-axis-following=0
    }
 
+   // Player boat make & control
    makePlayer() {
       let start_x = gameWidth / 2; // game width screen + 2 * offset
       let start_y = displayHeight - 10;
@@ -378,6 +350,33 @@ class Game extends Phaser.Scene {
       this.sensors.add(this.cone_right);
    }
 
+   showLeftSensorCone() {
+      this.cone_left.x = this.player.x;
+      this.cone_left.y = this.player.y - this.player.coneYoffset;
+      this.cone_left
+         .setVisible(true)
+         .setScale(0.7, 0.7);
+   }
+
+   showRightSensorCone() {
+      this.cone_right.x = this.player.x;
+      this.cone_right.y = this.player.y - this.player.coneYoffset;
+      this.cone_right
+         .setVisible(true)
+         .setScale(0.7, 0.7);
+   }
+
+   hideSensorCone() {
+      this.cone_left
+         .setVisible(false)
+         .setPosition(-100, -100);
+      this.cone_right
+         .setVisible(false)
+         .setPosition(-100, -100);
+   }
+
+
+   // UI HUD make & update
    makeHud() {
       // HUD centre at game centre, and don't scroll when river scroll sideways
       this.hud = this.add.container(displayWidth / 2, 0);
@@ -393,10 +392,65 @@ class Game extends Phaser.Scene {
       y += y_UI_spacing;
       this.makeIntelDisplay(y);
       y += y_UI_spacing;
-
-      // this.makeNavigationButtons(y);
    }
 
+   makeLifeDisplay(y) {
+      this.lifeDisplay = this.add.text(0, y, `Life: ${this.player.life}`, hudStyle);
+      this.lifeDisplay.setOrigin(0.5);
+      this.hud.add(this.lifeDisplay);
+   };
+
+   makeProgressDisplay(y) {
+      this.progressDisplay = this.add.text(0, y, `Passed: ${this.numObstaclesCreatedInGame}`, hudStyle);
+      this.progressDisplay.setOrigin(0.5);
+      this.hud.add(this.progressDisplay);
+   };
+
+   trackProgress() {
+      this.numObstaclesCreatedInZone += 1;
+      this.numObstaclesCreatedInGame += 1;
+      this.progressDisplay.setText(`Passed: ${this.numObstaclesCreatedInGame}`);
+   };
+
+   makeFuelDisplay(y) {
+      this.fuelDisplay = this.add.text(0, y, `Fuel: ${this.player.fuel}`, hudStyle);
+      this.fuelDisplay.setOrigin(0.5);
+      this.hud.add(this.fuelDisplay);
+   };
+
+   makeIntelDisplay(y) {
+      this.intelDisplay = this.add.text(0, y, `Intel: ${this.player.intelScore}`, hudStyle);
+      this.intelDisplay.setOrigin(0.5);
+      this.hud.add(this.intelDisplay);
+   };
+
+   updateFuelDisplay() {
+      if (this.player.engine === 'forward') {
+         this.fuelDisplay.setTint(0xff0000);
+      }
+      else if (this.player.engine === 'backward') {
+         this.fuelDisplay.setTint(0xff00ff);
+      }
+      else {
+         this.fuelDisplay.setTint(0xffffff);
+      }
+      this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
+      //}
+   };
+
+   updateIntelDisplay() {
+      //if (this.player.health) {
+      this.intelDisplay.setText(`Intel: ${this.player.intelScore}`);
+      //}
+   };
+
+   updateLifeDisplay() {
+      //if (this.player.health) {
+      this.lifeDisplay.setText(`Life: ${this.player.life}`);
+      //}
+   };
+
+   // Boat control buttons make & control
    makeArrowButtons() {
       let top = 200;
       let cameraCentreX = this.cameras.main.centerX;
@@ -484,71 +538,60 @@ class Game extends Phaser.Scene {
       this.hud.add(this.buttonSlow);
    }
 
-   makeLifeDisplay(y) {
-      this.lifeDisplay = this.add.text(0, y, `Life: ${this.player.life}`, hudStyle);
-      this.lifeDisplay.setOrigin(0.5);
-      this.hud.add(this.lifeDisplay);
-   };
 
-   makeProgressDisplay(y) {
-      this.progressDisplay = this.add.text(0, y, `Passed: ${this.numObstaclesCreatedInGame}`, hudStyle);
-      this.progressDisplay.setOrigin(0.5);
-      this.hud.add(this.progressDisplay);
-   };
-
-   trackProgress() {
-      this.numObstaclesCreatedInZone += 1;
-      this.numObstaclesCreatedInGame += 1;
-      this.progressDisplay.setText(`Passed: ${this.numObstaclesCreatedInGame}`);
-   };
-
-   makeFuelDisplay(y) {
-      this.fuelDisplay = this.add.text(0, y, `Fuel: ${this.player.fuel}`, hudStyle);
-      this.fuelDisplay.setOrigin(0.5);
-      this.hud.add(this.fuelDisplay);
-   };
-
-   makeIntelDisplay(y) {
-      this.intelDisplay = this.add.text(0, y, `Intel: ${this.player.intelScore}`, hudStyle);
-      this.intelDisplay.setOrigin(0.5);
-      this.hud.add(this.intelDisplay);
-   };
-
-   updateFuelDisplay() {
-      if (this.player.engine === 'forward') {
-         this.fuelDisplay.setTint(0xff0000);
-      }
-      else if (this.player.engine === 'backward') {
-         this.fuelDisplay.setTint(0xff00ff);
-      }
-      else {
-         this.fuelDisplay.setTint(0xffffff);
-      }
-      this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
-      //}
-   };
-   updateIntelDisplay() {
-      //if (this.player.health) {
-      this.intelDisplay.setText(`Intel: ${this.player.intelScore}`);
-      //}
-   };
-   updateLifeDisplay() {
-      //if (this.player.health) {
-      this.lifeDisplay.setText(`Life: ${this.player.life}`);
-      //}
-   };
-
-   checkIfDriftwood() {
-      // let randomValue = Math.random();
-      if (this.zone.wood.minQuantity > 0) {
-         this.makeDriftwood();
-         // placeDriftwood();
-      }
+   clearNavButtonEvents() {
+      // to fix bug when lose life while button is pressed its repeating event carries on after respawn
+      this.btnLeft.clearEvents();
+      this.btnRight.clearEvents();
+      // this.btnFast.clearEvents();
+      // this.btnSlow.clearEvents();
    }
-   checkIfBoulder() {
-      if (this.zone.rock.minQuantity > 0) {
-         this.makeStrayRock();
+
+   // Scene control buttons (menu, pause, replay)
+   makeMenuButton() {
+      this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+         this.waterSound.stop();
+         this.scene.start("Home");
+      });
+   }
+
+   makePauseButton() {
+      this.buttonPause = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
+         this.scene.pause('Game');
+         this.scene.launch("Pause");
+      });
+   }
+
+   createGameOverButtons() {
+      // this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+      //    console.log('pointer down -> menu');
+      //    this.scene.start("Home");
+      // });
+      //this.hud.add(this.buttonMenu);
+
+      if (keyboard != 'likely') {
+         this.buttonPause.destroy();
       }
+
+      this.buttonReplay = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
+         // reset game (lives, fuel, position)
+         this.player.health = this.player.initialHealth;
+         this.player.fuel = this.player.initialFuel;
+         this.gameOver = false;
+         //this.obstacles.incY(-200);
+         this.physics.resume();
+         this.scene.restart();
+      });
+      //this.hud.add(this.buttonReplay);
+   }
+
+   // Making furniture/obstacles
+   makeMilestone() {
+      let milestone = new Rapids(this, 0, 0, "rapids");
+      this.milestones.add(milestone);
+      this.milestone = milestone;
+      // console.log(`Milestone before zone ${currentZone}`);
+      return [milestone];
    }
 
    makeStrayRock() {
@@ -671,14 +714,7 @@ class Game extends Phaser.Scene {
       return [rapidsLine, danger];
    }
 
-   makeMilestone() {
-      let milestone = new Rapids(this, 0, 0, "rapids");
-      this.milestones.add(milestone);
-      this.milestone = milestone;
-      // console.log(`Milestone before zone ${currentZone}`);
-      return [milestone];
-   }
-
+   // Placing objects within furniture/obstacles
    placeBooms(leftBoom, rightBoom, leftCapstan, rightCapstan) {
       // gap between left and right booms
       let gapSize = Phaser.Math.Between(...this.boomGapRange);
@@ -787,6 +823,19 @@ class Game extends Phaser.Scene {
       // console.log('Milestone obstacle created!')
    }
 
+   checkIfDriftwood() {
+      // let randomValue = Math.random();
+      if (this.zone.wood.minQuantity > 0) {
+         this.makeDriftwood();
+         // placeDriftwood();
+      }
+   }
+   checkIfBoulder() {
+      if (this.zone.rock.minQuantity > 0) {
+         this.makeStrayRock();
+      }
+   }
+
    destroyPassedObject() {
       this.obstacles.getChildren().forEach(obstacle => {
          if (obstacle.getBounds().top > displayHeight) {
@@ -814,26 +863,6 @@ class Game extends Phaser.Scene {
       }
    };
 
-   boatSeen(boat, light) {
-      let boatBounds = boat.getBounds();
-      let lightBounds = light.getBounds();
-      let overlapX = Math.min(lightBounds.right, boatBounds.right) - Math.max(lightBounds.left, boatBounds.left);
-      let overlapY = Math.min(lightBounds.bottom, boatBounds.bottom) - Math.max(lightBounds.top, boatBounds.top);
-      if (overlapX > 20 && overlapY > 20) {
-         //console.log('Boat seen by light');
-         this.searchContactSound.play();
-         this.loseLife();
-         // delay before tower's gun fires on boat
-         // this.scene.time.addEvent({ delay: 1000, callback: this.loseLife, callbackScope: this });
-      }
-      else {
-         // this.thatWasClose.play(); 
-      }
-      // console.log(`Light`, lightBounds.left, lightBounds.right, lightBounds.top, lightBounds.bottom);
-      // console.log(`Boat`, boatBounds.left, boatBounds.right, boatBounds.top, boatBounds.bottom);
-      // console.log(`Light/boat overlap: ${overlapX} ${overlapY}`);
-   }
-
    reachMilestone(player, milestone) {
       if (!this.milestoneTriggered[currentZone]) {
          this.milestoneTriggered[currentZone] = true;
@@ -856,6 +885,41 @@ class Game extends Phaser.Scene {
       }
    }
 
+   // Overlap & collision handling
+   setupColliders() {
+      this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
+      this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
+      this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
+      this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
+      this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
+      this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
+      this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
+      this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
+      this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
+      this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
+      this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
+   }
+
+   boatSeen(boat, light) {
+      let boatBounds = boat.getBounds();
+      let lightBounds = light.getBounds();
+      let overlapX = Math.min(lightBounds.right, boatBounds.right) - Math.max(lightBounds.left, boatBounds.left);
+      let overlapY = Math.min(lightBounds.bottom, boatBounds.bottom) - Math.max(lightBounds.top, boatBounds.top);
+      if (overlapX > 20 && overlapY > 20) {
+         //console.log('Boat seen by light');
+         this.searchContactSound.play();
+         this.loseLife();
+         // delay before tower's gun fires on boat
+         // this.scene.time.addEvent({ delay: 1000, callback: this.loseLife, callbackScope: this });
+      }
+      else {
+         // this.thatWasClose.play(); 
+      }
+      // console.log(`Light`, lightBounds.left, lightBounds.right, lightBounds.top, lightBounds.bottom);
+      // console.log(`Boat`, boatBounds.left, boatBounds.right, boatBounds.top, boatBounds.bottom);
+      // console.log(`Light/boat overlap: ${overlapX} ${overlapY}`);
+   }
+
    // if player health, but multiple hits on impact is a problem
    hitBooms(boat, boom) {
       // console.log('Boom Hit', boom.damage);
@@ -870,23 +934,6 @@ class Game extends Phaser.Scene {
          // this.player.updateHealth(boom.damage);
          // this.player.health -= boom.damage;
          //this.updateHealthDisplay();
-         // if (this.player.health <= 0) {
-         //    this.endLevel();
-         // }
-      }
-   };
-
-   hitBridges(boat, bridge) {
-      //console.log('Bridge Hit');
-      //bridge.body.enable = false;
-      this.bridgeCollideSound.play();
-      this.player.setVelocity(0, 0);
-      this.loseLife(); // while bug drift continues after hit
-      if (!bridge.hit) {
-         //console.log(this, bridge);
-         this.driftSpeed = 0;
-         bridge.hit = true;
-         //this.player.updateHealth(bridge.damage);
          // if (this.player.health <= 0) {
          //    this.endLevel();
          // }
@@ -950,14 +997,6 @@ class Game extends Phaser.Scene {
    hitObstacles(boat, obstacle) {
    };
 
-   clearNavButtonEvents() {
-      // to fix bug when lose life while button is pressed its repeating event carries on after respawn
-      this.btnLeft.clearEvents();
-      this.btnRight.clearEvents();
-      // this.btnFast.clearEvents();
-      // this.btnSlow.clearEvents();
-   }
-
    loseLife() {
       this.updateLifeDisplay();
       this.cameras.main.shake(500);
@@ -989,29 +1028,6 @@ class Game extends Phaser.Scene {
       this.rocks.incY(-200);
       this.woods.incY(-200);
       this.player.x = this.player.start_x;
-   }
-
-   createGameOverButtons() {
-      // this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-      //    console.log('pointer down -> menu');
-      //    this.scene.start("Home");
-      // });
-      //this.hud.add(this.buttonMenu);
-
-      if (keyboard != 'likely') {
-         this.buttonPause.destroy();
-      }
-
-      this.buttonReplay = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
-         // reset game (lives, fuel, position)
-         this.player.health = this.player.initialHealth;
-         this.player.fuel = this.player.initialFuel;
-         this.gameOver = false;
-         //this.obstacles.incY(-200);
-         this.physics.resume();
-         this.scene.restart();
-      });
-      //this.hud.add(this.buttonReplay);
    }
 
    endLevel() {
@@ -1046,31 +1062,6 @@ class Game extends Phaser.Scene {
       });
    };
 
-   showLeftSensorCone() {
-      this.cone_left.x = this.player.x;
-      this.cone_left.y = this.player.y - this.player.coneYoffset;
-      this.cone_left
-         .setVisible(true)
-         .setScale(0.7, 0.7);
-   }
-
-   showRightSensorCone() {
-      this.cone_right.x = this.player.x;
-      this.cone_right.y = this.player.y - this.player.coneYoffset;
-      this.cone_right
-         .setVisible(true)
-         .setScale(0.7, 0.7);
-   }
-
-   hideSensorCone() {
-      this.cone_left
-         .setVisible(false)
-         .setPosition(-100, -100);
-      this.cone_right
-         .setVisible(false)
-         .setPosition(-100, -100);
-   }
-
    resetGame() {
    };
 
@@ -1085,14 +1076,6 @@ class Game extends Phaser.Scene {
       }
    };
 
-   getPreviousObstacleY() {
-      let yPrevious = 700;
-      this.obstacles.getChildren().forEach(obstacle => {
-         yPrevious = Math.min(obstacle.y, yPrevious);
-      });
-      return yPrevious;
-   }
-
    applyRiverDrift(speed) {
       this.driftSpeed = speed;
       this.obstacles.setVelocityY(speed);
@@ -1102,6 +1085,55 @@ class Game extends Phaser.Scene {
       if (testing) {
          this.idLabels.incY(speed / 60);
       }
+   }
+
+   setZoneParameters(numZone) {
+      //let levelObjName = `Level_${ this.zoneNum }`;
+      this.zone = this.data[numZone];
+      this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
+      this.debugObstacleChances();
+      //console.log("boomgapmin", this.zone.boom.gapMin);
+   }
+
+   // Testing & debugging
+   debugObstacleChances() {
+      console.log(`Zone ${currentZone} obstacles ${this.zone.intervals}: Secret = ${this.zone.obstacle.secret}, Boom = ${this.zone.obstacle.boom}, closable ${this.zone.boom.closable.chance}`);
+      // Omitting unused parameters from JSON easily causes bugs!
+      // if (currentZone > 2) {
+      // closable ${this.zone.boom.closable.chance}
+   }
+
+   labelObstacleAndZoneID() {
+      let idLabel = this.add.text(bankWidth + 12, this.spawnY, `${this.newestObstacleID} ${this.numObstaclesCreatedInGame}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      this.idLabels.add(idLabel);
+      let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${currentZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
+      this.idLabels.add(zoneLabel);
+   }
+
+   logging() {
+   }
+
+   // Utilities & helpers
+   getPreviousObstacleY() {
+      let yPrevious = 700;
+      this.obstacles.getChildren().forEach(obstacle => {
+         yPrevious = Math.min(obstacle.y, yPrevious);
+      });
+      return yPrevious;
+   }
+
+   isYspaceReadyForNextObstacle() {
+      this.previousY = this.getPreviousObstacleY();
+      // console.log('previousY:', this.previousY.toFixed(0), 'curr Yspacing:', this.ySpacing, 'prev obstacle ID:', this.madeInGame, 'prev in zone:', this.madeInZone);
+      return this.previousY - this.spawnY > this.ySpacing;
+   }
+
+   isObstacleRemainingInZone() {
+      return this.obstaclesInZone > this.numObstaclesCreatedInZone;
+   }
+
+   isZoneLastInGame() {
+      return currentZone === zones_quantity;
    }
 
    weightedRandomChoice(items, weights) {
@@ -1126,42 +1158,4 @@ class Game extends Phaser.Scene {
       return items[items.length - 1];
    }
 
-   setZoneParameters(numZone) {
-      //let levelObjName = `Level_${ this.zoneNum }`;
-      this.zone = this.data[numZone];
-      this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
-      this.debugObstacleChances();
-      //console.log("boomgapmin", this.zone.boom.gapMin);
-   }
-
-   debugObstacleChances() {
-      console.log(`Zone ${currentZone} obstacles ${this.zone.intervals}: Secret = ${this.zone.obstacle.secret}, Boom = ${this.zone.obstacle.boom}, closable ${this.zone.boom.closable.chance}`);
-      // Omitting unused parameters from JSON easily causes bugs!
-      // if (currentZone > 2) {
-      // closable ${this.zone.boom.closable.chance}
-   }
-
-   labelObstacleAndZoneID() {
-      let idLabel = this.add.text(bankWidth + 12, this.spawnY, `${this.newestObstacleID} ${this.numObstaclesCreatedInGame}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
-      this.idLabels.add(idLabel);
-      let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${currentZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
-      this.idLabels.add(zoneLabel);
-   }
-
-   isYspaceReadyForNextObstacle() {
-      this.previousY = this.getPreviousObstacleY();
-      // console.log('previousY:', this.previousY.toFixed(0), 'curr Yspacing:', this.ySpacing, 'prev obstacle ID:', this.madeInGame, 'prev in zone:', this.madeInZone);
-      return this.previousY - this.spawnY > this.ySpacing;
-   }
-
-   isObstacleRemainingInZone() {
-      return this.obstaclesInZone > this.numObstaclesCreatedInZone;
-   }
-
-   isZoneLastInGame() {
-      return currentZone === zones_quantity;
-   }
-
-   logging() {
-   }
 };
