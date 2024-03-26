@@ -4,92 +4,17 @@ class Game extends Phaser.Scene {
    }
 
    init() {
-      this.gameOver = false;
-      this.milestoneTriggered = [false, false, false, false, false, false, false, false, false, false, false, false, false];
-      this.previousObstacleWasLight = false;
-
-      this.data = this.cache.json.get('zoneData');
-      if (!testing) {
-         zones_quantity = this.data.length - 1;
-      } else {
-         zones_quantity = zone_quantity_for_test;
-      }
-      console.log(zones_quantity, "zones in game");
-
+      this.initialiseVariables();
+      this.getAllZonesData();
       this.setZoneParameters(currentZone);
-
-      this.numObstaclesCreatedInGame = 0;
-      this.numObstaclesCreatedInZone = 0;
-      this.obstacle_types = ['secret', 'boom', 'rapids'];
-
-      // if zone was selected in menu
-      if (currentZone > 1) {
-         for (let i = 1; i < currentZone; i++) {
-            this.numObstaclesCreatedInGame += this.data[i].intervals;
-         }
-      }
-      this.newestObstacleID = this.numObstaclesCreatedInGame + 1;
-
-      // pre-placed obstacles at start of game must be deducted
-      // this.newestObstacleID += start_obstacles_n;
-      this.obstaclesInZone = this.zone.intervals; // - start_obstacles_n;
-
-      this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
-      this.waterBG.setOrigin(0, 0);
-      //make background tileSprite scroll with camera
-      this.waterBG.tilePositionX = this.cameras.main.scrollX;
-      this.waterBG.tilePositionY = this.cameras.main.scrollY;
-
-      this.land = this.physics.add.group({ runChildUpdate: true });
-      this.booms = this.physics.add.group({ runChildUpdate: true });
-      this.bridges = this.physics.add.group({ runChildUpdate: true });
-      this.rapids = this.physics.add.group({ runChildUpdate: true });
-      this.woods = this.physics.add.group({ runChildUpdate: true });
-      this.rocks = this.physics.add.group({ runChildUpdate: true });
-      this.sensors = this.physics.add.group({ runChildUpdate: true });
-      this.secrets = this.physics.add.group({ runChildUpdate: true });
-      this.intels = this.physics.add.group({ runChildUpdate: true });
-      this.lights = this.physics.add.group({ runChildUpdate: true });
-
-      // decoration of land and water
-      this.milestones = this.physics.add.group({ runChildUpdate: true });
-      this.obstacles = this.physics.add.group({ runChildUpdate: true });
-      this.idLabels = this.physics.add.group({ runChildUpdate: true });
-
-      if (testing) {
-         this.riverSpeed = test_river_speed; // global test speed 
-      } else {
-         this.riverSpeed = this.zone.riverSpeed;
-      }
-
-      this.spawnY = spawn_above_screen_Y;
-
-      this.ySpacingRange = [this.zone.ySpacing.min, this.zone.ySpacing.max];
-      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-
-      //this.numObstaclesCreatedInGameMax = localStorage.getItem('obstaclesPassedMax');
-
-      this.boomGapRange = [this.zone.boom.gapMin, this.zone.boom.gapMax];
-      this.boom_length_min = this.zone.boom.lengthMin;
-      this.boom_closable_chance = this.zone.boom.closable.chance;
-      this.boom_closable_delay = this.zone.boom.closable.delay;
-      this.boom_closable_speed = this.zone.boom.closable.speed;
-
-      this.displayWidth = this.sys.config.width;
-      this.displayHeight = this.sys.config.height;
-      this.fontSize = 16;
-      this.lineHeight = 70;
-      this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
-
-      this.intel_alert = 180;
-      this.light_alert = 250;
+      this.makeTiledRiverBackground();
+      this.createPhysicsGroups();
+      this.applyRiverDrift(this.riverSpeed);
 
       // play the sound of water on loop, volume 0.15
       this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.05, loop: true });
       this.waterSound.play();
-
-      this.applyRiverDrift(this.riverSpeed);
-
+      // switches for obstacleMaker and placeObstaclesX
       this.obstacleMaker = {
          boom: () => {
             return this.makeBooms();
@@ -205,7 +130,6 @@ class Game extends Phaser.Scene {
          }
          else {
             chosenObstacleType = "milestone";
-            //this.setZoneParameters(currentZone);
          }
       }
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
@@ -710,8 +634,18 @@ class Game extends Phaser.Scene {
          danger = new Rock(this, 0, 0, "rock", 0);
       }
       this.rapids.add(danger);
-
       return [rapidsLine, danger];
+   }
+
+   checkIfDriftwood() {
+      if (this.zone.wood.minQuantity > 0) {
+         this.makeDriftwood();
+      }
+   }
+   checkIfBoulder() {
+      if (this.zone.rock.minQuantity > 0) {
+         this.makeStrayRock();
+      }
    }
 
    // Placing objects within furniture/obstacles
@@ -823,19 +757,7 @@ class Game extends Phaser.Scene {
       // console.log('Milestone obstacle created!')
    }
 
-   checkIfDriftwood() {
-      // let randomValue = Math.random();
-      if (this.zone.wood.minQuantity > 0) {
-         this.makeDriftwood();
-         // placeDriftwood();
-      }
-   }
-   checkIfBoulder() {
-      if (this.zone.rock.minQuantity > 0) {
-         this.makeStrayRock();
-      }
-   }
-
+   // GameLoop or Events handling
    destroyPassedObject() {
       this.obstacles.getChildren().forEach(obstacle => {
          if (obstacle.getBounds().top > displayHeight) {
@@ -854,6 +776,28 @@ class Game extends Phaser.Scene {
       });
       // this.saveBestScore();
    };
+
+   anyKey(event) {
+      let code = event.keyCode;
+      if (code === Phaser.Input.Keyboard.KeyCodes.ESC) {
+         this.scene.start('Home');
+      }
+      else if (code === Phaser.Input.Keyboard.KeyCodes.P) {
+         this.scene.pause('Game');
+         this.scene.launch('Pause');
+      }
+   };
+
+   applyRiverDrift(speed) {
+      this.driftSpeed = speed;
+      this.obstacles.setVelocityY(speed);
+      this.rocks.setVelocityY(speed);
+      this.woods.setVelocityY(speed);
+      this.waterBG.tilePositionY -= speed / 60;
+      if (testing) {
+         this.idLabels.incY(speed / 60);
+      }
+   }
 
    saveBestScore() {
       let bestScoreStr = localStorage.getItem('bestScore');
@@ -994,19 +938,19 @@ class Game extends Phaser.Scene {
       // this.player.updateHealth(land.damage);
    }
 
-   hitObstacles(boat, obstacle) {
+   hitObstacle(boat, obstacle) {
    };
 
    loseLife() {
+      this.invincible = true;
+      this.player.life -= 1;
       this.updateLifeDisplay();
+
       this.cameras.main.shake(500);
       this.physics.pause();
       if (keyboard != 'likely') {
          this.clearNavButtonEvents();
       }
-
-      this.invincible = true;
-      this.player.life -= 1;
 
       if (this.player.life > 0) {
          this.time.addEvent({
@@ -1064,36 +1008,6 @@ class Game extends Phaser.Scene {
 
    resetGame() {
    };
-
-   anyKey(event) {
-      let code = event.keyCode;
-      if (code === Phaser.Input.Keyboard.KeyCodes.ESC) {
-         this.scene.start('Home');
-      }
-      else if (code === Phaser.Input.Keyboard.KeyCodes.P) {
-         this.scene.pause('Game');
-         this.scene.launch('Pause');
-      }
-   };
-
-   applyRiverDrift(speed) {
-      this.driftSpeed = speed;
-      this.obstacles.setVelocityY(speed);
-      this.rocks.setVelocityY(speed);
-      this.woods.setVelocityY(speed);
-      this.waterBG.tilePositionY -= speed / 60;
-      if (testing) {
-         this.idLabels.incY(speed / 60);
-      }
-   }
-
-   setZoneParameters(numZone) {
-      //let levelObjName = `Level_${ this.zoneNum }`;
-      this.zone = this.data[numZone];
-      this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
-      this.debugObstacleChances();
-      //console.log("boomgapmin", this.zone.boom.gapMin);
-   }
 
    // Testing & debugging
    debugObstacleChances() {
@@ -1158,4 +1072,95 @@ class Game extends Phaser.Scene {
       return items[items.length - 1];
    }
 
+   // Initialise game and zones
+   getAllZonesData() {
+      this.data = this.cache.json.get('zoneData');
+      if (!testing) {
+         zones_quantity = this.data.length - 1;
+      } else {
+         zones_quantity = zone_quantity_for_test;
+      }
+      console.log(zones_quantity, "zones in game");
+      //this.numObstaclesCreatedInGameMax = localStorage.getItem('obstaclesPassedMax');
+   }
+
+   setZoneParameters(numZone) {
+      //let levelObjName = `Level_${ this.zoneNum }`;
+      this.zone = this.data[numZone];
+      this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
+      this.debugObstacleChances();
+      //console.log("boomgapmin", this.zone.boom.gapMin);
+
+      // if zone was selected in menu
+      if (currentZone > 1) {
+         for (let i = 1; i < currentZone; i++) {
+            this.numObstaclesCreatedInGame += this.data[i].intervals;
+         }
+      }
+      this.newestObstacleID = this.numObstaclesCreatedInGame + 1;
+      // pre-placed obstacles at start of game must be accounted for
+      this.obstaclesInZone = this.zone.intervals; // - start_obstacles_n;
+
+      if (testing) {
+         this.riverSpeed = test_river_speed; // global test speed 
+      } else {
+         this.riverSpeed = this.zone.riverSpeed;
+      }
+
+      // convert zone data into pre-existing game variables
+      // perhaps this can be replaced by direct references to zone data
+      this.ySpacingRange = [this.zone.ySpacing.min, this.zone.ySpacing.max];
+      this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
+
+      this.boomGapRange = [this.zone.boom.gapMin, this.zone.boom.gapMax];
+      this.boom_length_min = this.zone.boom.lengthMin;
+      this.boom_closable_chance = this.zone.boom.closable.chance;
+      this.boom_closable_delay = this.zone.boom.closable.delay;
+      this.boom_closable_speed = this.zone.boom.closable.speed;
+   }
+
+   initialiseVariables() {
+      this.obstacle_types = ['secret', 'boom', 'rapids'];
+      this.spawnY = spawn_above_screen_Y;
+
+      this.milestoneTriggered = [false, false, false, false, false, false, false, false, false, false, false, false, false];
+      this.numObstaclesCreatedInGame = 0;
+      this.numObstaclesCreatedInZone = 0;
+
+      this.gameOver = false;
+      this.previousObstacleWasLight = false;
+
+      this.intel_alert = 180;
+      this.light_alert = 250;
+
+      this.fontSize = 16;
+      this.lineHeight = 70;
+      this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
+   }
+
+   // Tiles and physics groups
+   makeTiledRiverBackground() {
+      this.waterBG = this.add.tileSprite(0, 0, gameWidth, displayHeight, 'water');
+      this.waterBG.setOrigin(0, 0);
+      //make background tileSprite scroll with camera
+      this.waterBG.tilePositionX = this.cameras.main.scrollX;
+      this.waterBG.tilePositionY = this.cameras.main.scrollY;
+   }
+
+   createPhysicsGroups() {
+      this.land = this.physics.add.group({ runChildUpdate: true });
+      this.booms = this.physics.add.group({ runChildUpdate: true });
+      this.bridges = this.physics.add.group({ runChildUpdate: true });
+      this.rapids = this.physics.add.group({ runChildUpdate: true });
+      this.woods = this.physics.add.group({ runChildUpdate: true });
+      this.rocks = this.physics.add.group({ runChildUpdate: true });
+      this.sensors = this.physics.add.group({ runChildUpdate: true });
+      this.secrets = this.physics.add.group({ runChildUpdate: true });
+      this.intels = this.physics.add.group({ runChildUpdate: true });
+      this.lights = this.physics.add.group({ runChildUpdate: true });
+      // decoration of land and water
+      this.milestones = this.physics.add.group({ runChildUpdate: true });
+      this.obstacles = this.physics.add.group({ runChildUpdate: true });
+      this.idLabels = this.physics.add.group({ runChildUpdate: true });
+   }
 };
