@@ -149,7 +149,7 @@ class Setup extends Phaser.Scene {
       });
 
       if (testing) {
-         currentZone = test_zone;
+         makingZone = test_zone;
          this.scene.start('Game');
       } else {
          this.scene.start('Home');

@@ -201,7 +201,7 @@
          "name": "Fourth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 30,
+      "intervals": 5,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -252,7 +252,7 @@
          "name": "Fifth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 30,
+      "intervals": 5,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -303,7 +303,7 @@
          "name": "Sixth Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 30,
+      "intervals": 5,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,
@@ -352,7 +352,7 @@
          "name": "Seventh Rapids"
       },
       "riverSpeed": 70,
-      "intervals": 40,
+      "intervals": 5,
       "obstacle": {
          "secret": 0.4,
          "boom": 0.6,

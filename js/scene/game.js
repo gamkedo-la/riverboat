@@ -10,7 +10,7 @@ class Game extends Phaser.Scene {
       this.createPhysicsGroups();
       this.setupSounds();
 
-      this.setZoneParameters(currentZone); // reset when Milestone overlap
+      this.setZoneParameters(makingZone); // reset when Milestone overlap
       this.applyRiverDrift(this.riverSpeed); // may be reset in update cycle
 
       // switches for obstacleMaker and placeObstaclesX
@@ -80,7 +80,7 @@ class Game extends Phaser.Scene {
 
       this.destroyPassedObject();
 
-      this.testIfReadyForNextInterval();
+      if (!this.stopMakingObstacles) this.testIfReadyForNextInterval();
 
       if (this.player.engine == 'off') {
          this.player.neitherFastOrSlow();
@@ -93,11 +93,13 @@ class Game extends Phaser.Scene {
       if (this.numObstaclesCreatedInZone < this.obstaclesInZone) {
          chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
       }
-      // if progress reaches zone's quantity of obstacles then show milestone, and increment currentZone      
+      // when zone's quantity of obstacles made show milestone, and increment makingZone      
       else {
-         if (currentZone > zones_quantity) {
-            this.waterSound.stop;
-            this.scene.start("Home");
+         if (makingZone > zones_quantity) {
+            console.log(`makeInterval() should stop flow reaching here`);
+            this.stopMakingObstacles = true;
+            // this.waterSound.stop;
+            // this.scene.start("Home");
          }
          else {
             chosenObstacleType = "milestone";
@@ -108,7 +110,7 @@ class Game extends Phaser.Scene {
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
 
       if (testing) {
-         console.log(`${this.numObstaclesCreatedInZone + 1} obstacles created in zone ${currentZone}`);
+         //console.log(`obstacle ${this.numObstaclesCreatedInZone + 1} created in zone ${makingZone}`);
       }
       return chosenObstacleType;
    }
@@ -142,7 +144,18 @@ class Game extends Phaser.Scene {
       if (testing) this.labelObstacleAndZoneID();
 
       if (chosenObstacleType === "milestone") {
-         this.getNextZone();
+         // increment makingZone
+         // if zone exceeds limit stop creating obstacles 
+         makingZone += 1;
+         //console.log('Zone being made incremented to', makingZone);
+         if (makingZone > zones_quantity) {
+            this.stopMakingObstacles = true;
+         } else {
+            this.setZoneParameters(makingZone);
+            this.numObstaclesCreatedInZone = 0;
+            this.obstaclesInZone = this.zone.intervals;
+            //this.getNextZone();
+         }
       }
 
       if (this.previousObstacleWasLight) {
@@ -490,20 +503,20 @@ class Game extends Phaser.Scene {
    // Making furniture/obstacles
    makeMilestone() {
       let milestone = new Rapids(this, 0, 0, "rapids");
-      milestone.id = currentZone;
+      milestone.id = makingZone;
       this.milestones.add(milestone);
       this.milestone = milestone;
-      // console.log(`Milestone before zone ${currentZone}`);
+      // console.log(`Milestone before zone ${makingZone}`);
       return [milestone];
    }
 
-   getNextZone() {
-      currentZone += 1;
-      console.log('Zone incremented to', currentZone);
-      this.setZoneParameters(currentZone);
-      this.numObstaclesCreatedInZone = 0;
-      this.obstaclesInZone = this.zone.intervals;
-   }
+   // getNextZone() {
+   //    makingZone += 1;
+   //    console.log('Zone incremented to', makingZone);
+   //    this.setZoneParameters(makingZone);
+   //    this.numObstaclesCreatedInZone = 0;
+   //    this.obstaclesInZone = this.zone.intervals;
+   // }
 
    makeStrayRock() {
       let rock = new Rock(this, 0, 0, "rock", 0);
@@ -795,11 +808,12 @@ class Game extends Phaser.Scene {
    };
 
    reachMilestone(player, milestone) {
-      if (!this.milestoneTriggered[currentZone] && milestone.id === currentZone) {
-         this.milestoneTriggered[currentZone] = true;
-         console.log('reached milestone', currentZone);
-         console.log(this.milestoneTriggered);
-         if (this.isZoneLastInGame() === true) {
+      if (!this.milestoneTriggered[boatInZone] && milestone.id === boatInZone) {
+         this.milestoneTriggered[boatInZone] = true;
+         console.log(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id} and flags ${this.milestoneTriggered}`);
+         boatInZone += 1;
+         if (boatInZone > zones_quantity) {
+            // if (this.isZoneLastInGame() === true) {
             console.log('Game Over');
             this.physics.pause();
             this.gameOver = true;
@@ -807,7 +821,6 @@ class Game extends Phaser.Scene {
          }
       }
       else {
-         //console.log('at milestone', currentZone);
       }
    }
 
@@ -997,16 +1010,16 @@ class Game extends Phaser.Scene {
 
    // Testing & debugging
    debugObstacleChances() {
-      console.log(`Zone ${currentZone} obstacles ${this.zone.intervals}: Secret = ${this.zone.obstacle.secret}, Boom = ${this.zone.obstacle.boom}, closable ${this.zone.boom.closable.chance}`);
+      console.log(`Zone ${makingZone} obstacles ${this.zone.intervals}: Secret = ${this.zone.obstacle.secret}, Boom = ${this.zone.obstacle.boom}, closable ${this.zone.boom.closable.chance}`);
       // Omitting unused parameters from JSON easily causes bugs!
-      // if (currentZone > 2) {
+      // if (makingZone > 2) {
       // closable ${this.zone.boom.closable.chance}
    }
 
    labelObstacleAndZoneID() {
       let idLabel = this.add.text(bankWidth + 12, this.spawnY, `${this.numObstaclesPassedInPreviousZones + this.numObstaclesCreatedInZone}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
       this.idLabels.add(idLabel);
-      let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${currentZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
+      let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${makingZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
       this.idLabels.add(zoneLabel);
    }
 
@@ -1033,7 +1046,7 @@ class Game extends Phaser.Scene {
    }
 
    isZoneLastInGame() {
-      return currentZone === zones_quantity;
+      return makingZone === zones_quantity;
    }
 
    weightedRandomChoice(items, weights) {
@@ -1077,8 +1090,8 @@ class Game extends Phaser.Scene {
       this.debugObstacleChances();
 
       // if zone was selected in menu
-      if (currentZone > 1) {
-         for (let i = 1; i < currentZone; i++) {
+      if (makingZone > 1) {
+         for (let i = 1; i < makingZone; i++) {
             this.numObstaclesPassedInPreviousZones += this.data[i].intervals;
          }
       }
@@ -1104,6 +1117,7 @@ class Game extends Phaser.Scene {
    }
 
    initialiseVariables() {
+      boatInZone = makingZone;
       this.obstacle_types = ['secret', 'boom', 'rapids'];
       this.spawnY = spawn_above_screen_Y;
 
@@ -1111,6 +1125,7 @@ class Game extends Phaser.Scene {
       this.numObstaclesCreatedInZone = 0;
       this.numObstaclesPassedInPreviousZones = 0;
 
+      this.stopMakingObstacles = false;
       this.gameOver = false;
       this.previousObstacleWasLight = false;
 

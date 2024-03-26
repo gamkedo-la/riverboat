@@ -27,8 +27,7 @@ const hudStyle = {
 
 let deviceOS, keyboard;
 
-let currentZone;
-let zones_quantity;
+let makingZone, boatInZone, zones_quantity;
 
 // generate number between 0 and 1 with distribution biased toward 0.5
 const randomBias2Middle = function () {

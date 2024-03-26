@@ -33,13 +33,13 @@ class Home extends Phaser.Scene {
 
       top += 60 + 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Help', () => {
-         currentZone = 1;
+         makingZone = 1;
          this.scene.start('Help');
       });
 
       top += 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Play', () => {
-         currentZone = 1;
+         makingZone = 1;
          this.scene.start('Game');
       });
 
@@ -47,32 +47,32 @@ class Home extends Phaser.Scene {
       let incremX = 44;
       let x = 70; //77;
       this.buttonZone2 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '2', () => {
-         currentZone = 2;
+         makingZone = 2;
          this.scene.start('Game');
       });
       x += incremX;
       this.buttonZone3 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '3', () => {
-         currentZone = 3;
+         makingZone = 3;
          this.scene.start('Game');
       });
       x += incremX;
       this.buttonZone4 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '4', () => {
-         currentZone = 4;
+         makingZone = 4;
          this.scene.start('Game');
       });
       x += incremX;
       this.buttonZone5 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '5', () => {
-         currentZone = 5;
+         makingZone = 5;
          this.scene.start('Game');
       });
       x += incremX;
       this.buttonZone6 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '6', () => {
-         currentZone = 6;
+         makingZone = 6;
          this.scene.start('Game');
       });
       x += incremX + 1;
       this.buttonZone7 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '7', () => {
-         currentZone = 7;
+         makingZone = 7;
          this.scene.start('Game');
       });
 
@@ -82,7 +82,7 @@ class Home extends Phaser.Scene {
 
       top += 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Credits', () => {
-         currentZone = 1;
+         makingZone = 1;
          this.scene.start('Credits');
       });
 
@@ -105,7 +105,7 @@ class Home extends Phaser.Scene {
 
       top += 60;
       this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Test (zone 0)', () => {
-         currentZone = 0;
+         makingZone = 0;
          this.scene.start('Game');
       });
    };
