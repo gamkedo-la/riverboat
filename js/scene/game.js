@@ -6,14 +6,13 @@ class Game extends Phaser.Scene {
    init() {
       this.initialiseVariables();
       this.getAllZonesData();
-      this.setZoneParameters(currentZone);
       this.makeTiledRiverBackground();
       this.createPhysicsGroups();
-      this.applyRiverDrift(this.riverSpeed);
+      this.setupSounds();
 
-      // play the sound of water on loop, volume 0.15
-      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.05, loop: true });
-      this.waterSound.play();
+      this.setZoneParameters(currentZone); // reset when Milestone overlap
+      this.applyRiverDrift(this.riverSpeed); // may be reset in update cycle
+
       // switches for obstacleMaker and placeObstaclesX
       this.obstacleMaker = {
          boom: () => {
@@ -53,48 +52,20 @@ class Game extends Phaser.Scene {
    };
 
    create() {
+      this.setupInput();
       this.physics.world.bounds.width = gameWidth; // works without these?
       this.physics.world.bounds.height = displayHeight;
-      this.input.scene.active = true;
 
       this.makePlayer();
-      this.setupXscroll();
       this.makeHud();
-
-      this.makeMenuButton();
-      if (keyboard != 'likely') {
-         this.makePauseButton();
-         this.makeArrowButtons();
-      }
-
-      // this.sound.manager.maxSounds = 3;
-      this.setupSounds();
 
       // at game start, and when menu jumps to a zone start, create first obstacle
       this.whenObstacleMaking();
-
-      // move it down from spawnY to visible starting position, by call sameing method as update()
+      // move it down from spawnY to visible start position, by call same method as update()
       this.moveFurnitureY(this.ySpacing);
 
-      // if (testing) {
-      //    this.previousY = this.getPreviousObstacleY();
-      //    console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
-      // }
-
-      this.cursors = this.input.keyboard.createCursorKeys();
-      // add W,A,S,D to cursors so they work in addition to the arrow keys
-      this.cursors.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-      this.cursors.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-      this.cursors.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-      this.cursors.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-
-      if (!testing) {
-         this.setupColliders();
-      }
-      this.physics.add.overlap(this.player, this.milestones, this.reachMilestone, null, this);
-      this.input.keyboard.on('keyup', this.anyKey, this);
-
-      this.logging();
+      this.setupColliders();
+      // this.logging();
    };
 
    update() {
@@ -105,7 +76,7 @@ class Game extends Phaser.Scene {
 
       this.isIntelWithinRange();
 
-      this.updateFuelDisplay();
+      this.updateFuelDisplay(); // should call from Player class
 
       this.destroyPassedObject();
 
@@ -184,6 +155,8 @@ class Game extends Phaser.Scene {
       this.rocks.incY(y);
       if (testing) {
          this.idLabels.incY(y);
+         // this.previousY = this.getPreviousObstacleY();
+         // console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
       }
    }
 
@@ -216,6 +189,10 @@ class Game extends Phaser.Scene {
    }
 
    setupSounds() {
+      // play the sound of water on loop, volume 0.15
+      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.05, loop: true });
+      this.waterSound.play();
+
       this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.5, loop: false });
       this.searchContactSound = this.sound.add('snd_searchContact', { volume: 0.2 });
       this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0 });
@@ -224,13 +201,8 @@ class Game extends Phaser.Scene {
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0 });
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
       this.boomChainSound = this.sound.add('snd_boomChain', { volume: 0.15 });
-   }
 
-   setupXscroll() {
-      this.cameras.main.setBounds(0, 0, gameWidth, displayHeight);
-      this.cameras.main.setBackgroundColor(0x0000ff);
-      this.cameras.main.startFollow(this.player, true, 1, 0);
-      // roundPixels=true reduces jitter, LERP=1, Y-axis-following=0
+      // this.sound.manager.maxSounds = 3;
    }
 
    // Player boat make & control
@@ -543,7 +515,7 @@ class Game extends Phaser.Scene {
       wood.setSize(18, 30, true); // set hitbox size, centred
       wood.play('splash_driftwood');
       this.woods.add(wood);
-      console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
+      // console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
    }
 
    makeBooms() {
@@ -831,17 +803,21 @@ class Game extends Phaser.Scene {
 
    // Overlap & collision handling
    setupColliders() {
-      this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
-      this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
-      this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
-      this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
-      this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
-      this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
-      this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
-      this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
-      this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
-      this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
-      this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
+      this.physics.add.overlap(this.player, this.milestones, this.reachMilestone, null, this);
+      // quick test of milestone trigger zones, without bumping into obstacles
+      if (!testing) {
+         this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
+         this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
+         this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
+         this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
+         this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
+         this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
+         this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
+         this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
+         this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
+         this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
+         this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
+      }
    }
 
    boatSeen(boat, light) {
@@ -1136,6 +1112,22 @@ class Game extends Phaser.Scene {
       this.fontSize = 16;
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
+   }
+
+   setupInput() {
+      this.input.scene.active = true;
+      this.makeMenuButton();
+      if (keyboard != 'likely') {
+         this.makePauseButton();
+         this.makeArrowButtons();
+      }
+      this.cursors = this.input.keyboard.createCursorKeys();
+      // add W,A,S,D to cursors so they work in addition to the arrow keys
+      this.cursors.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+      this.cursors.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+      this.cursors.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+      this.cursors.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+      this.input.keyboard.on('keyup', this.anyKey, this);
    }
 
    // Tiles and physics groups
