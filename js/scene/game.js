@@ -60,7 +60,7 @@ class Game extends Phaser.Scene {
       this.makeHud();
 
       // at game start, and when menu jumps to a zone start, create first obstacle
-      this.whenObstacleMaking();
+      this.makeInterval();
       // move it down from spawnY to visible start position, by call same method as update()
       this.moveFurnitureY(this.ySpacing);
 
@@ -80,7 +80,7 @@ class Game extends Phaser.Scene {
 
       this.destroyPassedObject();
 
-      this.testIfReadyForNextObstacle();
+      this.testIfReadyForNextInterval();
 
       if (this.player.engine == 'off') {
          this.player.neitherFastOrSlow();
@@ -106,40 +106,44 @@ class Game extends Phaser.Scene {
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
       this.placeObstaclesY(...obstacleSprites);
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
+
       if (testing) {
-         console.log(this.numObstaclesCreatedInZone, 'obstacles created in zone', currentZone);
+         console.log(`${this.numObstaclesCreatedInZone + 1} obstacles created in zone ${currentZone}`);
       }
+      return chosenObstacleType;
    }
 
    placeObstaclesY(...components) {
       components.forEach((item) => {
          item.y = this.spawnY;
       });
-      if (testing) {
-         this.labelObstacleAndZoneID();
-      }
-      //console.log('placing obstacle', this.newestObstacleID, 'at', this.spawnY);
    }
 
-   testIfReadyForNextObstacle() {
+   testIfReadyForNextInterval() {
       this.previousY = this.getPreviousObstacleY();
       // console.log(previousY, this.ySpacing);
       if (this.previousY - this.spawnY > this.ySpacing) {
-         // console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
-         this.whenObstacleMaking();
+         // console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing);
+         this.makeInterval();
       }
    }
 
-   // separated so initial obstacles created before gameplay can also get in-between objects.
-   whenObstacleMaking() {
-      //this.newestObstacleID += 1;
-      //console.log('newestObstacleID', this.newestObstacleID);
-      this.makeObstacle();
+   // new obstacle created at spawnY, and any in-between objects go above
+   makeInterval() {
+      let chosenObstacleType = this.makeObstacle();
       // randomize new Y gap to next Obstacle
       this.ySpacing = Phaser.Math.Between(...this.ySpacingRange);
-      this.trackProgress();
+
       this.checkIfDriftwood();
       this.checkIfBoulder();
+
+      this.numObstaclesCreatedInZone += 1;
+      this.updateProgressDisplay();
+      if (testing) this.labelObstacleAndZoneID();
+
+      if (chosenObstacleType === "milestone") {
+         this.getNextZone();
+      }
 
       if (this.previousObstacleWasLight) {
          this.lightNearSound.play();
@@ -156,7 +160,7 @@ class Game extends Phaser.Scene {
       if (testing) {
          this.idLabels.incY(y);
          // this.previousY = this.getPreviousObstacleY();
-         // console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing, 'prev obstacle ID:', this.newestObstacleID);
+         // console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing);
       }
    }
 
@@ -297,15 +301,17 @@ class Game extends Phaser.Scene {
    };
 
    makeProgressDisplay(y) {
-      this.progressDisplay = this.add.text(0, y, `Passed: ${this.numObstaclesCreatedInGame}`, hudStyle);
+      this.progressDisplay = this.add.text(0, y, `Passed: ${this.progressInGame}`, hudStyle);
       this.progressDisplay.setOrigin(0.5);
       this.hud.add(this.progressDisplay);
    };
 
-   trackProgress() {
-      this.numObstaclesCreatedInZone += 1;
-      this.numObstaclesCreatedInGame += 1;
-      this.progressDisplay.setText(`Passed: ${this.numObstaclesCreatedInGame}`);
+   updateProgressDisplay() {
+      // when 3rd obstacle created the 1st likely has exited or nearly so
+      let x = this.numObstaclesCreatedInZone;
+      let progressInZone = x <= 2 ? 0 : Math.abs(x - 2);
+      this.progressInGame = this.numObstaclesPassedInPreviousZones + progressInZone;
+      this.progressDisplay.setText(`Passed: ${this.progressInGame}`);
    };
 
    makeFuelDisplay(y) {
@@ -484,10 +490,19 @@ class Game extends Phaser.Scene {
    // Making furniture/obstacles
    makeMilestone() {
       let milestone = new Rapids(this, 0, 0, "rapids");
+      milestone.id = currentZone;
       this.milestones.add(milestone);
       this.milestone = milestone;
       // console.log(`Milestone before zone ${currentZone}`);
       return [milestone];
+   }
+
+   getNextZone() {
+      currentZone += 1;
+      console.log('Zone incremented to', currentZone);
+      this.setZoneParameters(currentZone);
+      this.numObstaclesCreatedInZone = 0;
+      this.obstaclesInZone = this.zone.intervals;
    }
 
    makeStrayRock() {
@@ -503,7 +518,7 @@ class Game extends Phaser.Scene {
    }
 
    makeDriftwood() {
-      //console.log('wood when making obstacle', this.newestObstacleID, 'at', this.spawnY);
+      //console.log('wood when making obstacle', this.numObstaclesCreatedInZone, 'at', this.spawnY);
       let wood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
       let ratioSpacingY = randomBiasMiddle();
       let offsetX = randomAvoidMiddle();
@@ -780,19 +795,14 @@ class Game extends Phaser.Scene {
    };
 
    reachMilestone(player, milestone) {
-      if (!this.milestoneTriggered[currentZone]) {
+      if (!this.milestoneTriggered[currentZone] && milestone.id === currentZone) {
          this.milestoneTriggered[currentZone] = true;
          console.log('reached milestone', currentZone);
          console.log(this.milestoneTriggered);
-         if (this.isZoneLastInGame() === false) {
-            currentZone += 1;
-            console.log('Zone incremented to', currentZone);
-            this.setZoneParameters(currentZone);
-            this.numObstaclesCreatedInZone = 0;
-            this.obstaclesInZone = this.zone.intervals;
-         } else {
+         if (this.isZoneLastInGame() === true) {
             console.log('Game Over');
             this.physics.pause();
+            this.gameOver = true;
             // this.scene.start("Home");
          }
       }
@@ -994,7 +1004,7 @@ class Game extends Phaser.Scene {
    }
 
    labelObstacleAndZoneID() {
-      let idLabel = this.add.text(bankWidth + 12, this.spawnY, `${this.newestObstacleID} ${this.numObstaclesCreatedInGame}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      let idLabel = this.add.text(bankWidth + 12, this.spawnY, `${this.numObstaclesPassedInPreviousZones + this.numObstaclesCreatedInZone}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
       this.idLabels.add(idLabel);
       let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${currentZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
       this.idLabels.add(zoneLabel);
@@ -1056,8 +1066,8 @@ class Game extends Phaser.Scene {
       } else {
          zones_quantity = zone_quantity_for_test;
       }
-      console.log(zones_quantity, "zones in game");
-      //this.numObstaclesCreatedInGameMax = localStorage.getItem('obstaclesPassedMax');
+      console.log(`${zones_quantity} zones in game`);
+      //this.numObstaclesPassedInGameMax = localStorage.getItem('obstaclesPassedMax');
    }
 
    setZoneParameters(numZone) {
@@ -1065,17 +1075,15 @@ class Game extends Phaser.Scene {
       this.zone = this.data[numZone];
       this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
       this.debugObstacleChances();
-      //console.log("boomgapmin", this.zone.boom.gapMin);
 
       // if zone was selected in menu
       if (currentZone > 1) {
          for (let i = 1; i < currentZone; i++) {
-            this.numObstaclesCreatedInGame += this.data[i].intervals;
+            this.numObstaclesPassedInPreviousZones += this.data[i].intervals;
          }
       }
-      this.newestObstacleID = this.numObstaclesCreatedInGame + 1;
-      // pre-placed obstacles at start of game must be accounted for
-      this.obstaclesInZone = this.zone.intervals; // - start_obstacles_n;
+      // pre-placed obstacle at start of game must be accounted for
+      this.obstaclesInZone = this.zone.intervals;
 
       if (testing) {
          this.riverSpeed = test_river_speed; // global test speed 
@@ -1100,8 +1108,8 @@ class Game extends Phaser.Scene {
       this.spawnY = spawn_above_screen_Y;
 
       this.milestoneTriggered = [false, false, false, false, false, false, false, false, false, false, false, false, false];
-      this.numObstaclesCreatedInGame = 0;
       this.numObstaclesCreatedInZone = 0;
+      this.numObstaclesPassedInPreviousZones = 0;
 
       this.gameOver = false;
       this.previousObstacleWasLight = false;
