@@ -42,6 +42,7 @@ class Setup extends Phaser.Scene {
       this.load.image('sensor', 'public/art/sensor_cone.png');
       this.load.image('sensor2', 'public/art/BoatSensor_YellowCone.png');
 
+      this.load.image('spy_cutscene', 'public/art/spying.png');
       this.load.image('boom', 'public/art/boom_480x50.png');
       this.load.image('boomUnit', 'public/art/BoomUnit0.png');
       this.load.image('capstan', 'public/art/capstan.png');
@@ -152,8 +153,8 @@ class Setup extends Phaser.Scene {
          makingZone = test_zone;
          this.scene.start('Game');
       } else {
-         this.scene.start('Home');
-         // this.scene.start('Intro');
+         // this.scene.start('Home');
+         this.scene.start('Intro');
       }
    };
 
