@@ -76,12 +76,11 @@ class Home extends Phaser.Scene {
          this.scene.start('Game');
       });
 
-      // show personal High Scores to help player understand aim of game
-      // top += 60;
-      // this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'High score', () => this.scene.start('Scores'));
-
       top += 60;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Credits', () => {
+      // show personal High Scores to help player understand aim of game
+      this.buttonScore = new uiButton(this, gameWidth / 4, top, 'placeholderButtonUp', 'placeholderButtonDown', 'HighScore', () => this.scene.start('Scores'));
+
+      this.buttonScore = new uiButton(this, 20 + gameWidth * 3 / 4, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Credits', () => {
          makingZone = 1;
          this.scene.start('Credits');
       });

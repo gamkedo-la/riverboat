@@ -1,4 +1,4 @@
-const testing = true; // jump into game & zone when true
+const testing = false; // jump into game & zone when true
 const test_zone = 1; // zone to test
 const test_no_colliders = true; // no need to navigate when false
 const test_river_speed = 100; // 20 makes access to riverbank easier
@@ -28,6 +28,10 @@ const hudStyle = {
 let deviceOS, keyboard;
 
 let makingZone, boatInZone, zones_quantity;
+// current intel tracked by player.intelScore
+let estimatedProgress; // global so all scenes can access
+let intelHighScores = [];
+let progressHighScores = [];
 
 // generate number between 0 and 1 with distribution biased toward 0.5
 const randomBias2Middle = function () {
