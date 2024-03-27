@@ -213,7 +213,7 @@ class Game extends Phaser.Scene {
 
    setupSounds() {
       // play the sound of water on loop, volume 0.15
-      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.05, loop: true });
+      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.15, loop: true });
       this.waterSound.play();
 
       this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.5, loop: false });
