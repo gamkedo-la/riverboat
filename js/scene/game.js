@@ -105,6 +105,12 @@ class Game extends Phaser.Scene {
             chosenObstacleType = "milestone";
          }
       }
+
+      // following playest, guarantee a Secret in zones 1 and 2
+      if (makingZone <= 2 && this.numObstaclesCreatedInZone === this.obstaclesInZone - 2) {
+         chosenObstacleType = "secret";
+      }
+
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
       this.placeObstaclesY(...obstacleSprites);
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
@@ -139,7 +145,7 @@ class Game extends Phaser.Scene {
       this.checkIfDriftwood();
       this.checkIfBoulder();
 
-      this.numObstaclesCreatedInZone += 1;
+      this.incrementObstacleCounter();
       this.updateProgressDisplay();
       if (testing) this.labelObstacleAndZoneID();
 
@@ -314,18 +320,22 @@ class Game extends Phaser.Scene {
    };
 
    makeProgressDisplay(y) {
-      this.progressDisplay = this.add.text(0, y, `Passed: ${this.progressInGame}`, hudStyle);
+      this.progressDisplay = this.add.text(0, y, `Passed: ${estimatedProgress}`, hudStyle);
       this.progressDisplay.setOrigin(0.5);
       this.hud.add(this.progressDisplay);
    };
 
    updateProgressDisplay() {
+      this.progressDisplay.setText(`Passed: ${estimatedProgress}`);
+   };
+
+   incrementObstacleCounter() {
+      this.numObstaclesCreatedInZone += 1;
       // when 3rd obstacle created the 1st likely has exited or nearly so
       let x = this.numObstaclesCreatedInZone;
-      let progressInZone = x <= 2 ? 0 : Math.abs(x - 2);
-      this.progressInGame = this.numObstaclesPassedInPreviousZones + progressInZone;
-      this.progressDisplay.setText(`Passed: ${this.progressInGame}`);
-   };
+      let estimatedProgressInZone = x <= 2 ? 0 : Math.abs(x - 2);
+      estimatedProgress = this.numObstaclesPassedInPreviousZones + estimatedProgressInZone;
+   }
 
    makeFuelDisplay(y) {
       this.fuelDisplay = this.add.text(0, y, `Fuel: ${this.player.fuel}`, hudStyle);
@@ -1080,7 +1090,10 @@ class Game extends Phaser.Scene {
          zones_quantity = zone_quantity_for_test;
       }
       console.log(`${zones_quantity} zones in game`);
-      //this.numObstaclesPassedInGameMax = localStorage.getItem('obstaclesPassedMax');
+
+      // this.milestoneTriggered = [false, false, false, false, false, false, false, false, false, false, false, false, false];
+      // extra element so zone ID can match array index
+      this.milestoneTriggered = new Array(zones_quantity + 1).fill(false);
    }
 
    setZoneParameters(numZone) {
@@ -1095,6 +1108,7 @@ class Game extends Phaser.Scene {
             this.numObstaclesPassedInPreviousZones += this.data[i].intervals;
          }
       }
+      estimatedProgress = this.numObstaclesPassedInPreviousZones;
       // pre-placed obstacle at start of game must be accounted for
       this.obstaclesInZone = this.zone.intervals;
 
@@ -1121,7 +1135,6 @@ class Game extends Phaser.Scene {
       this.obstacle_types = ['secret', 'boom', 'rapids'];
       this.spawnY = spawn_above_screen_Y;
 
-      this.milestoneTriggered = [false, false, false, false, false, false, false, false, false, false, false, false, false];
       this.numObstaclesCreatedInZone = 0;
       this.numObstaclesPassedInPreviousZones = 0;
 

@@ -7,7 +7,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       if (testing) {
          this.startFuel = fuel_for_testing;
       } else {
-         this.startFuel = 7000;
+         this.startFuel = 3000;
       }
       this.fuel = this.startFuel;
       this.life = 3;
