@@ -1,11 +1,11 @@
 const testing = false; // jump into game & zone when true
-const test_zone = 0; // zone to test
+const test_zone = 1; // zone to test
 const test_no_colliders = true; // no need to navigate when false
 const test_river_speed = 100; // 20 makes access to riverbank easier
 const fuel_for_testing = 9999;
 const zone_quantity_for_test = 3;
 
-const developerMode = true;
+const developerMode = false;
 const devMotorVolume = 0;
 
 const displayWidth = 360;

@@ -326,8 +326,10 @@ class Game extends Phaser.Scene {
    }
 
    makeLocator() {
-      this.zoneProgress = this.add.text(displayWidth - 150, displayHeight - 50, `Zone: ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
-      this.obstacleProgress = this.add.text(displayWidth - 150, displayHeight - 20, `Interval: ${boatInZone}/${this.countObstaclesInZones(zones_quantity)}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101); // estimatePassed in Zone
+      const offsetX = 130;
+      this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, displayHeight - 80, `Zone: ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      this.obstacleGameProgress = this.add.text(displayWidth - offsetX, displayHeight - 20, `Game: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
    }
 
    makeLifeDisplay(y) {
@@ -346,16 +348,17 @@ class Game extends Phaser.Scene {
       this.progressDisplay.setText(`Passed: ${estimatedProgress}`);
    };
    updateLocator() {
-      this.zoneProgress.setText(`Zone: ${boatInZone}/${zones_quantity}`);
-      this.obstacleProgress.setText(`Interval: ${estimatedProgress}/${this.countObstaclesInZones(zones_quantity)}`); // estimatePassed in Zone
+      this.zoneOfZonesProgress.setText(`Zone: ${boatInZone}/${zones_quantity}`);
+      this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimatePassed in Zone
+      this.obstacleGameProgress.setText(`Game: ${estimatedProgress}/${this.countObstaclesInZones(zones_quantity)}`);
    }
 
    incrementObstacleCounter() {
       this.numObstaclesCreatedInZone += 1;
       // when 3rd obstacle created the 1st likely has exited or nearly so
       let x = this.numObstaclesCreatedInZone;
-      let estimatedProgressInZone = x <= 2 ? 0 : Math.abs(x - 2);
-      estimatedProgress = this.numObstaclesPassedInPreviousZones + estimatedProgressInZone;
+      this.estimatedProgressInZone = x <= 2 ? 0 : Math.abs(x - 2);
+      estimatedProgress = this.numObstaclesPassedInPreviousZones + this.estimatedProgressInZone;
    }
 
    makeFuelDisplay(y) {
