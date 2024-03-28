@@ -11,7 +11,7 @@ class Land extends Phaser.Physics.Arcade.Image {
       // else if (bank === "right") {
       //    this.setOrigin(1, 0.5);
       // }
-      this.setScale(1);
+      this.setScale(0.7);
       this.scene.add.existing(this);
    }
 }

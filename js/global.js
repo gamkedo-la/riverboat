@@ -1,9 +1,12 @@
 const testing = false; // jump into game & zone when true
-const test_zone = 1; // zone to test
+const test_zone = 0; // zone to test
 const test_no_colliders = true; // no need to navigate when false
 const test_river_speed = 100; // 20 makes access to riverbank easier
 const fuel_for_testing = 9999;
 const zone_quantity_for_test = 3;
+
+const developerMode = true;
+const devMotorVolume = 0;
 
 const displayWidth = 360;
 const displayHeight = 600;
@@ -55,5 +58,19 @@ const randomAvoidMiddle = function () {
    let half = Math.random() < 0.5 ? 0 : 0.5;
    let z = half + (randomBiasMiddle() / 2);
    return z;
-}
+};
 
+const developerModeSounds = function (game) {
+   // play the sound of water on loop, volume 0.15
+   game.waterSound = game.sound.add('snd_waterLoop', { volume: 0.03, loop: true });
+   game.waterSound.play();
+   game.lightNearSound = game.sound.add('snd_searchProximity', { volume: 0.02, loop: false });
+   game.searchContactSound = game.sound.add('snd_searchContact', { volume: 0.01 });
+   game.landCollideSound = game.sound.add('snd_landCollide', { volume: 0 });
+   game.boomCollideSound = game.sound.add('snd_boomCollide', { volume: 0.05 });
+   game.bridgeCollideSound = game.sound.add('snd_bridgeCollide', { volume: 0 });
+   game.rapidsOverlapSound = game.sound.add('snd_rapidsOverlap', { volume: 0 });
+   game.intelOverlapSound = game.sound.add('snd_intelOverlap', { volume: 0 });
+   game.boomChainSound = game.sound.add('snd_boomChain', { volume: 0.05 });
+   // game.sound.manager.maxSounds = 3;
+};

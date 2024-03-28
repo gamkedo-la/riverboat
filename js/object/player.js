@@ -41,7 +41,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    setupMotorSound() {
       // fade in and out
       // note: currently unused - it sounded better without it
-      this.motorVolumeMin = 0.1;  // 0.25;
+      this.motorVolumeMin = devMotorVolume;  // 0.1 or 0.25;
       this.motorVolumeMax = 0.5;
       this.motorVolumeChangeSpeed = 0.01;
 

@@ -8,7 +8,12 @@ class Game extends Phaser.Scene {
       this.getAllZonesData();
       this.makeTiledRiverBackground();
       this.createPhysicsGroups();
-      this.setupSounds();
+
+      if (developerMode) {
+         developerModeSounds(this);
+      } else {
+         this.setupSounds();
+      }
 
       this.setZoneParameters(makingZone); // reset when Milestone overlap
       this.applyRiverDrift(this.riverSpeed); // may be reset in update cycle
@@ -588,12 +593,11 @@ class Game extends Phaser.Scene {
       this.bank = Math.random() < 0.5 ? 'left' : 'right';
       this.towerBank = (this.bank === 'left') ? 'right' : 'left';
 
-      //let land_secret = new Land(this, 0, 0, 'land');
       let intel = new Intel(this, 0, 0, 'intel');
       this.intels.add(intel);
       let secret = new Secret(this, 0, 0, 'secret');
 
-      //let land_tower = new Land(this, 0, 0, 'land');
+      let land_tower = new Land(this, 0, 0, 'land');
       // later use single tower texture and flip with Phaser
       let tower;
       if (this.towerBank === 'left') {
@@ -602,13 +606,13 @@ class Game extends Phaser.Scene {
          tower = new Tower(this, 0, 0, 'tower_right');
       }
 
-      let light = new Searchlight(this, 0, 0, 'searchlight');
+      let light = new Searchlight(this, 0, 0, 'searchlight', this.bank);
 
       // instead of checking in update() distance player to light, which would play too often, and seems to truncate sound, instead play once per light creation - but should delay until light is near player or at least visible on screen (spawns above screen)
       this.previousObstacleWasLight = true;
 
-      return [secret, intel, tower, light];
-      // return [secret, intel, tower, land_tower];
+      // return [secret, intel, tower, light];
+      return [secret, intel, light, tower, land_tower];
    }
 
    makeBridge() {
@@ -707,39 +711,41 @@ class Game extends Phaser.Scene {
       }
    }
 
-   // There was also a search-tower, land-based, which helps player understand what the light circle is and where it comes from.
-   placeSecret(secret, intel, tower, light) {
+   // There is a search-tower on land, which helps player understand what the light circle is and where it comes from.
+   placeSecret(secret, intel, light, tower, land_tower) {
       let x;
       let distSecretFromRiver = 45;
-      let distTowerFromRiver = 40;
-
-      light.x = Phaser.Math.Between(bankWidth + light.width / 2, gameWidth + bankWidth - light.width / 2);
+      let distTowerFromRiver = -20;
 
       if (this.bank === "left") {
+         light.x = Phaser.Math.Between(bankWidth + light.width / 2, gameWidth + bankWidth - light.width / 2 - 80);
+
          intel.setOrigin(0, 0.5).setAlpha(0.3);
          secret.setOrigin(0, 0.5);
          x = bankWidth;
          intel.x = x;
          secret.x = x - distSecretFromRiver;
 
-         //land_tower.setOrigin(1, 0.5);
+         land_tower.setOrigin(1, 0.5);
          tower.setOrigin(1, 0.5);
          x = gameWidth - bankWidth + distTowerFromRiver;
-         //land_tower.x = x + 20;
-         tower.x = x;
+         land_tower.x = x + 20;
+         tower.x = x + 20;
       }
       else if (this.bank === "right") {
+         light.x = Phaser.Math.Between(bankWidth + light.width / 2 + 80, gameWidth + bankWidth - light.width / 2);
+
          intel.setOrigin(1, 0.5).setAlpha(0.3);
          secret.setOrigin(1, 0.5);
          x = gameWidth - bankWidth;
          intel.x = x;
          secret.x = x + distSecretFromRiver;
 
-         //land_tower.setOrigin(0, 0.5);
+         land_tower.setOrigin(0, 0.5);
          tower.setOrigin(0, 0.5);
          x = bankWidth - distTowerFromRiver;
-         //land_tower.x = x - 20;
-         tower.x = x;
+         land_tower.x = x - 20;
+         tower.x = x - 20;
       }
    }
 

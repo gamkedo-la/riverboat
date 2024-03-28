@@ -149,7 +149,7 @@ class Setup extends Phaser.Scene {
          repeat: 1
       });
 
-      if (testing) {
+      if (testing || developerMode) {
          makingZone = test_zone;
          this.scene.start('Game');
       } else {
