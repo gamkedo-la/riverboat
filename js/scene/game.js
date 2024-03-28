@@ -157,6 +157,7 @@ class Game extends Phaser.Scene {
 
       this.incrementObstacleCounter();
       this.updateProgressDisplay();
+      this.updateLocator();
       if (testing) this.labelObstacleAndZoneID();
 
       if (chosenObstacleType === "milestone") {
@@ -304,7 +305,6 @@ class Game extends Phaser.Scene {
          .setPosition(-100, -100);
    }
 
-
    // UI HUD make & update
    makeHud() {
       // HUD centre at game centre, and don't scroll when river scroll sideways
@@ -321,6 +321,13 @@ class Game extends Phaser.Scene {
       y += y_UI_spacing;
       this.makeIntelDisplay(y);
       y += y_UI_spacing;
+
+      this.makeLocator();
+   }
+
+   makeLocator() {
+      this.zoneProgress = this.add.text(displayWidth - 150, displayHeight - 50, `Zone: ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      this.obstacleProgress = this.add.text(displayWidth - 150, displayHeight - 20, `Interval: ${boatInZone}/${this.countObstaclesInZones(zones_quantity)}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101); // estimatePassed in Zone
    }
 
    makeLifeDisplay(y) {
@@ -338,6 +345,10 @@ class Game extends Phaser.Scene {
    updateProgressDisplay() {
       this.progressDisplay.setText(`Passed: ${estimatedProgress}`);
    };
+   updateLocator() {
+      this.zoneProgress.setText(`Zone: ${boatInZone}/${zones_quantity}`);
+      this.obstacleProgress.setText(`Interval: ${estimatedProgress}/${this.countObstaclesInZones(zones_quantity)}`); // estimatePassed in Zone
+   }
 
    incrementObstacleCounter() {
       this.numObstaclesCreatedInZone += 1;
@@ -1149,9 +1160,10 @@ class Game extends Phaser.Scene {
 
       // if zone was selected in menu
       if (makingZone > 1) {
-         for (let i = 1; i < makingZone; i++) {
-            this.numObstaclesPassedInPreviousZones += this.data[i].intervals;
-         }
+         // for (let i = 1; i < makingZone; i++) {
+         //    this.numObstaclesPassedInPreviousZones += this.data[i].intervals;
+         // }
+         this.numObstaclesPassedInPreviousZones = countObstaclesInZones(makingZone);
       }
       estimatedProgress = this.numObstaclesPassedInPreviousZones;
       // pre-placed obstacle at start of game must be accounted for
@@ -1173,6 +1185,14 @@ class Game extends Phaser.Scene {
       this.boom_closable_chance = this.zone.boom.closable.chance;
       this.boom_closable_delay = this.zone.boom.closable.delay;
       this.boom_closable_speed = this.zone.boom.closable.speed;
+   }
+
+   countObstaclesInZones(topZone) {
+      let count = 0;
+      for (let i = 1; i <= topZone; i++) {
+         count += this.data[i].intervals;
+      }
+      return count;
    }
 
    initialiseVariables() {

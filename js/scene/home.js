@@ -43,9 +43,10 @@ class Home extends Phaser.Scene {
          this.scene.start('Game');
       });
 
+      // Zone choice - buttons that jump directto start of numbered zone
       top += 60;
       let incremX = 44;
-      let x = 70; //77;
+      let x = 70;
       this.buttonZone2 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '2', () => {
          makingZone = 2;
          this.scene.start('Game');
