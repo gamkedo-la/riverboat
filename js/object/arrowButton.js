@@ -8,6 +8,7 @@ class arrowButton extends Phaser.GameObjects.Container {
 
    createButton() {
       this.button = this.scene.add.image(0, 0, 'placeholderButtonUp')
+         .setAlpha(0.3)
          .setDepth(99)
          .setScale(0.35, 1.2)
          .setOrigin(0.5)

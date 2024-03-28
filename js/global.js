@@ -10,7 +10,7 @@ const devMotorVolume = 0;
 
 const displayWidth = 360;
 const displayHeight = 600;
-const controlPanelHeight = 120;
+let controlPanelHeight;
 
 // reduce bank Width to weaken button hitarea offset error
 const bankWidth = 0; // 100 
@@ -20,7 +20,7 @@ const waterColor = 0x0000ff;
 
 const spawn_above_screen_Y = -100;
 const start_obstacles_n = 1;
-const bring_down_first_obstacle = 140;
+const bring_down_first_obstacle = 120;
 
 const intelWidth = 70;
 const intelDepth = 50;
@@ -68,10 +68,10 @@ const developerModeSounds = function (game) {
    // play the sound of water on loop, volume 0.15
    game.waterSound = game.sound.add('snd_waterLoop', { volume: 0.03, loop: true });
    game.waterSound.play();
-   game.lightNearSound = game.sound.add('snd_searchProximity', { volume: 0.02, loop: false });
+   game.lightNearSound = game.sound.add('snd_searchProximity', { volume: 0.015, loop: false });
    game.searchContactSound = game.sound.add('snd_searchContact', { volume: 0.01 });
    game.landCollideSound = game.sound.add('snd_landCollide', { volume: 0 });
-   game.boomCollideSound = game.sound.add('snd_boomCollide', { volume: 0.05 });
+   game.boomCollideSound = game.sound.add('snd_boomCollide', { volume: 0.08 });
    game.bridgeCollideSound = game.sound.add('snd_bridgeCollide', { volume: 0 });
    game.rapidsOverlapSound = game.sound.add('snd_rapidsOverlap', { volume: 0 });
    game.intelOverlapSound = game.sound.add('snd_intelOverlap', { volume: 0 });

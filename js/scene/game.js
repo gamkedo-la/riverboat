@@ -64,7 +64,10 @@ class Game extends Phaser.Scene {
       this.makePlayer();
       this.makeHud();
       // this.scene.launch("Panel");
-      this.makeControlPanel();
+      if (keyboard != 'likely') {
+         this.makeControlPanel();
+         this.makeControlButtons();
+      }
 
       // at game start, and when menu jumps to a zone start, create first obstacle
       this.makeInterval();
@@ -398,6 +401,57 @@ class Game extends Phaser.Scene {
       controlPanel.setInteractive();
    }
 
+   // reposition existing buttons in low controlPanel
+   makeControlButtons() {
+      let top = displayHeight - controlPanelHeight + 35;
+      let cameraCentreX = this.cameras.main.centerX;
+      this.cameras.main.on('camera.scroll', this.updateButtonHitAreas, this);
+
+      let gameCentreX = this.cameras.main.scrollX + displayWidth / 2;
+      let scrollFactorX = this.cameras.main.scrollX / (gameWidth - displayWidth);
+      let hitAreaOffsetX = scrollFactorX * displayWidth;
+
+      let controlsXoffset = -70;
+      let buttonXoffset = 38;
+      let buttonYoffset = 60;
+      let leftBtnX = cameraCentreX - buttonXoffset + controlsXoffset; // was 100
+      let rightBtnX = cameraCentreX + buttonXoffset + controlsXoffset;
+
+      Object.assign(this, { cameraCentreX, gameCentreX, leftBtnX, rightBtnX });
+      // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
+
+      this.btnFast = new arrowButton(this, cameraCentreX + controlsXoffset, top, 'placeholderButtonUp', 'placeholderButtonDown', 'up', () => {
+         this.player.motorForward();
+      }, () => {
+         this.player.neitherFastOrSlow();
+      });
+      this.btnFast.scrollFactorX = 0;
+
+      top += buttonYoffset;
+      this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '<', () => {
+         this.player.turnLeft();
+      }, () => { });
+      this.btnLeft.scrollFactorX = 0;
+
+      this.btnRight = new arrowButton(this, rightBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '>', () => {
+         this.player.turnRight();
+      }, () => { });
+      this.btnRight.scrollFactorX = 0;
+
+      top += buttonYoffset;
+      this.btnSlow = new arrowButton(this, cameraCentreX + controlsXoffset, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
+         this.driftSpeed = this.riverSpeed / this.player.backward_ratio;
+         this.player.engine = "backward";
+         this.player.setTint(0xff00ff); // was bae946
+         this.player.useFuel(this.player.backwardFuel);
+      }, () => {
+         this.player.neitherFastOrSlow();
+      });
+      this.btnSlow.scrollFactorX = 0;
+
+      // this.btnLeft.setInteractive({ hitArea: new Phaser.Geom.Rectangle(this.btnLeft.width / 2 - hitAreaOffsetX, 0, this.btnLeft.width, this.btnLeft.height) });
+   }
+
    makeArrowButtons() {
       let top = 200;
       let cameraCentreX = this.cameras.main.centerX;
@@ -453,38 +507,6 @@ class Game extends Phaser.Scene {
       this.btnLeft.input.hitArea.x = this.btnLeft.x + hitAreaOffsetX;
       this.btnRight.input.hitArea.x = this.btnRight.x + hitAreaOffsetX;
    }
-
-   makeNavigationButtons(y) {
-      // this.buttonLeft = new uiButton(this, 50, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Left', () => {
-      //    console.log('pointer down -> left');
-      //    this.player.setVelocityX(-1 * this.player.sideway_speed);
-
-      // });
-      y += 20;
-      this.buttonFast = this.add.text(0, y, '^', { font: '24px Arial', color: '#ffffff' })
-         .setOrigin(0.5);
-      this.hud.add(this.buttonFast);
-
-      y += 30;
-      this.buttonLeft = this.add.text(-70, y, 'Left', { font: '24px Arial', color: '#ffffff' })
-         .setOrigin(0.5)
-         .setInteractive();
-      this.buttonLeft.on('pointerdown', () => {
-         this.player.body.setVelocityX(-1 * this.player.sideway_speed);
-         console.log('Left in container', y);
-      });
-      this.hud.add(this.buttonLeft);
-
-      this.buttonRight = this.add.text(70, y, 'Right', { font: '24px Arial', color: '#ffffff' })
-         .setOrigin(0.5);
-      this.hud.add(this.buttonRight);
-
-      y += 30;
-      this.buttonSlow = this.add.text(0, y, 'v', { font: '24px Arial', color: '#ffffff' })
-         .setOrigin(0.5);
-      this.hud.add(this.buttonSlow);
-   }
-
 
    clearNavButtonEvents() {
       // to fix bug when lose life while button is pressed its repeating event carries on after respawn
@@ -1178,7 +1200,8 @@ class Game extends Phaser.Scene {
       this.makeMenuButton();
       if (keyboard != 'likely') {
          this.makePauseButton();
-         this.makeArrowButtons();
+         this.makeControlButtons();
+         // this.makeArrowButtons();
       }
       this.cursors = this.input.keyboard.createCursorKeys();
       // add W,A,S,D to cursors so they work in addition to the arrow keys
