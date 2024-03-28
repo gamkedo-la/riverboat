@@ -40,6 +40,9 @@ let estimatedProgress; // global so all scenes can access
 let intelHighScores = [];
 let progressHighScores = [];
 
+let sensorOn = false;
+let searchlightWarned = false;
+
 // generate number between 0 and 1 with distribution biased toward 0.5
 const randomBias2Middle = function () {
    let u = Math.random();
@@ -76,5 +79,7 @@ const developerModeSounds = function (game) {
    game.rapidsOverlapSound = game.sound.add('snd_rapidsOverlap', { volume: 0 });
    game.intelOverlapSound = game.sound.add('snd_intelOverlap', { volume: 0 });
    game.boomChainSound = game.sound.add('snd_boomChain', { volume: 0.05 });
+   game.sensorOnSound = game.sound.add('snd_sensorOn', { volume: 0.3 });
+   game.sensorOffSound = game.sound.add('snd_sensorOff', { volume: 0.3 });
    // game.sound.manager.maxSounds = 3;
 };

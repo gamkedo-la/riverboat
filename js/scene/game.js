@@ -176,7 +176,10 @@ class Game extends Phaser.Scene {
       }
 
       if (this.previousObstacleWasLight) {
-         this.lightNearSound.play();
+         if (searchlightWarned === false) {
+            searchlightWarned = true;
+            this.lightNearSound.play();
+         }
          this.previousObstacleWasLight = false;
       }
       //console.log(this.milestones);
@@ -215,9 +218,17 @@ class Game extends Phaser.Scene {
             } else {
                this.showRightSensorCone();
             }
+            if (sensorOn == false) {
+               sensorOn = true;
+               this.sensorOnSound.play();
+            }
          } // boat isn't near any Intel
          else {
             this.hideSensorCone();
+            if (sensorOn == true) {
+               sensorOn = false;
+               this.sensorOffSound.play();
+            }
          }
       }
    }
@@ -235,6 +246,8 @@ class Game extends Phaser.Scene {
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0 });
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
       this.boomChainSound = this.sound.add('snd_boomChain', { volume: 0.15 });
+      this.sensorOnSound = this.sound.add('snd_sensorOn', { volume: 0.3 });
+      this.sensorOffSound = this.sound.add('snd_sensorOff', { volume: 0.3 });
 
       // this.sound.manager.maxSounds = 3;
    }
