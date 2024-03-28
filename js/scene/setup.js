@@ -44,7 +44,7 @@ class Setup extends Phaser.Scene {
 
       this.load.image('spy_cutscene', 'public/art/spying.png');
       this.load.image('boom', 'public/art/boom_480x50.png');
-      this.load.image('boomUnit', 'public/art/BoomUnit0.png');
+      this.load.image('boomUnit', 'public/art/BoomUnit0_trim.png');
       this.load.image('capstan', 'public/art/capstan.png');
       this.load.image('land', 'public/art/land.png');
       this.load.image('rock_ph', 'public/art/rock.png');
@@ -105,7 +105,7 @@ class Setup extends Phaser.Scene {
 
       this.load.once('complete', () => {
          let canvas = document.createElement('canvas');
-         canvas.height = 30;
+         canvas.height = 13;
          let context = canvas.getContext('2d');
          let x = 0;
          let images = Array(20).fill('boomUnit');

@@ -342,7 +342,7 @@ class Game extends Phaser.Scene {
       const offsetX = 130;
       this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, displayHeight - 80, `Zone: ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
       this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
-      this.obstacleGameProgress = this.add.text(displayWidth - offsetX, displayHeight - 20, `Game: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      this.obstacleGameProgress = this.add.text(displayWidth - offsetX, displayHeight - 20, `All: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
    }
 
    makeLifeDisplay(y) {
@@ -363,7 +363,7 @@ class Game extends Phaser.Scene {
    updateLocator() {
       this.zoneOfZonesProgress.setText(`Zone: ${boatInZone}/${zones_quantity}`);
       this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimatePassed in Zone
-      this.obstacleGameProgress.setText(`Game: ${estimatedProgress}/${this.countObstaclesInZones(zones_quantity)}`);
+      this.obstacleGameProgress.setText(`All: ${estimatedProgress}/${this.countObstaclesInZones(zones_quantity)}`);
    }
 
    incrementObstacleCounter() {
@@ -1179,7 +1179,7 @@ class Game extends Phaser.Scene {
          // for (let i = 1; i < makingZone; i++) {
          //    this.numObstaclesPassedInPreviousZones += this.data[i].intervals;
          // }
-         this.numObstaclesPassedInPreviousZones = countObstaclesInZones(makingZone);
+         this.numObstaclesPassedInPreviousZones = this.countObstaclesInZones(makingZone);
       }
       estimatedProgress = this.numObstaclesPassedInPreviousZones;
       // pre-placed obstacle at start of game must be accounted for
