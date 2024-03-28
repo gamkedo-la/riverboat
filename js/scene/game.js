@@ -63,11 +63,13 @@ class Game extends Phaser.Scene {
 
       this.makePlayer();
       this.makeHud();
+      // this.scene.launch("Panel");
+      this.makeControlPanel();
 
       // at game start, and when menu jumps to a zone start, create first obstacle
       this.makeInterval();
       // move it down from spawnY to visible start position, by call same method as update()
-      this.moveFurnitureY(this.ySpacing);
+      this.moveFurnitureY(bring_down_first_obstacle); // this.ySpacing
 
       this.setupColliders();
       // this.logging();
@@ -236,7 +238,7 @@ class Game extends Phaser.Scene {
    // Player boat make & control
    makePlayer() {
       let start_x = gameWidth / 2; // game width screen + 2 * offset
-      let start_y = displayHeight - 10;
+      let start_y = displayHeight - controlPanelHeight - 10;
       this.player = new Player(this, start_x, start_y, 'boat');
       //this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
 
@@ -381,6 +383,21 @@ class Game extends Phaser.Scene {
    };
 
    // Boat control buttons make & control
+   makeControlPanel() {
+      const controlPanel = this.add.graphics();
+      //controlPanel.setOrigin(0.5);
+      // graphics don't have .setOrigin? always topLeft positioning?
+      const panelMargin = 0;
+      const panelWidth = displayWidth - panelMargin * 2;
+      const panelHeight = controlPanelHeight;
+      const panelX = panelMargin; // bankWidth + 
+      const panelY = displayHeight - panelHeight - panelMargin + 1;
+
+      controlPanel.fillStyle(0x000000, 0.3); // transparency
+      controlPanel.fillRect(panelX, panelY, panelWidth, panelHeight);
+      controlPanel.setInteractive();
+   }
+
    makeArrowButtons() {
       let top = 200;
       let cameraCentreX = this.cameras.main.centerX;

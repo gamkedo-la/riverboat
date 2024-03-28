@@ -10,14 +10,18 @@ const devMotorVolume = 0;
 
 const displayWidth = 360;
 const displayHeight = 600;
+const controlPanelHeight = 120;
+
 // reduce bank Width to weaken button hitarea offset error
 const bankWidth = 0; // 100 
 const gameWidth = displayWidth + bankWidth * 2;
 
 const waterColor = 0x0000ff;
 
-const start_obstacles_n = 1;
 const spawn_above_screen_Y = -100;
+const start_obstacles_n = 1;
+const bring_down_first_obstacle = 140;
+
 const intelWidth = 70;
 const intelDepth = 50;
 
