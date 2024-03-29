@@ -447,12 +447,28 @@ class Game extends Phaser.Scene {
       Object.assign(this, { cameraCentreX, gameCentreX, leftBtnX, rightBtnX });
       // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
 
+      this.btnFastLeft = new arrowButton(this, cameraCentreX + controlsXoffset - buttonXoffset - 30, top, 'placeholderButtonUp', 'placeholderButtonDown', 'NW', () => {
+         this.player.motorForward();
+         this.player.turnLeft();
+      }, () => {
+         this.player.neitherFastOrSlow();
+      });
+      this.btnFastLeft.scrollFactorX = 0;
+
       this.btnFast = new arrowButton(this, cameraCentreX + controlsXoffset, top, 'placeholderButtonUp', 'placeholderButtonDown', 'up', () => {
          this.player.motorForward();
       }, () => {
          this.player.neitherFastOrSlow();
       });
       this.btnFast.scrollFactorX = 0;
+
+      this.btnFastRight = new arrowButton(this, cameraCentreX + controlsXoffset + buttonXoffset + 30, top, 'placeholderButtonUp', 'placeholderButtonDown', 'NE', () => {
+         this.player.motorForward();
+         this.player.turnRight();
+      }, () => {
+         this.player.neitherFastOrSlow();
+      });
+      this.btnFastRight.scrollFactorX = 0;
 
       top += buttonYoffset;
       this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '<', () => {
@@ -466,16 +482,28 @@ class Game extends Phaser.Scene {
       this.btnRight.scrollFactorX = 0;
 
       top += buttonYoffset;
+      this.btnSlowLeft = new arrowButton(this, cameraCentreX + controlsXoffset - buttonXoffset - 30, top, 'placeholderButtonUp', 'placeholderButtonDown', 'SW', () => {
+         this.player.slowAgainstFlow();
+         this.player.turnLeft();
+      }, () => {
+         this.player.neitherFastOrSlow();
+      });
+      this.btnSlowLeft.scrollFactorX = 0;
+
       this.btnSlow = new arrowButton(this, cameraCentreX + controlsXoffset, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
          this.player.slowAgainstFlow();
-         // this.driftSpeed = this.riverSpeed / this.player.backward_ratio;
-         // this.player.engine = "backward";
-         // this.player.setTint(0x7FFFD4); // was bae946
-         // this.player.useFuel(this.player.backwardFuel);
       }, () => {
          this.player.neitherFastOrSlow();
       });
       this.btnSlow.scrollFactorX = 0;
+
+      this.btnSlowRight = new arrowButton(this, cameraCentreX + controlsXoffset + buttonXoffset + 30, top, 'placeholderButtonUp', 'placeholderButtonDown', 'SE', () => {
+         this.player.slowAgainstFlow();
+         this.player.turnRight();
+      }, () => {
+         this.player.neitherFastOrSlow();
+      });
+      this.btnSlowRight.scrollFactorX = 0;
 
       // this.btnLeft.setInteractive({ hitArea: new Phaser.Geom.Rectangle(this.btnLeft.width / 2 - hitAreaOffsetX, 0, this.btnLeft.width, this.btnLeft.height) });
    }
