@@ -467,10 +467,11 @@ class Game extends Phaser.Scene {
 
       top += buttonYoffset;
       this.btnSlow = new arrowButton(this, cameraCentreX + controlsXoffset, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
-         this.driftSpeed = this.riverSpeed / this.player.backward_ratio;
-         this.player.engine = "backward";
-         this.player.setTint(0xff00ff); // was bae946
-         this.player.useFuel(this.player.backwardFuel);
+         this.player.slowAgainstFlow();
+         // this.driftSpeed = this.riverSpeed / this.player.backward_ratio;
+         // this.player.engine = "backward";
+         // this.player.setTint(0x7FFFD4); // was bae946
+         // this.player.useFuel(this.player.backwardFuel);
       }, () => {
          this.player.neitherFastOrSlow();
       });

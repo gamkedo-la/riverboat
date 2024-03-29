@@ -15,7 +15,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.health = 10;
       this.intelScore = 0;
       this.forwardFuel = 4;
-      this.backwardFuel = 2;
+      this.backwardFuel = 0;
       this.sidewaysFuel = 0;
       this.sideway_speed = 40;
       this.sideway_drag = 120;  //35;
@@ -115,7 +115,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // less engine if anchor assisted but risk snagging
       else if ((cursors.down.isDown || cursors.keyS.isDown)
          && this.fuel >= this.backwardFuel) {
-         this.motorBackward();
+         this.slowAgainstFlow();
       }
 
       // neither up nor down is pressed
@@ -145,9 +145,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.useFuel(this.forwardFuel);
    }
 
-   motorBackward() {
+   slowAgainstFlow() {
       // tint same colour as Fuel display
-      this.setTint(0xff00ff); // was 0xbae946
+      this.setTint(0x7FFFD4); // was ff00ff, bae946
       this.scene.driftSpeed = this.scene.riverSpeed / this.backward_ratio;
       this.engine = "backward";
       this.useFuel(this.backwardFuel);
