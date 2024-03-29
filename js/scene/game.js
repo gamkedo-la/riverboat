@@ -95,6 +95,17 @@ class Game extends Phaser.Scene {
       if (this.player.engine == 'off') {
          this.player.neitherFastOrSlow();
       }
+
+      // manual supplement to overlap handler
+      let sensorIntelOverlap = this.physics.overlap(this.sensors, this.intels);
+      if (sensorIntelOverlap && !this.player.spyingNow) {
+         this.enterSpyingArea();
+         // this.senseIntel();
+      }
+      // else if (!sensorIntelOverlap && this.player.spyingNow) {
+      else if (!sensorIntelOverlap) {
+         this.exitSpyingArea();
+      }
    };
 
    makeObstacle() {
@@ -108,15 +119,13 @@ class Game extends Phaser.Scene {
          if (makingZone > zones_quantity) {
             console.log(`makeInterval() should stop flow reaching here`);
             this.stopMakingObstacles = true;
-            // this.waterSound.stop;
-            // this.gotoHome();
          }
          else {
             chosenObstacleType = "milestone";
          }
       }
 
-      // following playest, guarantee a Secret in zones 1 and 2
+      // following playester suggestion, guarantee a Secret in zones 1 and 2
       if (makingZone <= 2 && this.numObstaclesCreatedInZone === this.obstaclesInZone - 2) {
          chosenObstacleType = "secret";
       }
@@ -235,10 +244,10 @@ class Game extends Phaser.Scene {
 
    setupSounds() {
       // play the sound of water on loop, volume 0.15
-      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.15, loop: true });
+      this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.1, loop: true });
       this.waterSound.play();
 
-      this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.5, loop: false });
+      this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.4, loop: false });
       this.searchContactSound = this.sound.add('snd_searchContact', { volume: 0.2 });
       this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0 });
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
@@ -249,6 +258,7 @@ class Game extends Phaser.Scene {
       this.sensorOnSound = this.sound.add('snd_sensorOn', { volume: 0.3 });
       this.sensorOffSound = this.sound.add('snd_sensorOff', { volume: 0.2 });
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
+      this.spyingSound = this.sound.add('snd_spying', { volume: 0.1, loop: true });
 
       // this.sound.manager.maxSounds = 3;
    }
@@ -952,18 +962,18 @@ class Game extends Phaser.Scene {
          this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
          this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
 
-         this.physics.world.on('overlapstart', (object1, object2) => {
-            console.log("overlap start", object1, object2);
-            if (object1 === this.sensors && object2 === this.intel) {
-               this.enterSpyingArea();
-            }
-         });
-         this.physics.world.on('overlapend', (object1, object2) => {
-            console.log("overlap end", object1, object2);
-            if (object1 === this.sensors && object2 === this.intel) {
-               this.exitSpyingArea();
-            }
-         });
+         // this.physics.world.on('overlapstart', (object1, object2) => {
+         //    console.log("overlap start", object1, object2);
+         //    if (object1 === this.sensors && object2 === this.intel) {
+         //       this.enterSpyingArea();
+         //    }
+         // });
+         // this.physics.world.on('overlapend', (object1, object2) => {
+         //    console.log("overlap end", object1, object2);
+         //    if (object1 === this.sensors && object2 === this.intel) {
+         //       this.exitSpyingArea();
+         //    }
+         // });
       }
    }
 
@@ -1045,15 +1055,16 @@ class Game extends Phaser.Scene {
 
    senseIntel(sensor, intel) {
       //console.log('Intel sensed');
-      // this.player.spyingNow = true;
       this.player.intelScore += 1;
       this.updateIntelDisplay();
    }
    enterSpyingArea() {
       this.spyingSound.play();
+      this.player.spyingNow = true;
    }
    exitSpyingArea() {
       this.spyingSound.stop();
+      this.player.spyingNow = false;
    }
 
    senseSecret(sensor, secret) {
