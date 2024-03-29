@@ -704,6 +704,8 @@ class Game extends Phaser.Scene {
       let secret = new Secret(this, 0, 0, 'secret');
 
       let land_tower = new Land(this, 0, 0, 'land');
+      this.lands.add(land_tower);
+
       // later use single tower texture and flip with Phaser
       let tower;
       if (this.towerBank === 'left') {
@@ -958,7 +960,7 @@ class Game extends Phaser.Scene {
          this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
          this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
          this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
-         this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
+         this.physics.add.collider(this.player, this.lands, this.hitLand, null, this);
          this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
          this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
 
@@ -1072,10 +1074,10 @@ class Game extends Phaser.Scene {
    }
 
    hitLand(boat, land) {
-      //console.log('Land Hit');
-      land.body.enable = false;
-      //this.landCollideSound.play();
+      land.setVelocity(0, this.driftSpeed);
+      this.landCollideSound.play();
       this.player.setVelocity(0, 0);
+      this.loseLife();
       // this.player.updateHealth(land.damage);
    }
 
@@ -1318,7 +1320,7 @@ class Game extends Phaser.Scene {
    }
 
    createPhysicsGroups() {
-      this.land = this.physics.add.group({ runChildUpdate: true });
+      this.lands = this.physics.add.group({ runChildUpdate: true });
       this.booms = this.physics.add.group({ runChildUpdate: true });
       this.bridges = this.physics.add.group({ runChildUpdate: true });
       this.rapids = this.physics.add.group({ runChildUpdate: true });

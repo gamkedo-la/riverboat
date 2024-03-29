@@ -99,7 +99,7 @@ class Setup extends Phaser.Scene {
       this.load.audio('snd_boomChain', ['public/sound/boomChainSound.mp3']);
       this.load.audio('snd_sensorOn', ['public/sound/sensor_on.mp3']);
       this.load.audio('snd_sensorOff', ['public/sound/sensor_off.mp3']);
-      this.load.audio('snd_spying', ['public/sound/spying_1.mp3']);
+      this.load.audio('snd_spying', ['public/sound/spying_2.mp3']);
       this.load.audio('snd_intelOverlap', ['public/sound/collider_placeholder.mp3']);
 
       this.load.audio('snd_motorLoop', ['public/sound/motor_loop.mp3']);
