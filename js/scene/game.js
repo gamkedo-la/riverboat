@@ -109,7 +109,7 @@ class Game extends Phaser.Scene {
             console.log(`makeInterval() should stop flow reaching here`);
             this.stopMakingObstacles = true;
             // this.waterSound.stop;
-            // this.scene.start("Home");
+            // this.gotoHome();
          }
          else {
             chosenObstacleType = "milestone";
@@ -547,7 +547,7 @@ class Game extends Phaser.Scene {
    makeMenuButton() {
       this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          this.waterSound.stop();
-         this.scene.start("Home");
+         this.gotoHome();
       });
    }
 
@@ -862,13 +862,19 @@ class Game extends Phaser.Scene {
    anyKey(event) {
       let code = event.keyCode;
       if (code === Phaser.Input.Keyboard.KeyCodes.ESC) {
-         this.scene.start('Home');
+         this.gotoHome();
       }
       else if (code === Phaser.Input.Keyboard.KeyCodes.P) {
          this.scene.pause('Game');
          this.scene.launch('Pause');
       }
    };
+
+   gotoHome() {
+      // this.player.intelScore = randomInteger(40, 100);
+      saveGameScore(this.player.intelScore, estimatedProgress);
+      this.scene.start('Home');
+   }
 
    applyRiverDrift(speed) {
       this.driftSpeed = speed;
@@ -881,14 +887,6 @@ class Game extends Phaser.Scene {
       }
    }
 
-   saveBestScore() {
-      let bestScoreStr = localStorage.getItem('bestScore');
-      let bestScore = bestScoreStr && parseInt(bestScoreStr, 10);
-      if (!bestScore || this.score > bestScore) {
-         localStorage.setItem('bestScore', this.score);
-      }
-   };
-
    reachMilestone(player, milestone) {
       if (!this.milestoneTriggered[boatInZone] && milestone.id === boatInZone) {
          this.milestoneTriggered[boatInZone] = true;
@@ -899,7 +897,7 @@ class Game extends Phaser.Scene {
             console.log('Game Over');
             this.physics.pause();
             this.gameOver = true;
-            // this.scene.start("Home");
+            // this.gotoHome();
          }
       }
       else {

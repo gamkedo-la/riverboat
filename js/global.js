@@ -35,13 +35,19 @@ const hudStyle = {
 let deviceOS, keyboard;
 
 let makingZone, boatInZone, zones_quantity;
+
 // current intel tracked by player.intelScore
 let estimatedProgress; // global so all scenes can access
-let intelHighScores = [];
-let progressHighScores = [];
+let intelRecord = [];
+let progressRecord = [];
 
 let sensorOn = false;
 let searchlightWarned = false;
+
+const saveGameScore = function (intel, progress) {
+   intelRecord.push(intel);
+   progressRecord.push(progress);
+};
 
 // generate number between 0 and 1 with distribution biased toward 0.5
 const randomBias2Middle = function () {
@@ -65,6 +71,12 @@ const randomAvoidMiddle = function () {
    let half = Math.random() < 0.5 ? 0 : 0.5;
    let z = half + (randomBiasMiddle() / 2);
    return z;
+};
+
+const randomInteger = function (min, max) {
+   min = Math.ceil(min);
+   max = Math.floor(max);
+   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 const developerModeSounds = function (game) {
