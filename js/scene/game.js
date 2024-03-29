@@ -64,7 +64,7 @@ class Game extends Phaser.Scene {
       this.makePlayer();
       this.makeHud();
       // this.scene.launch("Panel");
-      if (keyboard != 'likely') {
+      if (keyboard != 'likely' || alwaysButtons === true) {
          this.makeControlPanel();
          this.makeControlButtons();
       }
@@ -103,7 +103,7 @@ class Game extends Phaser.Scene {
       if (this.numObstaclesCreatedInZone < this.obstaclesInZone) {
          chosenObstacleType = this.weightedRandomChoice(this.obstacle_types, this.obstacle_chances);
       }
-      // when zone's quantity of obstacles made show milestone, and increment makingZone      
+      // when zone's quantity of obstacles have all been created; show milestone and increment "makingZone"      
       else {
          if (makingZone > zones_quantity) {
             console.log(`makeInterval() should stop flow reaching here`);
@@ -244,10 +244,11 @@ class Game extends Phaser.Scene {
       this.boomCollideSound = this.sound.add('snd_boomCollide', { volume: 0.5 });
       this.bridgeCollideSound = this.sound.add('snd_bridgeCollide', { volume: 0 });
       this.rapidsOverlapSound = this.sound.add('snd_rapidsOverlap', { volume: 0 });
-      this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
       this.boomChainSound = this.sound.add('snd_boomChain', { volume: 0.15 });
+
       this.sensorOnSound = this.sound.add('snd_sensorOn', { volume: 0.3 });
-      this.sensorOffSound = this.sound.add('snd_sensorOff', { volume: 0.3 });
+      this.sensorOffSound = this.sound.add('snd_sensorOff', { volume: 0.2 });
+      this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
 
       // this.sound.manager.maxSounds = 3;
    }
@@ -594,7 +595,7 @@ class Game extends Phaser.Scene {
       // });
       //this.hud.add(this.buttonMenu);
 
-      if (keyboard != 'likely') {
+      if (keyboard != 'likely' || alwaysButtons === true) {
          this.buttonPause.destroy();
       }
 
@@ -950,6 +951,19 @@ class Game extends Phaser.Scene {
          this.physics.add.collider(this.player, this.land, this.hitLand, null, this);
          this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
          this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
+
+         this.physics.world.on('overlapstart', (object1, object2) => {
+            console.log("overlap start", object1, object2);
+            if (object1 === this.sensors && object2 === this.intel) {
+               this.enterSpyingArea();
+            }
+         });
+         this.physics.world.on('overlapend', (object1, object2) => {
+            console.log("overlap end", object1, object2);
+            if (object1 === this.sensors && object2 === this.intel) {
+               this.exitSpyingArea();
+            }
+         });
       }
    }
 
@@ -1024,17 +1038,24 @@ class Game extends Phaser.Scene {
 
    hitIntel(boat, intel) {
       //console.log('Intel run-over');
-      //this.intelOverlapSound.play();
+      this.intelOverlapSound.play();
       this.player.intelScore += 3;
       this.updateIntelDisplay();
    }
 
    senseIntel(sensor, intel) {
       //console.log('Intel sensed');
-      //this.intelOverlapSound.play();
+      // this.player.spyingNow = true;
       this.player.intelScore += 1;
       this.updateIntelDisplay();
    }
+   enterSpyingArea() {
+      this.spyingSound.play();
+   }
+   exitSpyingArea() {
+      this.spyingSound.stop();
+   }
+
    senseSecret(sensor, secret) {
       // overlap secret on land, for Riverboat 2
    }
@@ -1057,7 +1078,7 @@ class Game extends Phaser.Scene {
 
       this.cameras.main.shake(500);
       this.physics.pause();
-      if (keyboard != 'likely') {
+      if (keyboard != 'likely' || alwaysButtons === true) {
          this.clearNavButtonEvents();
       }
 
@@ -1262,7 +1283,7 @@ class Game extends Phaser.Scene {
    setupInput() {
       this.input.scene.active = true;
       this.makeMenuButton();
-      if (keyboard != 'likely') {
+      if (keyboard != 'likely' || alwaysButtons === true) {
          this.makePauseButton();
          this.makeControlButtons();
          // this.makeArrowButtons();

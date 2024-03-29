@@ -30,8 +30,8 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 50,
-         "huntSpeed": 100
+         "patrolSpeed": 20,
+         "huntSpeed": 50
       },
       "wood": {
          "scale": 1.5,
@@ -79,7 +79,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 50,
+         "patrolSpeed": 30,
          "huntSpeed": 100
       },
       "wood": {
@@ -128,7 +128,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 50,
+         "patrolSpeed": 30,
          "huntSpeed": 100
       },
       "wood": {
@@ -177,7 +177,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 40,
+         "patrolSpeed": 30,
          "huntSpeed": 100
       },
       "wood": {
@@ -226,7 +226,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 45,
+         "patrolSpeed": 35,
          "huntSpeed": 100
       },
       "wood": {
@@ -277,7 +277,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 50,
+         "patrolSpeed": 40,
          "huntSpeed": 100
       },
       "rock": {
@@ -377,7 +377,7 @@
          "alertRange": 180
       },
       "searchlight": {
-         "patrolSpeed": 55,
+         "patrolSpeed": 50,
          "huntSpeed": 100
       },
       "wood": {

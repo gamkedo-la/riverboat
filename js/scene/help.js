@@ -8,9 +8,9 @@ class Help extends Phaser.Scene {
       let gameWidth = this.sys.game.config.width;
       let titleCentre = [gameWidth / 2, 30];
 
-      //if (keyboard != 'likely') {
-      this.makeMenuButton();
-      //}
+      if (keyboard != 'likely' || alwaysButtons === true) {
+         this.makeMenuButton();
+      }
 
       let text = this.add.text(...titleCentre, 'Help', { font: '36px Arial', color: '#000000' })
          .setOrigin(0.5)

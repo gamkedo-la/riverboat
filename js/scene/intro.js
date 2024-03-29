@@ -15,7 +15,7 @@ class Intro extends Phaser.Scene {
          }
       };
 
-      let text = this.add.text(5 + gameWidth / 2, 300, "Spy on enemy secrets! When your boat is near a secret the sensor cone appears. Gain score when your cone overlaps an 'INTEL' icon. Slow the boat for extra score.", {
+      let text = this.add.text(5 + gameWidth / 2, 300, "Spy on enemy secrets! When your boat is near a secret, a sensor cone appears. Gain score when your cone overlaps an 'INTEL' icon. Slow while spying for extra score.", {
          font: '24px Arial',
          fill: 'black',
          wordWrap: { width: 320 }

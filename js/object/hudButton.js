@@ -10,6 +10,7 @@ class hudButton extends Phaser.GameObjects.Container {
       this.button = this.scene.add.image(0, 0, 'placeholderButtonUp')
          .setScale(0.6, 1)
          .setOrigin(0.5)
+         .setAlpha(0.3)
          .setInteractive();
 
       this.buttonText = this.scene.add.text(0, 0, this.text, { fontSize: '24px Arial', color: '#000' });

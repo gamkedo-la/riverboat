@@ -8,7 +8,7 @@ class Gallery extends Phaser.Scene {
 
    create() {
       this.cameras.main.setBackgroundColor(0x3333dd);
-      if (keyboard != 'likely') {
+      if (keyboard != 'likely' || alwaysButtons == true) {
          this.makeMenuButton();
       }
 

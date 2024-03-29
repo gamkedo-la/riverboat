@@ -6,9 +6,9 @@ class Credits extends Phaser.Scene {
    create() {
       this.cameras.main.setBackgroundColor(0x33bb77);
 
-      // if (keyboard != 'likely') {
-      this.makeMenuButton();
-      //}
+      if (keyboard != 'likely' || alwaysButtons == true) {
+         this.makeMenuButton();
+      }
 
       this.add.text(displayWidth / 2, 100, 'Credits', { font: '64px Arial', color: '#000000' })
          .setOrigin(0.5);

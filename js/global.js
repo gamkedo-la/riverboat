@@ -1,3 +1,6 @@
+const developerMode = false; // use sound volumes in global.js
+const devMotorVolume = 0;
+
 const testing = false; // jump into game & zone when true
 const test_zone = 1; // zone to test
 const test_no_colliders = true; // no need to navigate when false
@@ -5,9 +8,7 @@ const test_river_speed = 100; // 20 makes access to riverbank easier
 const fuel_for_testing = 9999;
 const zone_quantity_for_test = 3;
 
-const developerMode = false;
-const devMotorVolume = 0;
-
+const alwaysButtons = true;
 const displayWidth = 360;
 const displayHeight = 600;
 let controlPanelHeight;
@@ -101,13 +102,16 @@ const developerModeSounds = function (game) {
    game.waterSound.play();
    game.lightNearSound = game.sound.add('snd_searchProximity', { volume: 0.015, loop: false });
    game.searchContactSound = game.sound.add('snd_searchContact', { volume: 0.01 });
+
    game.landCollideSound = game.sound.add('snd_landCollide', { volume: 0 });
    game.boomCollideSound = game.sound.add('snd_boomCollide', { volume: 0.08 });
    game.bridgeCollideSound = game.sound.add('snd_bridgeCollide', { volume: 0 });
    game.rapidsOverlapSound = game.sound.add('snd_rapidsOverlap', { volume: 0 });
-   game.intelOverlapSound = game.sound.add('snd_intelOverlap', { volume: 0 });
    game.boomChainSound = game.sound.add('snd_boomChain', { volume: 0.05 });
+
    game.sensorOnSound = game.sound.add('snd_sensorOn', { volume: 0.3 });
    game.sensorOffSound = game.sound.add('snd_sensorOff', { volume: 0.3 });
+   game.intelOverlapSound = game.sound.add('snd_intelOverlap', { volume: 0 });
+   game.spyingSound = game.sound.add('snd_spying', { volume: 0.3, loop: true });
    // game.sound.manager.maxSounds = 3;
 };

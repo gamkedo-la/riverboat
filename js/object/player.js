@@ -24,6 +24,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.forward_ratio = 2;
       this.backward_ratio = 3;
       this.engine = "off";
+      this.spyingNow = false;
       this.rateOfReturnToStation = 0.5;
       scene.physics.world.enable(this);
       this.setImmovable(false);
