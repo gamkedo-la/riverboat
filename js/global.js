@@ -40,13 +40,29 @@ let makingZone, boatInZone, zones_quantity;
 let estimatedProgress; // global so all scenes can access
 let intelRecord = [];
 let progressRecord = [];
+let allScores = [];
+const scores_key = 'scores';
 
 let sensorOn = false;
 let searchlightWarned = false;
 
-const saveGameScore = function (intel, progress) {
-   intelRecord.push(intel);
+const loadScores = function () {
+   let storedScores = localStorage.getItem(scores_key);
+   // if (!storedScores.length) 
+   if (storedScores) {
+      allScores = JSON.parse(storedScores);
+   } else {
+      allScores = [{ intel: 'N/A', progress: 'N/A' }];
+   }
+   return allScores;
+};
+
+const saveScores = function (intel, progress) {
+   intelRecord.push(intel); // in-memory
    progressRecord.push(progress);
+   let score = { intel: intel, progress: progress };
+   allScores.push(score); // for storage
+   localStorage.setItem('scores', JSON.stringify(allScores));
 };
 
 // generate number between 0 and 1 with distribution biased toward 0.5

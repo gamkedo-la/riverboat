@@ -23,6 +23,7 @@ class Pause extends Phaser.Scene {
       this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          this.scene.stop('Game');
          this.scene.stop('Pause');
+         saveScores(this.player.intelScore, estimatedProgress);
          this.scene.start("Home");
       });
    }

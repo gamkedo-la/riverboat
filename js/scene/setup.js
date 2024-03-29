@@ -3,6 +3,11 @@ class Setup extends Phaser.Scene {
       super('Setup');
    }
 
+   init() {
+      allScores = loadScores();
+      console.log('allScores', allScores);
+   }
+
    preload() {
       let width = this.cameras.main.width;
       let height = this.cameras.main.height;

@@ -156,7 +156,7 @@ class Game extends Phaser.Scene {
       this.checkIfBoulder();
 
       this.incrementObstacleCounter();
-      this.updateProgressDisplay();
+      // this.updateProgressDisplay();
       this.updateLocator();
       if (testing) this.labelObstacleAndZoneID();
 
@@ -329,8 +329,8 @@ class Game extends Phaser.Scene {
       this.makeLifeDisplay(y);
       y += y_UI_spacing;
       this.makeFuelDisplay(y);
-      y += y_UI_spacing;
-      this.makeProgressDisplay(y);
+      // y += y_UI_spacing;
+      // this.makeProgressDisplay(y);
       y += y_UI_spacing;
       this.makeIntelDisplay(y);
       y += y_UI_spacing;
@@ -901,7 +901,7 @@ class Game extends Phaser.Scene {
 
    gotoHome() {
       // this.player.intelScore = randomInteger(40, 100);
-      saveGameScore(this.player.intelScore, estimatedProgress);
+      saveScores(this.player.intelScore, estimatedProgress);
       this.scene.start('Home');
    }
 
@@ -926,6 +926,7 @@ class Game extends Phaser.Scene {
             console.log('Game Over');
             this.physics.pause();
             this.gameOver = true;
+            saveScores(this.player.intelScore, estimatedProgress);
             // this.gotoHome();
          }
       }
@@ -1084,9 +1085,9 @@ class Game extends Phaser.Scene {
 
    endLevel() {
       this.gameOver = true;
+      saveScores(this.player.intelScore, estimatedProgress);
       this.player.setTint(0xff0000);
       this.physics.pause();
-      //this.saveBestScore();
 
       this.time.addEvent({
          delay: 1000,
