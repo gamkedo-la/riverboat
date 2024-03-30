@@ -218,16 +218,28 @@ class Game extends Phaser.Scene {
       if (this.intels) {
          let nearest_Intel_dist = 800;
          let intelX; // to calculate which side of boat is nearest Intel
+         let intelTopY;
+
          this.intels.getChildren().forEach(intel => {
             // console.log(this.player.x, this.player.y, intel.x, intel.y)
             let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, intel.x, intel.y);
             if (dist < nearest_Intel_dist) {
                nearest_Intel_dist = dist;
                intelX = intel.x;
+               intelTopY = intel.y - intel.height / 2;
             }
          });
 
-         if (nearest_Intel_dist < this.intel_alert) {
+         if (this.player.y < intelTopY && nearest_Intel_dist > this.player.cone_hide_distance) {
+            console.log('hide cone');
+            this.hideSensorCone();
+            if (sensorOn) {
+               sensorOn = false;
+               this.sensorOffSound.play();
+            }
+         }
+         else if (nearest_Intel_dist < this.player.cone_show_distance) {
+            console.log('show cone');
             if (this.player.x > intelX) {
                this.showLeftSensorCone();
             } else {
@@ -236,13 +248,6 @@ class Game extends Phaser.Scene {
             if (sensorOn == false) {
                sensorOn = true;
                this.sensorOnSound.play();
-            }
-         } // boat isn't near any Intel
-         else {
-            this.hideSensorCone();
-            if (sensorOn == true) {
-               sensorOn = false;
-               this.sensorOffSound.play();
             }
          }
       }

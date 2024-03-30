@@ -25,8 +25,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.backward_ratio = 3;
       this.engine = "off";
       this.spyingNow = false;
-      this.sensorcone_start_dist = 180;
-      this.sensorcone_stop_dist = 100;
+      this.cone_show_distance = 240;
+      this.cone_hide_distance = 30;
       this.rateOfReturnToStation = 0.5;
       scene.physics.world.enable(this);
       this.setImmovable(false);
