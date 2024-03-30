@@ -63,6 +63,13 @@ class Game extends Phaser.Scene {
 
       this.makePlayer();
       this.makeHud();
+
+      this.events.on('pauseMenuToggle', (isVisible) => {
+         this.menuButton.visible = isVisible;
+      });
+
+      this.scene.get('Pause').events.on('resumeGame', this.handleMenuVisibility, this);
+
       // this.scene.launch("Panel");
       if (keyboard != 'likely' || alwaysButtons === true) {
          this.makeControlPanel();
@@ -583,30 +590,31 @@ class Game extends Phaser.Scene {
       // this.btnSlow.clearEvents();
    }
 
+   handleMenuVisibility(isVisible) {
+      console.log('menu button visibility', isVisible);
+      this.menuButton.visible = isVisible;
+   }
+
    // Scene control buttons (menu, pause, replay)
    makeMenuButton() {
-      this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+      this.menuButton = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          this.waterSound.stop();
          this.gotoHome();
       });
    }
 
    makePauseButton() {
-      this.buttonPause = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
+      this.pauseButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
+         this.menuButton.visible = false;
          this.scene.pause('Game');
          this.scene.launch("Pause");
+         this.events.emit('pauseMenuToggle', false);
       });
    }
 
    createGameOverButtons() {
-      // this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-      //    console.log('pointer down -> menu');
-      //    this.scene.start("Home");
-      // });
-      //this.hud.add(this.buttonMenu);
-
       if (keyboard != 'likely' || alwaysButtons === true) {
-         this.buttonPause.destroy();
+         this.pauseButton.destroy();
       }
 
       this.buttonReplay = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {

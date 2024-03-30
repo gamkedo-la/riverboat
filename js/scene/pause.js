@@ -7,8 +7,13 @@ class Pause extends Phaser.Scene {
 
    create() {
       this.input.keyboard.on('keyup', this.anyKey, this);
-      this.makeMenuButton();
+      // this.makeMenuButton();
+      this.events.on('resumeGame', (isVisible) => {
+         this.menuButton.visible = isVisible;
+      });
+
       this.makeResumeButton();
+      //this.scene.get('Game').events.on('pauseMenuToggle', this.handleMenuVisibility, this);
    }
 
    anyKey(event) {
@@ -21,8 +26,6 @@ class Pause extends Phaser.Scene {
 
    makeMenuButton() {
       this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-         this.player.spyingNow = false;
-         this.spyingSound.stop();
          this.scene.stop('Game');
          this.scene.stop('Pause');
          this.scene.gotoHome();
@@ -33,6 +36,8 @@ class Pause extends Phaser.Scene {
       this.buttonResume = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
          this.scene.resume('Game');
          this.scene.stop('Pause');
+         this.scene.get('Game').events.emit('resumeGame', true);
+         this.scene.get('Game').menuButton.visible = true;
       });
    }
 }
