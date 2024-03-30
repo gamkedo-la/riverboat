@@ -382,7 +382,7 @@ class Game extends Phaser.Scene {
    };
 
    makeIntelDisplay(y) {
-      this.intelDisplay = this.add.text(0, y, `Intel: ${this.player.intelScore}`, hudStyle);
+      this.intelDisplay = this.add.text(0, y, `Score: ${this.player.intelScore}`, hudStyle);
       this.intelDisplay.setOrigin(0.5);
       this.hud.add(this.intelDisplay);
    };
@@ -594,6 +594,7 @@ class Game extends Phaser.Scene {
       if (this.player.spyingNow) {
          this.spyingSound.stop();
       }
+      this.pauseButton.visible = false;
       this.menuButton.visible = false;
       this.scene.pause('Game');
       this.scene.launch("Pause");

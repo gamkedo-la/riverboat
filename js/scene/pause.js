@@ -39,7 +39,7 @@ class Pause extends Phaser.Scene {
    }
 
    resuming() {
-      //this.pauseButton.visible = false;
+      // this.resumeButton.visible = false;
       this.scene.resume('Game');
       this.scene.stop('Pause');
       this.scene.get('Game').events.emit('resumeGame', true);
@@ -47,5 +47,6 @@ class Pause extends Phaser.Scene {
          this.scene.get('Game').spyingSound.play();
       }
       this.scene.get('Game').menuButton.visible = true;
+      this.scene.get('Game').pauseButton.visible = true;
    }
 }
