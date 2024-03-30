@@ -66,6 +66,11 @@ const saveScores = function (intel, progress) {
    localStorage.setItem('scores', JSON.stringify(allScores));
 };
 
+const eraseScores = function () {
+   allScores = [];
+   localStorage.setItem('scores', JSON.stringify(allScores));
+};
+
 // generate number between 0 and 1 with distribution biased toward 0.5
 const randomBias2Middle = function () {
    let u = Math.random();

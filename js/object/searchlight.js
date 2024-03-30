@@ -11,7 +11,7 @@ class Searchlight extends Phaser.Physics.Arcade.Sprite {
       this.setAlpha(0.2);
       this.body.setDrag(0);
       this.setVelocity(scene.zone.searchlight.patrolSpeed, scene.driftSpeed);
-      this.landSearchX = 10;
+      this.landSearchX = -20;
       this.lightAngleContraint = 120;
       scene.add.existing(this);
       // console.log('speed', scene.zone.searchlight.patrolSpeed, scene.driftSpeed);
