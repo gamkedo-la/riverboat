@@ -217,7 +217,7 @@ class Game extends Phaser.Scene {
       // if Intel on screen
       if (this.intels) {
          let nearest_Intel_dist = 800;
-         let intelX; // to calc which side of boat is nearest Intel
+         let intelX; // to calculate which side of boat is nearest Intel
          this.intels.getChildren().forEach(intel => {
             // console.log(this.player.x, this.player.y, intel.x, intel.y)
             let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, intel.x, intel.y);
@@ -228,7 +228,6 @@ class Game extends Phaser.Scene {
          });
 
          if (nearest_Intel_dist < this.intel_alert) {
-            //console.log(nearest_Intel_dist);
             if (this.player.x > intelX) {
                this.showLeftSensorCone();
             } else {
@@ -294,46 +293,25 @@ class Game extends Phaser.Scene {
          follow: this.player
       });
 
-      this.cone_left = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor2')
-         .setOrigin(1, 0.5)
-         .setVisible(false)
-         .setDepth(9)
-         .setAlpha(0.5)
-         .setScale(1.1, 0.7)
-         .setFlipX(true);
-      this.cone_right = this.physics.add.sprite(start_x, start_y - this.player.coneYoffset, 'sensor2')
-         .setOrigin(0, 0.5)
-         .setVisible(false)
-         .setAlpha(0.5)
-         .setScale(1.1, 0.7)
-         .setDepth(9);
-      this.sensors.add(this.cone_left);
-      this.sensors.add(this.cone_right);
+      this.cone_left = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor2');
+      this.cone_left.setOrigin(1, 0.5);
+      this.cone_left.setFlipX(true);
+      // default Origin and no flip needed for right cone
+      this.cone_right = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor2');
+      this.sensors.add(this.cone_left, this.cone_right);
    }
 
    showLeftSensorCone() {
-      this.cone_left.x = this.player.x;
-      this.cone_left.y = this.player.y - this.player.coneYoffset;
-      this.cone_left
-         .setVisible(true)
-         .setScale(0.7, 0.7);
+      this.cone_left.show(this.player.x, this.player.y - this.player.coneYoffset);
    }
 
    showRightSensorCone() {
-      this.cone_right.x = this.player.x;
-      this.cone_right.y = this.player.y - this.player.coneYoffset;
-      this.cone_right
-         .setVisible(true)
-         .setScale(0.7, 0.7);
+      this.cone_right.show(this.player.x, this.player.y - this.player.coneYoffset);
    }
 
    hideSensorCone() {
-      this.cone_left
-         .setVisible(false)
-         .setPosition(-100, -100);
-      this.cone_right
-         .setVisible(false)
-         .setPosition(-100, -100);
+      this.cone_left.hide();
+      this.cone_right.hide();
    }
 
    // UI HUD make & update
