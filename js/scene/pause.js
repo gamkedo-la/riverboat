@@ -19,8 +19,7 @@ class Pause extends Phaser.Scene {
    anyKey(event) {
       let code = event.keyCode;
       if (code === Phaser.Input.Keyboard.KeyCodes.P) {
-         this.scene.resume('Game');
-         this.scene.stop('Pause');
+         this.resuming();
       }
    };
 
@@ -33,11 +32,20 @@ class Pause extends Phaser.Scene {
    }
 
    makeResumeButton() {
-      this.buttonResume = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
-         this.scene.resume('Game');
-         this.scene.stop('Pause');
-         this.scene.get('Game').events.emit('resumeGame', true);
-         this.scene.get('Game').menuButton.visible = true;
+      this.resumeButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
+         //this.resumeButton.visible = false;
+         this.resuming(this);
       });
+   }
+
+   resuming() {
+      //this.pauseButton.visible = false;
+      this.scene.resume('Game');
+      this.scene.stop('Pause');
+      this.scene.get('Game').events.emit('resumeGame', true);
+      if (this.scene.get('Game').player.spyingNow) {
+         this.scene.get('Game').spyingSound.play();
+      }
+      this.scene.get('Game').menuButton.visible = true;
    }
 }

@@ -64,11 +64,11 @@ class Game extends Phaser.Scene {
       this.makePlayer();
       this.makeHud();
 
-      this.events.on('pauseMenuToggle', (isVisible) => {
-         this.menuButton.visible = isVisible;
-      });
+      // this.events.on('pauseMenuToggle', (isVisible) => {
+      //    this.menuButton.visible = isVisible;
+      // });
 
-      this.scene.get('Pause').events.on('resumeGame', this.handleMenuVisibility, this);
+      // this.scene.get('Pause').events.on('resumeGame', this.handleMenuVisibility, this);
 
       // this.scene.launch("Panel");
       if (keyboard != 'likely' || alwaysButtons === true) {
@@ -582,12 +582,17 @@ class Game extends Phaser.Scene {
    }
 
    makePauseButton() {
-      this.pauseButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => {
-         this.menuButton.visible = false;
-         this.scene.pause('Game');
-         this.scene.launch("Pause");
-         this.events.emit('pauseMenuToggle', false);
-      });
+      this.pauseButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => this.doPause());
+   }
+
+   doPause() {
+      if (this.player.spyingNow) {
+         this.spyingSound.stop();
+      }
+      this.menuButton.visible = false;
+      this.scene.pause('Game');
+      this.scene.launch("Pause");
+      //this.events.emit('pauseMenuToggle', false);
    }
 
    createGameOverButtons() {
@@ -893,8 +898,7 @@ class Game extends Phaser.Scene {
          this.gotoHome();
       }
       else if (code === Phaser.Input.Keyboard.KeyCodes.P) {
-         this.scene.pause('Game');
-         this.scene.launch('Pause');
+         this.doPause();
       }
    };
 
@@ -1046,10 +1050,18 @@ class Game extends Phaser.Scene {
       this.player.intelScore += 1;
       this.updateIntelDisplay();
    }
+
    enterSpyingArea() {
-      this.spyingSound.play();
-      this.player.spyingNow = true;
+      if (!this.player.spyingNow && this.physics.overlap(this.sensors, this.intels)) {
+         this.spyingSound.play();
+         this.player.spyingNow = true;
+      }
    }
+   // enterSpyingArea() {
+   //    this.spyingSound.play();
+   //    this.player.spyingNow = true;
+   // }
+
    exitSpyingArea() {
       this.spyingSound.stop();
       this.player.spyingNow = false;
