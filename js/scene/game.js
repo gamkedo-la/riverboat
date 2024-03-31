@@ -712,12 +712,14 @@ class Game extends Phaser.Scene {
       }
 
       let light = new Searchlight(this, 0, 0, 'searchlight', this.bank);
+      let lightBeam = new SearchlightBeam(this, tower, light);
 
       // instead of checking in update() distance player to light, which would play too often, and seems to truncate sound, instead play once per light creation - but should delay until light is near player or at least visible on screen (spawns above screen)
       this.previousObstacleWasLight = true;
 
       // return [secret, intel, tower, light];
-      return [secret, intel, light, tower, land_tower];
+//      return [secret, intel, light, tower, land_tower];
+      return [secret, intel, light, lightBeam, tower, land_tower];
    }
 
    makeBridge() {
@@ -817,7 +819,7 @@ class Game extends Phaser.Scene {
    }
 
    // There is a search-tower on land, which helps player understand what the light circle is and where it comes from.
-   placeSecret(secret, intel, light, tower, land_tower) {
+   placeSecret(secret, intel, light, lightBeam, tower, land_tower) {
       let x;
       let distSecretFromRiver = 45;
       let distTowerFromRiver = -20;
@@ -852,6 +854,8 @@ class Game extends Phaser.Scene {
          land_tower.x = x - 20;
          tower.x = x - 20;
       }
+
+      lightBeam.update();
    }
 
    placeBridge(leftBridge, rightBridge, van) {
