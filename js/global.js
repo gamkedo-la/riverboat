@@ -88,6 +88,15 @@ const randomBiasMiddle = function () {
    return z;
 };
 
+const randomBiasMiddleLimited = function (high, low) {
+   const midpoint = (low + high) / 2;
+   const range = high - low;
+   const randomNumber = Math.random();
+   const biasedNumber = Math.pow(randomNumber, 3);
+   const adjustedNumber = midpoint + (biasedNumber - 0.5) * range;
+   return adjustedNumber;
+};
+
 // generate a number between 0 and 1 with distribution biased toward either 0.25 or 0.75
 const randomAvoidMiddle = function () {
    let half = Math.random() < 0.5 ? 0 : 0.5;

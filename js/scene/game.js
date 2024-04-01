@@ -231,7 +231,6 @@ class Game extends Phaser.Scene {
          });
 
          if (this.player.y < intelTopY && nearest_Intel_dist > this.player.cone_hide_distance) {
-            console.log('hide cone');
             this.hideSensorCone();
             if (sensorOn) {
                sensorOn = false;
@@ -239,7 +238,6 @@ class Game extends Phaser.Scene {
             }
          }
          else if (nearest_Intel_dist < this.player.cone_show_distance) {
-            console.log('show cone');
             if (this.player.x > intelX) {
                this.showLeftSensorCone();
             } else {
@@ -638,7 +636,8 @@ class Game extends Phaser.Scene {
 
    makeStrayRock() {
       let rock = new Rock(this, 0, 0, "rock", 0);
-      let ratioSpacingY = randomBiasMiddle();
+      // let ratioSpacingY = randomBiasMiddle();
+      let ratioSpacingY = 0.5;
       let offsetX = randomAvoidMiddle();
       rock.x = bankWidth + offsetX * displayWidth;
       let offsetY = ratioSpacingY * this.ySpacing;
@@ -651,7 +650,8 @@ class Game extends Phaser.Scene {
    makeDriftwood() {
       //console.log('wood when making obstacle', this.numObstaclesCreatedInZone, 'at', this.spawnY);
       let wood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
-      let ratioSpacingY = randomBiasMiddle();
+      // let ratioSpacingY = randomBiasMiddleLimited(0.25, 0.75);
+      let ratioSpacingY = 0.5;
       let offsetX = randomAvoidMiddle();
       wood.x = bankWidth + offsetX * displayWidth;
       let offsetY = ratioSpacingY * this.ySpacing;
@@ -718,7 +718,7 @@ class Game extends Phaser.Scene {
       this.previousObstacleWasLight = true;
 
       // return [secret, intel, tower, light];
-//      return [secret, intel, light, tower, land_tower];
+      //      return [secret, intel, light, tower, land_tower];
       return [secret, intel, light, lightBeam, tower, land_tower];
    }
 
