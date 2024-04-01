@@ -55,13 +55,13 @@ class Setup extends Phaser.Scene {
       this.load.image('rock_ph', 'public/art/rock.png');
       this.load.image('secret', 'public/art/secret.png');
       this.load.image('intel', 'public/art/intel_2.png');
-      this.load.image('bridge', 'public/art/bridge_480x50.png');
+      this.load.image('bridge', 'public/art/bridge.png');
       this.load.image('rapids', 'public/art/rapids.png');
       this.load.image('van', 'public/art/van.png');
       this.load.image('searchlight', 'public/art/searchlight_trim.png');
       this.load.image('tower_left', 'public/art/tower_leftbank.png');
       this.load.image('tower_right', 'public/art/tower_rightbank.png');
-      this.load.image('pier', 'public/art/goal.png');
+      this.load.image('pier', 'public/art/pier.png');
       this.load.image('water', 'public/art/water_background.png');
       this.load.image('driftWood_gif', 'public/art/splashy_driftwood.gif');
       this.load.image('driftWood', 'public/art/splashy_driftwood.png');

@@ -8,7 +8,7 @@ class Rapids extends Phaser.Physics.Arcade.Image {
       this.setOrigin(0, 0.5);
       this.setScale(1.0);
       this.setDepth(2)
-      this.setVelocity(0, scene.driftSpeed);
+      this.setVelocity(0, scene.driftSpeed); // not needed because in obstacles?
       this.hit = false;
       this.damage = 1;
       this.scene.add.existing(this);
