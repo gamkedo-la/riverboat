@@ -57,7 +57,8 @@ class Game extends Phaser.Scene {
    };
 
    create() {
-      this.setupInput();
+      this.setupInput(); // was calling makeControlButtons in here!
+
       this.physics.world.bounds.width = gameWidth; // works without these?
       this.physics.world.bounds.height = displayHeight;
 
@@ -1006,16 +1007,17 @@ class Game extends Phaser.Scene {
 
    // Overlap & collision handling
    setupColliders() {
-      this.physics.add.overlap(this.boatHitbox, this.milestones, this.reachMilestone, null, this);
+      // this.physics.add.overlap(this.boatHitbox, this.milestones, this.reachMilestone, null, this);
       // quick test of milestone trigger zones, without bumping into obstacles
       if (!testing) {
-         this.physics.add.overlap(this.boatHitbox, this.obstacles, this.hitObstacle, null, this);
-         this.physics.add.overlap(this.boatHitbox, this.rapids, this.hitRapids, null, this);
-         this.physics.add.collider(this.boatHitbox, this.woods, this.hitDriftwood, null, this);
-         this.physics.add.collider(this.boatHitbox, this.rocks, this.hitRock, null, this);
-         this.physics.add.overlap(this.boatHitbox, this.intels, this.hitIntel, null, this);
          this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
          this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
+         // this.physics.add.overlap(this.boatHitbox, this.obstacles, this.hitObstacle, null, this);
+         // this.physics.add.overlap(this.boatHitbox, this.rapids, this.hitRapids, null, this);
+         // this.physics.add.collider(this.boatHitbox, this.woods, this.hitDriftwood, null, this);
+         // this.physics.add.collider(this.boatHitbox, this.rocks, this.hitRock, null, this);
+         // this.physics.add.overlap(this.boatHitbox, this.intels, this.hitIntel, null, this);
+
          this.physics.add.overlap(this.boatHitbox, this.lights, this.boatSeen, null, this);
          this.physics.add.collider(this.boatHitbox, this.lands, this.hitLand, null, this);
          this.physics.add.collider(this.boatHitbox, this.booms, this.hitBooms, null, this);
