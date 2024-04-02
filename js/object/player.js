@@ -37,9 +37,26 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.coneYoffset = 35;
       this.body.setSize(9, 59, false);
       this.body.setOffset(11, 3);
+      this.mainHull = null;
+      this.outriggers = null;
       this.setupMotorSound();
       scene.add.existing(this);
       this.scene = scene;
+   }
+
+   create() {
+      let x = this.start_x;
+      let y = this.start_y;
+      this.mainHull = this.scene.physics.add.sprite(x, y, 'main_hull');
+      this.outriggers = this.scene.physics.add.sprite(x, y - 26, 'outriggers');
+      console.log(this.mainHull);
+      this.mainHull.setVisible(false);
+      this.outriggers.setVisible(false);
+
+      this.boatHitbox.add(this.outriggers);
+      // this.boatHitbox.add(this.player); // boat physics body is cropped to main hull
+      // but including Player object in hitbox group update causes weird errors
+      this.boatHitbox.add(this.main_hull);
    }
 
    setupMotorSound() {
@@ -90,6 +107,25 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // }
    }
 
+   setBoatVelocity(x, y) {
+      console.log(this.mainHull);
+      if (x === null) {
+         this.body.setVelocityY(y);
+         // this.mainHull.body.setVelocityY(y);
+         // this.outriggers.setVelocityY(y);
+      }
+      else if (y === null) {
+         this.body.setVelocityX(x);
+         // this.mainHull.setVelocityX(x);
+         // this.outriggers.setVelocityX(x);
+      }
+      else {
+         this.body.setVelocity(x, y);
+         // this.mainHull.setVelocity(x, y);
+         // this.outriggers.setVelocity(x, y);
+      }
+   }
+
    useFuel(usage) {
       this.fuel -= usage;
       if (this.fuel < 0) {
@@ -130,7 +166,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    turnLeft() {
-      this.body.setVelocityX(-1 * this.sideway_speed);
+      // this.body.setVelocityX(-1 * this.sideway_speed);
+      this.setBoatVelocity(-1 * this.sideway_speed, null);
       this.useFuel(this.sidewaysFuel);
    }
 
@@ -213,8 +250,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    moveBackToStation() {
       // player's on-screen location slowly returns to bottom
       this.body.setVelocityY(this.forward_speed * this.rateOfReturnToStation);
-      // river furniture Y change faster to maintain relative motion
+      this.setBoatVelocity(null, this.forward_speed * this.rateOfReturnToStation);
 
+      // river furniture Y change faster to maintain relative motion
       this.scene.driftSpeed = this.scene.riverSpeed + this.forward_speed * this.rateOfReturnToStation;
       //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
    }
@@ -222,6 +260,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    whenOnStation() {
       // player now on station at bottom of playarea, so...
       this.body.setVelocityY(0);
+      this.setBoatVelocity(null, 0);
       // river furniture's relative motion needs no adjustment
       //this.scene.driftSpeed = scene.driftSpeed;
       //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);

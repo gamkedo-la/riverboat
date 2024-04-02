@@ -91,6 +91,9 @@ class Game extends Phaser.Scene {
       this.applyRiverDrift(this.driftSpeed);
       this.player.update(this.cursors);
 
+      // this.main_hull.setVelocity(this.player.body.velocity.x, this.player.body.velocity.y);
+      // this.outriggers.setVelocity(this.player.body.velocity.x, this.player.body.velocity.y);
+
       this.isIntelWithinRange();
 
       this.updateFuelDisplay(); // should call from Player class
@@ -973,6 +976,20 @@ class Game extends Phaser.Scene {
          this.physics.add.collider(this.boatHitbox, this.booms, this.hitBooms, null, this);
          this.physics.add.collider(this.boatHitbox, this.bridges, this.hitBridges, null, this);
 
+         // temporary while boat hitboxes not moving with boat
+         this.physics.add.overlap(this.player, this.milestones, this.reachMilestone, null, this);
+         // quick test of milestone trigger zones, without bumping into obstacles
+         if (!testing) {
+            this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
+            this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
+            this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
+            this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
+            this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
+            this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
+            this.physics.add.collider(this.player, this.lands, this.hitLand, null, this);
+            this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
+            this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
+         }
          // this.physics.world.on('overlapstart', (object1, object2) => {
          //    console.log("overlap start", object1, object2);
          //    if (object1 === this.sensors && object2 === this.intel) {
