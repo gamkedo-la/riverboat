@@ -5,10 +5,9 @@ class Controls extends Phaser.Scene {
       // scene.add.existing(this);
    }
 
-   preload() {
-   }
-
    create() {
+      const player = this.scene.data.get('player');
+
       this.arrows8way = this.add.image(0, displayHeight - 192, 'arrows_8_way');
       this.arrows8way.setOrigin(0, 0);
       this.arrows8way.setAlpha(0.7);
@@ -25,10 +24,13 @@ class Controls extends Phaser.Scene {
 
       for (let row = 0; row < 3; row++) {
          for (let col = 0; col < 3; col++) {
-            i += 1;
             const x = col * (buttonWidth + spacing) + spacing + x_start;
             const y = row * (buttonHeight + spacing) + spacing + y_start; console.log(buttonWidth, 'x:', x, 'y:', y);
-            hitAreas.push({ x, y, width: buttonWidth, height: buttonHeight, label: button_labels[i] });
+            hitAreas.push({
+               x, y, width: buttonWidth,
+               height: buttonHeight, label: button_labels[i]
+            });
+            i += 1;
          }
       }
 
@@ -40,8 +42,23 @@ class Controls extends Phaser.Scene {
          hitAreaSprite.setInteractive();
 
          hitAreaSprite.on('pointerdown', () => {
-            console.log('Hit area clicked:', area);
+            console.log('Hit area clicked:', area.label, area.x, area.y);
+            this.controlFunctions[area.label]();
          });
       }
    }
+
+   controlFunctions = {
+      'up_left': () => {
+         // Function for up-left button
+      },
+      'up': () => {
+         console.log('up');
+         player.motorForward();
+      },
+      'up_right': () => {
+         // Function for up-right button
+      },
+      // ... (similarly define functions for other buttons)
+   };
 }

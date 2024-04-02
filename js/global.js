@@ -1,7 +1,7 @@
-const developerMode = true; // use sound volumes in global.js
 const devMotorVolume = 0;
-
+const developerMode = false; // use sound volumes in global.js
 const testing = false; // jump into game & zone when true
+
 const test_zone = 0; // zone to test
 const test_no_colliders = true; // no need to navigate when false
 const test_river_speed = 100; // 20 makes access to riverbank easier
