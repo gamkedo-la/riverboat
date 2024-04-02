@@ -46,6 +46,7 @@ class Setup extends Phaser.Scene {
       this.load.image('wake', 'public/art/water_wake.png');
       this.load.image('sensor', 'public/art/sensor_cone.png');
       this.load.image('sensor2', 'public/art/BoatSensor_YellowCone.png');
+      this.load.image('sensor3', 'public/art/BoatSensor_GreenCone.png');
 
       this.load.image('spy_cutscene', 'public/art/spying.png');
       this.load.image('boom', 'public/art/boom_480x50.png');

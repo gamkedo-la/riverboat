@@ -296,11 +296,11 @@ class Game extends Phaser.Scene {
          follow: this.player
       });
 
-      this.cone_left = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor2');
+      this.cone_left = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor3');
       this.cone_left.setOrigin(1, 0.5);
       this.cone_left.setFlipX(true);
       // default Origin and no flip needed for right cone
-      this.cone_right = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor2');
+      this.cone_right = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor3');
       this.sensors.add(this.cone_left, this.cone_right);
    }
 
