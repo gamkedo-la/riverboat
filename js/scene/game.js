@@ -67,10 +67,10 @@ class Game extends Phaser.Scene {
       // this.events.on('pauseMenuToggle', (isVisible) => {
       //    this.menuButton.visible = isVisible;
       // });
-
       // this.scene.get('Pause').events.on('resumeGame', this.handleMenuVisibility, this);
 
       // this.scene.launch("Panel");
+
       if (keyboard != 'likely' || alwaysButtons === true) {
          this.makeControlPanel();
          this.makeControlButtons();
