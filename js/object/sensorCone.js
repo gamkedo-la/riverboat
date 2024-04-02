@@ -10,6 +10,10 @@ class SensorCone extends Phaser.Physics.Arcade.Sprite {
       this.setAlpha(0.5);
       this.setScale(0.7, 0.7);
       this.setImmovable(true);
+      this.sensorWaveMin = 0.3;
+      this.sensorWaveMax = 0.5;
+      this.sensorWaveLevel = this.sensorWaveMin;
+      this.sensorWaveStep = 0.01;
       scene.add.existing(this);
    }
 
@@ -17,6 +21,14 @@ class SensorCone extends Phaser.Physics.Arcade.Sprite {
       this.x = x;
       this.y = y;
       this.setVisible(true);
+      this.setAlpha(this.sensorWaveLevel);
+      // this.setScale(0.4 + this.sensorWaveLevel, 0.4 + this.sensorWaveLevel);
+      this.sensorWaveLevel += this.sensorWaveStep;
+      if (this.sensorWaveLevel < this.sensorWaveMin ||
+         this.sensorWaveLevel > this.sensorWaveMax
+      ) {
+         this.sensorWaveStep *= -1;
+      }
    }
 
    hide() {
