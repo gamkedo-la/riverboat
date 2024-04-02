@@ -35,7 +35,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocity(0, 0);
       this.depth = 7;
       this.coneYoffset = 35;
-
+      this.body.setSize(9, 59, false);
+      this.body.setOffset(11, 3);
       this.setupMotorSound();
       scene.add.existing(this);
       this.scene = scene;

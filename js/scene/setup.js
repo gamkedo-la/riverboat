@@ -41,8 +41,11 @@ class Setup extends Phaser.Scene {
          loadingFile.setText('Loading: ' + file.key);
       });
 
-      this.load.image('boat', 'public/art/boat_30x65.png');
+      this.load.image('boat', 'public/art/boat_cropfront_62.png');
+      this.load.image('main_hull_hitbox', 'public/art/boat_hitbox_main_hull_60.png');
+      this.load.image('outriggers_hitbox', 'public/art/boat_hitbox_outriggers.png');
       this.load.image('anim_turnBoat', 'public/art/boat_5.png');
+
       this.load.image('wake', 'public/art/water_wake.png');
       this.load.image('sensor', 'public/art/sensor_cone.png');
       this.load.image('sensor2', 'public/art/BoatSensor_YellowCone.png');

@@ -277,7 +277,6 @@ class Game extends Phaser.Scene {
       let start_x = gameWidth / 2; // game width screen + 2 * offset
       let start_y = displayHeight - controlPanelHeight - 10;
       this.player = new Player(this, start_x, start_y, 'boat');
-      //this.player = new Player(this, start_x, start_y, 'anim_boat', 2);
 
       // wake is now a particle emitter
       // see https://newdocs.phaser.io/docs/3.55.2/Phaser.Types.GameObjects.Particles.ParticleEmitterConfig
@@ -302,6 +301,16 @@ class Game extends Phaser.Scene {
       // default Origin and no flip needed for right cone
       this.cone_right = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor3');
       this.sensors.add(this.cone_left, this.cone_right);
+
+      this.main_hull = this.add.sprite(start_x, start_y, 'main_hull');
+      this.outriggers = this.add.sprite(start_x, start_y - 26, 'outriggers');
+      this.main_hull.setVisible(false);
+      this.outriggers.setVisible(false);
+
+      this.boatHitbox.add(this.outriggers);
+      // this.boatHitbox.add(this.player); // boat physics body is cropped to main hull
+      // but including Player object in hitbox group update causes weird errors
+      this.boatHitbox.add(this.main_hull);
    }
 
    showLeftSensorCone() {
@@ -949,20 +958,20 @@ class Game extends Phaser.Scene {
 
    // Overlap & collision handling
    setupColliders() {
-      this.physics.add.overlap(this.player, this.milestones, this.reachMilestone, null, this);
+      this.physics.add.overlap(this.boatHitbox, this.milestones, this.reachMilestone, null, this);
       // quick test of milestone trigger zones, without bumping into obstacles
       if (!testing) {
-         this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
-         this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
-         this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
-         this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
-         this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
+         this.physics.add.overlap(this.boatHitbox, this.obstacles, this.hitObstacle, null, this);
+         this.physics.add.overlap(this.boatHitbox, this.rapids, this.hitRapids, null, this);
+         this.physics.add.collider(this.boatHitbox, this.woods, this.hitDriftwood, null, this);
+         this.physics.add.collider(this.boatHitbox, this.rocks, this.hitRock, null, this);
+         this.physics.add.overlap(this.boatHitbox, this.intels, this.hitIntel, null, this);
          this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
          this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
-         this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
-         this.physics.add.collider(this.player, this.lands, this.hitLand, null, this);
-         this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
-         this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
+         this.physics.add.overlap(this.boatHitbox, this.lights, this.boatSeen, null, this);
+         this.physics.add.collider(this.boatHitbox, this.lands, this.hitLand, null, this);
+         this.physics.add.collider(this.boatHitbox, this.booms, this.hitBooms, null, this);
+         this.physics.add.collider(this.boatHitbox, this.bridges, this.hitBridges, null, this);
 
          // this.physics.world.on('overlapstart', (object1, object2) => {
          //    console.log("overlap start", object1, object2);
@@ -1328,6 +1337,7 @@ class Game extends Phaser.Scene {
    }
 
    createPhysicsGroups() {
+      this.boatHitbox = this.physics.add.group({ runChildUpdate: true });
       this.lands = this.physics.add.group({ runChildUpdate: true });
       this.booms = this.physics.add.group({ runChildUpdate: true });
       this.bridges = this.physics.add.group({ runChildUpdate: true });
