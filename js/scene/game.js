@@ -54,6 +54,20 @@ class Game extends Phaser.Scene {
             this.placeMilestone(...obstacleSprites);
          },
       };
+
+      this.controlFunctions = {
+         'up_left': () => {
+            // Function for up-left button
+         },
+         'up': () => {
+            console.log('up');
+            this.player.motorForward();
+         },
+         'up_right': () => {
+            // Function for up-right button
+         },
+         // ... (similarly define functions for other buttons)
+      };
    };
 
    create() {
@@ -75,6 +89,7 @@ class Game extends Phaser.Scene {
 
       if (keyboard != 'likely' || alwaysButtons === true) {
          this.makeControlPanel();
+         //this.makeControlButtons();
          this.makeOldControlButtons();
       }
 
@@ -971,6 +986,7 @@ class Game extends Phaser.Scene {
    };
 
    gotoHome() {
+      this.spyingSound.stop();
       // this.player.intelScore = randomInteger(40, 100);
       saveScores(this.player.intelScore, estimatedProgress);
       this.scene.start('Home');
@@ -1018,10 +1034,10 @@ class Game extends Phaser.Scene {
          // this.physics.add.collider(this.boatHitbox, this.rocks, this.hitRock, null, this);
          // this.physics.add.overlap(this.boatHitbox, this.intels, this.hitIntel, null, this);
 
-         this.physics.add.overlap(this.boatHitbox, this.lights, this.boatSeen, null, this);
-         this.physics.add.collider(this.boatHitbox, this.lands, this.hitLand, null, this);
-         this.physics.add.collider(this.boatHitbox, this.booms, this.hitBooms, null, this);
-         this.physics.add.collider(this.boatHitbox, this.bridges, this.hitBridges, null, this);
+         // this.physics.add.overlap(this.boatHitbox, this.lights, this.boatSeen, null, this);
+         // this.physics.add.collider(this.boatHitbox, this.lands, this.hitLand, null, this);
+         // this.physics.add.collider(this.boatHitbox, this.booms, this.hitBooms, null, this);
+         // this.physics.add.collider(this.boatHitbox, this.bridges, this.hitBridges, null, this);
 
          // temporary while boat hitboxes not moving with boat
          this.physics.add.overlap(this.player, this.milestones, this.reachMilestone, null, this);
