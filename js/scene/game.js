@@ -69,7 +69,7 @@ class Game extends Phaser.Scene {
       // });
       // this.scene.get('Pause').events.on('resumeGame', this.handleMenuVisibility, this);
 
-      // this.scene.launch("Panel");
+      this.scene.launch("Controls");
 
       if (keyboard != 'likely' || alwaysButtons === true) {
          this.makeControlPanel();
@@ -82,7 +82,8 @@ class Game extends Phaser.Scene {
       this.moveFurnitureY(bring_down_first_obstacle); // this.ySpacing
 
       this.setupColliders();
-      // this.logging();
+
+      this.player.create();
    };
 
    update() {
@@ -305,15 +306,17 @@ class Game extends Phaser.Scene {
       this.cone_right = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor3');
       this.sensors.add(this.cone_left, this.cone_right);
 
-      this.main_hull = this.add.sprite(start_x, start_y, 'main_hull');
-      this.outriggers = this.add.sprite(start_x, start_y - 26, 'outriggers');
-      this.main_hull.setVisible(false);
-      this.outriggers.setVisible(false);
+      // if done in Player
+      // this.main_hull = this.add.sprite(start_x, start_y, 'main_hull');
+      // this.outriggers = this.add.sprite(start_x, start_y - 26, 'outriggers');
+      // this.main_hull.setVisible(false);
+      // this.outriggers.setVisible(false);
 
-      this.boatHitbox.add(this.outriggers);
+      // this.boatHitbox.add(this.outriggers);
+      // this.boatHitbox.add(this.main_hull);
       // this.boatHitbox.add(this.player); // boat physics body is cropped to main hull
       // but including Player object in hitbox group update causes weird errors
-      this.boatHitbox.add(this.main_hull);
+
    }
 
    showLeftSensorCone() {

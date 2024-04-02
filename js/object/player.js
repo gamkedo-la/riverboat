@@ -49,14 +49,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       let y = this.start_y;
       this.mainHull = this.scene.physics.add.sprite(x, y, 'main_hull');
       this.outriggers = this.scene.physics.add.sprite(x, y - 26, 'outriggers');
-      console.log(this.mainHull);
+      // console.log(this.mainHull);
+
       this.mainHull.setVisible(false);
       this.outriggers.setVisible(false);
 
-      this.boatHitbox.add(this.outriggers);
+      this.scene.boatHitbox.add(this.outriggers);
       // this.boatHitbox.add(this.player); // boat physics body is cropped to main hull
       // but including Player object in hitbox group update causes weird errors
-      this.boatHitbox.add(this.main_hull);
+      this.scene.boatHitbox.add(this.mainHull);
    }
 
    setupMotorSound() {
@@ -108,21 +109,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    setBoatVelocity(x, y) {
-      console.log(this.mainHull);
+      // console.log(this.mainHull);
       if (x === null) {
          this.body.setVelocityY(y);
          // this.mainHull.body.setVelocityY(y);
-         // this.outriggers.setVelocityY(y);
+         this.outriggers.setVelocityY(y);
       }
       else if (y === null) {
          this.body.setVelocityX(x);
          // this.mainHull.setVelocityX(x);
-         // this.outriggers.setVelocityX(x);
+         this.outriggers.setVelocityX(x);
       }
       else {
          this.body.setVelocity(x, y);
          // this.mainHull.setVelocity(x, y);
-         // this.outriggers.setVelocity(x, y);
+         this.outriggers.setVelocity(x, y);
       }
    }
 
