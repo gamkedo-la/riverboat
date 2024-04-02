@@ -53,8 +53,8 @@ class SearchlightBeam extends Phaser.GameObjects.Graphics {
 
    draw() {
       this.clear();
-      this.lineStyle(0, this.color, 0);
-      this.fillStyle(this.color, 0.5);
+      this.lineStyle(1, this.color, 0.25);
+      this.fillStyle(this.color, 0.2);
 
       // Start the path at the first point of the polygon
       this.beginPath();
@@ -74,5 +74,6 @@ class SearchlightBeam extends Phaser.GameObjects.Graphics {
       // Close the path and fill it
       this.closePath();
       this.fillPath();
+      this.strokePath();
    }
 };
