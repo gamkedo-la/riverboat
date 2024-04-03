@@ -47,17 +47,33 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    create() {
       let x = this.start_x;
       let y = this.start_y;
-      this.mainHull = this.scene.physics.add.sprite(x, y, 'main_hull');
-      this.outriggers = this.scene.physics.add.sprite(x, y - 26, 'outriggers');
-      // console.log(this.mainHull);
+      this.playerContainer = this.scene.add.container(x, y);
+
+      this.mainHull = this.scene.physics.add.sprite(x, y - 29, 'main_hull_hitbox');
+      this.outriggers = this.scene.physics.add.sprite(x, y - 26, 'outriggers_hitbox');
+      console.log(this.mainHull);
+      console.log(this.outriggers);
+
+      this.playerContainer.add(this.mainHull);
+      this.playerContainer.add(this.outriggers);
+
+      //this.scene.physics.world.enable([this.mainHull, this.outriggers]);
+      this.scene.physics.world.enable(this.outriggers);
+      this.scene.physics.world.enable(this.mainHull);
+
+      this.scene.add.existing(this.outriggers);
+      this.scene.add.existing(this.mainHull);
+
+      this.mainHull.body.setImmovable(true);
+      this.outriggers.body.setImmovable(true);
 
       this.mainHull.setVisible(false);
       this.outriggers.setVisible(false);
 
       this.scene.boatHitbox.add(this.outriggers);
-      // this.boatHitbox.add(this.player); // boat physics body is cropped to main hull
-      // but including Player object in hitbox group update causes weird errors
       this.scene.boatHitbox.add(this.mainHull);
+      // this.boatHitbox.add(this.player); 
+      // boat physics body is cropped to main hull but including Player object in hitbox group update causes weird errors
    }
 
    setupMotorSound() {
@@ -101,6 +117,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.setVelocity(0, 0);
       }
 
+      this.playerContainer.x = this.x;
+      this.playerContainer.y = this.y;
+      // this.playerContainer.angle = this.angle;
+      this.mainHull.x = this.playerContainer.x;
+      this.mainHull.y = this.playerContainer.y - 29;
+      this.outriggers.x = this.playerContainer.x;
+      this.outriggers.y = this.playerContainer.y - 26;
+
       // not returning to station looks out of control (which is appropriate)
       // if (this.y < this.start_y) {
       //    // boat is above its default position
@@ -112,17 +136,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // console.log(this.mainHull);
       if (x === null) {
          this.body.setVelocityY(y);
-         // this.mainHull.body.setVelocityY(y);
+         this.mainHull.body.setVelocityY(y);
          this.outriggers.setVelocityY(y);
       }
       else if (y === null) {
          this.body.setVelocityX(x);
-         // this.mainHull.setVelocityX(x);
+         this.mainHull.setVelocityX(x);
          this.outriggers.setVelocityX(x);
       }
       else {
          this.body.setVelocity(x, y);
-         // this.mainHull.setVelocity(x, y);
+         this.mainHull.setVelocity(x, y);
          this.outriggers.setVelocity(x, y);
       }
    }

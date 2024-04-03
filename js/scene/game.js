@@ -322,18 +322,6 @@ class Game extends Phaser.Scene {
       // default Origin and no flip needed for right cone
       this.cone_right = new SensorCone(this, start_x, start_y - this.player.coneYoffset, 'sensor3');
       this.sensors.add(this.cone_left, this.cone_right);
-
-      // if done in Player
-      // this.main_hull = this.add.sprite(start_x, start_y, 'main_hull');
-      // this.outriggers = this.add.sprite(start_x, start_y - 26, 'outriggers');
-      // this.main_hull.setVisible(false);
-      // this.outriggers.setVisible(false);
-
-      // this.boatHitbox.add(this.outriggers);
-      // this.boatHitbox.add(this.main_hull);
-      // this.boatHitbox.add(this.player); // boat physics body is cropped to main hull
-      // but including Player object in hitbox group update causes weird errors
-
    }
 
    showLeftSensorCone() {
@@ -1023,48 +1011,21 @@ class Game extends Phaser.Scene {
 
    // Overlap & collision handling
    setupColliders() {
-      // this.physics.add.overlap(this.boatHitbox, this.milestones, this.reachMilestone, null, this);
+      this.physics.add.overlap(this.boatHitbox, this.milestones, this.reachMilestone, null, this);
       // quick test of milestone trigger zones, without bumping into obstacles
       if (!testing) {
-         this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
+         // this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
          this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
-         // this.physics.add.overlap(this.boatHitbox, this.obstacles, this.hitObstacle, null, this);
-         // this.physics.add.overlap(this.boatHitbox, this.rapids, this.hitRapids, null, this);
-         // this.physics.add.collider(this.boatHitbox, this.woods, this.hitDriftwood, null, this);
-         // this.physics.add.collider(this.boatHitbox, this.rocks, this.hitRock, null, this);
-         // this.physics.add.overlap(this.boatHitbox, this.intels, this.hitIntel, null, this);
+         this.physics.add.overlap(this.boatHitbox, this.obstacles, this.hitObstacle, null, this);
+         this.physics.add.overlap(this.boatHitbox, this.rapids, this.hitRapids, null, this);
+         this.physics.add.collider(this.boatHitbox, this.woods, this.hitDriftwood, null, this);
+         this.physics.add.collider(this.boatHitbox, this.rocks, this.hitRock, null, this);
+         this.physics.add.overlap(this.boatHitbox, this.intels, this.hitIntel, null, this);
 
-         // this.physics.add.overlap(this.boatHitbox, this.lights, this.boatSeen, null, this);
-         // this.physics.add.collider(this.boatHitbox, this.lands, this.hitLand, null, this);
-         // this.physics.add.collider(this.boatHitbox, this.booms, this.hitBooms, null, this);
-         // this.physics.add.collider(this.boatHitbox, this.bridges, this.hitBridges, null, this);
-
-         // temporary while boat hitboxes not moving with boat
-         this.physics.add.overlap(this.player, this.milestones, this.reachMilestone, null, this);
-         // quick test of milestone trigger zones, without bumping into obstacles
-         if (!testing) {
-            this.physics.add.overlap(this.player, this.obstacles, this.hitObstacle, null, this);
-            this.physics.add.overlap(this.player, this.rapids, this.hitRapids, null, this);
-            this.physics.add.collider(this.player, this.woods, this.hitDriftwood, null, this);
-            this.physics.add.collider(this.player, this.rocks, this.hitRock, null, this);
-            this.physics.add.overlap(this.player, this.intels, this.hitIntel, null, this);
-            this.physics.add.overlap(this.player, this.lights, this.boatSeen, null, this);
-            this.physics.add.collider(this.player, this.lands, this.hitLand, null, this);
-            this.physics.add.collider(this.player, this.booms, this.hitBooms, null, this);
-            this.physics.add.collider(this.player, this.bridges, this.hitBridges, null, this);
-         }
-         // this.physics.world.on('overlapstart', (object1, object2) => {
-         //    console.log("overlap start", object1, object2);
-         //    if (object1 === this.sensors && object2 === this.intel) {
-         //       this.enterSpyingArea();
-         //    }
-         // });
-         // this.physics.world.on('overlapend', (object1, object2) => {
-         //    console.log("overlap end", object1, object2);
-         //    if (object1 === this.sensors && object2 === this.intel) {
-         //       this.exitSpyingArea();
-         //    }
-         // });
+         this.physics.add.overlap(this.boatHitbox, this.lights, this.boatSeen, null, this);
+         this.physics.add.collider(this.boatHitbox, this.lands, this.hitLand, null, this);
+         this.physics.add.collider(this.boatHitbox, this.booms, this.hitBooms, null, this);
+         this.physics.add.collider(this.boatHitbox, this.bridges, this.hitBridges, null, this);
       }
    }
 
