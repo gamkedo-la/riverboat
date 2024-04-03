@@ -433,7 +433,7 @@ class Game extends Phaser.Scene {
 
    updateIntelDisplay() {
       //if (this.player.health) {
-      this.intelDisplay.setText(`Intel: ${this.player.intelScore}`);
+      this.intelDisplay.setText(`Score: ${this.player.intelScore}`);
       //}
    };
 
@@ -654,11 +654,11 @@ class Game extends Phaser.Scene {
       this.menuButton = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          this.waterSound.stop();
          this.gotoHome();
-      });
+      }, 0.5); // final parameter is Alpha
    }
 
    makePauseButton() {
-      this.pauseButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => this.doPause());
+      this.pauseButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => this.doPause(), 0.5);
    }
 
    doPause() {
@@ -685,7 +685,7 @@ class Game extends Phaser.Scene {
          //this.obstacles.incY(-200);
          this.physics.resume();
          this.scene.restart();
-      });
+      }, 0, 5);
       //this.hud.add(this.buttonReplay);
    }
 

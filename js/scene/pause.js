@@ -28,14 +28,14 @@ class Pause extends Phaser.Scene {
          this.scene.stop('Game');
          this.scene.stop('Pause');
          this.scene.gotoHome();
-      });
+      }, 1);
    }
 
    makeResumeButton() {
       this.resumeButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
          //this.resumeButton.visible = false;
          this.resuming(this);
-      });
+      }, 1);
    }
 
    resuming() {

@@ -27,6 +27,6 @@ class Credits extends Phaser.Scene {
    makeMenuButton() {
       this.buttonMenu = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          this.scene.start("Home");
-      });
+      }, 1);
    }
 }

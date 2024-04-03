@@ -165,11 +165,15 @@ class Setup extends Phaser.Scene {
          repeat: 1
       });
 
-      if (testing || developerMode) {
+      if (testing) {
          makingZone = test_zone;
          this.scene.start('Game');
-      } else {
-         // this.scene.start('Home');
+      }
+      else if (developerMode) {
+         makingZone = test_zone;
+         this.scene.start('Home');
+      }
+      else {
          this.scene.start('Intro');
       }
    };

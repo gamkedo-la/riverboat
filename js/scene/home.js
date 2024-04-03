@@ -32,16 +32,17 @@ class Home extends Phaser.Scene {
       textPanel.fillRect(left, top, text.width + margin * 2, text.height + margin * 2);
 
       top += 60 + 60;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Help', () => {
+      this.buttonScore = new hudButton(this, gameWidth / 4, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Help', () => {
          makingZone = 1;
          this.scene.start('Help');
-      });
+      }, 1);
 
-      top += 60;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Play', () => {
+      this.buttonScore = new hudButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Play', () => {
          makingZone = 1;
          this.scene.start('Game');
-      });
+      }, 1);
+
+      this.add.text(280, top, 'zone:', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
 
       // Zone choice - buttons that jump directto start of numbered zone
       top += 60;
@@ -79,12 +80,17 @@ class Home extends Phaser.Scene {
 
       top += 60;
       // show personal High Scores to help player understand aim of game
-      this.buttonScore = new uiButton(this, gameWidth / 4, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Scores', () => this.scene.start('Scores'));
+      this.buttonScore = new hudButton(this, gameWidth / 4, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Scores', () => this.scene.start('Scores'), 1);
 
-      this.buttonScore = new uiButton(this, 20 + gameWidth * 3 / 4, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Credits', () => {
+      this.buttonScore = new hudButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Option', () => {
+         makingZone = 1;
+         this.scene.start('Options');
+      }, 1);
+
+      this.buttonScore = new hudButton(this, 20 + gameWidth * 3 / 4, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Credits', () => {
          makingZone = 1;
          this.scene.start('Credits');
-      });
+      }, 1); // final parameter is Alpha
 
       if (keyboard === 'likely') {
          top += 60;

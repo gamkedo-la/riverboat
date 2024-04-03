@@ -1,5 +1,5 @@
 const devMotorVolume = 0;
-const developerMode = false; // use sound volumes in global.js
+const developerMode = true; // use sound volumes in global.js
 const testing = false; // jump into game & zone when true
 
 const test_zone = 0; // zone to test
@@ -69,6 +69,7 @@ const saveScores = function (intel, progress) {
 const eraseScores = function () {
    allScores = [];
    localStorage.setItem('scores', JSON.stringify(allScores));
+   return "Scores erased";
 };
 
 // generate number between 0 and 1 with distribution biased toward 0.5
