@@ -25,7 +25,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.backward_ratio = 3;
       this.engine = "off";
       this.spyingNow = false;
-      this.cone_show_distance = 240;
+      this.cone_show_distance = 180;
       this.cone_hide_distance = 30;
       this.rateOfReturnToStation = 0.5;
       scene.physics.world.enable(this);
@@ -51,8 +51,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
       this.mainHull = this.scene.physics.add.sprite(x, y - 29, 'main_hull_hitbox');
       this.outriggers = this.scene.physics.add.sprite(x, y - 26, 'outriggers_hitbox');
-      console.log(this.mainHull);
-      console.log(this.outriggers);
+      //console.log(this.mainHull);
+      //console.log(this.outriggers);
 
       this.playerContainer.add(this.mainHull);
       this.playerContainer.add(this.outriggers);
