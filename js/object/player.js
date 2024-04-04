@@ -73,7 +73,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
       this.scene.boatHitbox.add(this.outriggers);
       this.scene.boatHitbox.add(this.mainHull);
-      // this.boatHitbox.add(this.player); 
+      //this.scene.boatHitbox.add(this);
       // boat physics body is cropped to main hull but including Player object in hitbox group update causes weird errors
    }
 

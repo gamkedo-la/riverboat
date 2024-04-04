@@ -162,8 +162,6 @@ class Game extends Phaser.Scene {
 
       this.isIntelWithinRange();
 
-      this.updateFuelDisplay(); // should call from Player class
-
       this.destroyPassedObject();
 
       if (!this.stopMakingObstacles) this.testIfReadyForNextInterval();
@@ -171,6 +169,11 @@ class Game extends Phaser.Scene {
       if (this.player.engine == 'off') {
          this.player.neitherFastOrSlow();
       }
+      this.updateFuelDisplay(); // should call from Player class
+      this.cone_left.x = this.player.x;
+      this.cone_left.y = this.player.y - this.player.coneYoffset;
+      this.cone_right.x = this.player.x;
+      this.cone_right.y = this.player.y - this.player.coneYoffset;
 
       // manual supplement to overlap handler
       let sensorIntelOverlap = this.physics.overlap(this.sensors, this.intels);
@@ -287,6 +290,7 @@ class Game extends Phaser.Scene {
          let nearest_Intel_dist = 800;
          let intelX; // to calculate which side of boat is near secret
          let intelTopY;
+         let boatCentreY;
 
          this.intels.getChildren().forEach(intel => {
             let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, intel.x, intel.y);
@@ -297,7 +301,10 @@ class Game extends Phaser.Scene {
             }
          });
 
-         if (this.player.y < intelTopY && nearest_Intel_dist > this.player.cone_hide_distance) {
+         boatCentreY = this.player.y - this.player.height / 2;
+         // console.log(nearest_Intel_dist, 'Pcy', boatCentreY, 'Ity', intelTopY);
+
+         if (boatCentreY < intelTopY && nearest_Intel_dist > this.player.cone_hide_distance) {
             this.hideSensorCone();
             if (sensorOn) {
                sensorOn = false;
@@ -305,6 +312,7 @@ class Game extends Phaser.Scene {
             }
          }
          else if (nearest_Intel_dist < this.player.cone_show_distance) {
+            //console.log(nearest_Intel_dist, 'Px', this.player.x, 'Ix', intelX);
             if (this.player.x > intelX) {
                this.showLeftSensorCone();
             } else {
@@ -493,7 +501,7 @@ class Game extends Phaser.Scene {
    makeControlButtons() {
       this.arrows8way = this.add.image(0, displayHeight - 192, 'arrows_8_way');
       this.arrows8way.setOrigin(0, 0);
-      this.arrows8way.setAlpha(0.7);
+      this.arrows8way.setAlpha(0.5);
 
       this.controlButtons = {};
 
@@ -943,7 +951,6 @@ class Game extends Phaser.Scene {
       this.woods.setVelocityY(speed);
       // console.log(this, this.player);
       if (awaitRespawn === false) {
-         console.log(awaitRespawn);
          this.waterBG.tilePositionY -= speed / 60;
          if (testing) {
             this.idLabels.incY(speed / 60);
