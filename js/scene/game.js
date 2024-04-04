@@ -531,6 +531,14 @@ class Game extends Phaser.Scene {
                this.controlFunctions[label].onRelease
             );
 
+            // for Pause hitarea don't want repeatEvent (it fights Resume)
+            if (label === 'pause') {
+               hitArea.hitArea.off('pointerdown');
+               hitArea.hitArea.on('pointerdown', () => {
+                  this.doPause();
+               });
+            }
+
             this.controlButtons[label] = hitArea;
             i += 1;
          }
