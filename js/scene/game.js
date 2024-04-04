@@ -1,6 +1,79 @@
 class Game extends Phaser.Scene {
    constructor() {
       super('Game');
+
+      this.controlFunctions = {
+         'up_left': {
+            onPress: () => {
+               this.player.motorForward();
+               this.player.turnLeft();
+            },
+            onRelease: () => {
+               this.player.neitherFastOrSlow();
+            }
+         },
+         'up': {
+            onPress: () => {
+               this.player.motorForward();
+            },
+            onRelease: () => {
+               this.player.neitherFastOrSlow();
+            }
+         },
+         'up_right': {
+            onPress: () => {
+               this.player.motorForward();
+               this.player.turnRight();
+            },
+            onRelease: () => {
+               this.player.neitherFastOrSlow();
+            }
+         },
+         'left': {
+            onPress: () => {
+               this.player.turnLeft();
+            },
+            onRelease: () => { }
+         },
+         'pause': {
+            onPress: () => {
+               this.doPause();
+            },
+            onRelease: () => { }
+         },
+         'right': {
+            onPress: () => {
+               this.player.turnRight();
+            },
+            onRelease: () => { }
+         },
+         'down_left': {
+            onPress: () => {
+               this.player.slowAgainstFlow();
+               this.player.turnLeft();
+            },
+            onRelease: () => {
+               this.player.neitherFastOrSlow();
+            }
+         },
+         'down': {
+            onPress: () => {
+               this.player.slowAgainstFlow();
+            },
+            onRelease: () => {
+               this.player.neitherFastOrSlow();
+            }
+         },
+         'down_right': {
+            onPress: () => {
+               this.player.slowAgainstFlow();
+               this.player.turnRight();
+            },
+            onRelease: () => {
+               this.player.neitherFastOrSlow();
+            }
+         }
+      };
    }
 
    init() {
@@ -67,8 +140,8 @@ class Game extends Phaser.Scene {
 
       if (keyboard != 'likely' || alwaysButtons === true) {
          this.makeControlPanel();
-         //this.makeControlButtons();
-         this.makeOldControlButtons();
+         this.makeControlButtons();
+         //this.makeOldControlButtons();
       }
 
       // at game start, and when menu jumps to a zone start, create first obstacle
@@ -422,7 +495,8 @@ class Game extends Phaser.Scene {
       this.arrows8way.setOrigin(0, 0);
       this.arrows8way.setAlpha(0.7);
 
-      const hitAreas = [];
+      this.controlButtons = {};
+
       const x_start = 0;
       const y_start = displayHeight - 192;
       const buttonWidth = 64;
@@ -430,31 +504,28 @@ class Game extends Phaser.Scene {
       const spacing = 0; // if any spacing between button hitareas
 
       const button_labels = ['up_left', 'up', 'up_right', 'left', 'pause', 'right', 'down_left', 'down', 'down_right'];
-      let i = 0;
 
+      let i = 0;
       for (let row = 0; row < 3; row++) {
          for (let col = 0; col < 3; col++) {
             const x = col * (buttonWidth + spacing) + spacing + x_start;
-            const y = row * (buttonHeight + spacing) + spacing + y_start; console.log(buttonWidth, 'x:', x, 'y:', y);
-            hitAreas.push({
-               x, y, width: buttonWidth,
-               height: buttonHeight, label: button_labels[i]
-            });
+            const y = row * (buttonHeight + spacing) + spacing + y_start;
+            const label = button_labels[i];
+
+            const hitArea = new arrowHitarea(
+               this,
+               x,
+               y,
+               buttonWidth,
+               buttonHeight,
+               label,
+               this.controlFunctions[label].onPress,
+               this.controlFunctions[label].onRelease
+            );
+
+            this.controlButtons[label] = hitArea;
             i += 1;
          }
-      }
-
-      for (const area of hitAreas) {
-         const hitAreaSprite = this.physics.add.sprite(area.x, area.y, 'control_button_hitbox');  // Set frame to 0 for transparency
-         hitAreaSprite.setVisible(true);
-         hitAreaSprite.setDepth(99);
-         hitAreaSprite.setOrigin(0, 0);
-         hitAreaSprite.setInteractive();
-
-         hitAreaSprite.on('pointerdown', () => {
-            console.log('Hit area clicked:', area.label, area.x, area.y);
-            this.controlFunctions[area.label]();
-         });
       }
    }
 
@@ -544,11 +615,18 @@ class Game extends Phaser.Scene {
    }
 
    clearNavButtonEvents() {
-      // to fix bug when lose life while button is pressed its repeating event carries on after respawn
-      this.btnLeft.clearEvents();
-      this.btnRight.clearEvents();
-      // this.btnFast.clearEvents();
-      // this.btnSlow.clearEvents();
+      // when lose life while button pressed, stop repeating event after respawn
+      // clear events for all buttons except the 'pause' button
+      const buttonsToSkip = [];
+      for (const key in this.controlButtons) {
+         if (!buttonsToSkip.includes(key)) {
+            const button = this.controlButtons[key];
+            button.clearEvents();
+            // button.removeListener('pointerdown');
+         }
+      }
+      // this.btnLeft.clearEvents();
+      // this.btnRight.clearEvents();
    }
 
    handleMenuVisibility(isVisible) {
