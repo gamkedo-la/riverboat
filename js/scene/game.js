@@ -670,7 +670,7 @@ class Game extends Phaser.Scene {
          //this.obstacles.incY(-200);
          this.physics.resume();
          this.scene.restart();
-      }, 0, 5);
+      }, 0.5);
       //this.hud.add(this.buttonReplay);
    }
 
@@ -941,9 +941,13 @@ class Game extends Phaser.Scene {
       this.obstacles.setVelocityY(speed);
       this.rocks.setVelocityY(speed);
       this.woods.setVelocityY(speed);
-      this.waterBG.tilePositionY -= speed / 60;
-      if (testing) {
-         this.idLabels.incY(speed / 60);
+      // console.log(this, this.player);
+      if (awaitRespawn === false) {
+         console.log(awaitRespawn);
+         this.waterBG.tilePositionY -= speed / 60;
+         if (testing) {
+            this.idLabels.incY(speed / 60);
+         }
       }
    }
 
@@ -1099,7 +1103,10 @@ class Game extends Phaser.Scene {
    };
 
    loseLife() {
-      this.invincible = true;
+      this.player.invincible = true;
+      awaitRespawn = true;
+      console.log(awaitRespawn);
+
       this.player.life -= 1;
       this.updateLifeDisplay();
 
@@ -1124,6 +1131,7 @@ class Game extends Phaser.Scene {
    newLife() {
       // console.log("New life - fuel restored")
       this.physics.resume();
+      awaitRespawn = false;
       this.player.fuel = this.player.startFuel;
       this.obstacles.incY(-200); // should be less than interval to avoid collisioon with previous obstacle, though usually X centre empty, except for a closed bridge.
       this.rocks.incY(-200);
@@ -1136,6 +1144,7 @@ class Game extends Phaser.Scene {
       saveScores(this.player.intelScore, estimatedProgress);
       this.player.setTint(0xff0000);
       this.physics.pause();
+      awaitRespawn = true;
 
       this.time.addEvent({
          delay: 1000,
@@ -1156,6 +1165,7 @@ class Game extends Phaser.Scene {
          callback: () => {
             this.player.health = this.player.initialHealth;
             this.player.fuel = this.player.initialFuel;
+            awaitRespawn = false;
             //this.gameOver = false;
             //this.scene.restart();
          },

@@ -46,6 +46,7 @@ const scores_key = 'scores';
 
 let sensorOn = false;
 let searchlightWarned = false;
+let awaitRespawn = false;
 
 const loadScores = function () {
    let storedScores = localStorage.getItem(scores_key);
