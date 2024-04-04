@@ -82,6 +82,9 @@
          "patrolSpeed": 30,
          "huntSpeed": 100
       },
+      "intel": {
+         "alpha": 1
+      },
       "wood": {
          "scale": 1.5,
          "driftChance": 0.0,
@@ -126,6 +129,9 @@
       "secret": {
          "bankGap": 20,
          "alertRange": 180
+      },
+      "intel": {
+         "alpha": 0.8
       },
       "searchlight": {
          "patrolSpeed": 30,
@@ -179,6 +185,9 @@
       "searchlight": {
          "patrolSpeed": 30,
          "huntSpeed": 100
+      },
+      "intel": {
+         "alpha": 0.6
       },
       "wood": {
          "scale": 1.5,

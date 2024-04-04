@@ -753,8 +753,13 @@ class Game extends Phaser.Scene {
       this.bank = Math.random() < 0.5 ? 'left' : 'right';
       this.towerBank = (this.bank === 'left') ? 'right' : 'left';
 
-      let intel = new Intel(this, 0, 0, 'intel');
+      let alpha = minimumIntelAlpha;
+      if (this.zone.hasOwnProperty('intel') && this.zone.intel.hasOwnProperty('alpha')) {
+         alpha = this.zone.intel.alpha;
+      }
+      let intel = new Intel(this, 0, 0, 'intel', alpha);
       this.intels.add(intel);
+
       let secret = new Secret(this, 0, 0, 'secret');
 
       let land_tower = new Land(this, 0, 0, 'land');
@@ -865,7 +870,7 @@ class Game extends Phaser.Scene {
       if (this.bank === "left") {
          light.x = Phaser.Math.Between(bankWidth + light.width / 2, gameWidth + bankWidth - light.width / 2 - 80);
 
-         intel.setOrigin(0, 0.5).setAlpha(0.3);
+         intel.setOrigin(0, 0.5);
          secret.setOrigin(0, 0.5);
          x = bankWidth;
          intel.x = x;
@@ -880,7 +885,7 @@ class Game extends Phaser.Scene {
       else if (this.bank === "right") {
          light.x = Phaser.Math.Between(bankWidth + light.width / 2 + 80, gameWidth + bankWidth - light.width / 2);
 
-         intel.setOrigin(1, 0.5).setAlpha(0.3);
+         intel.setOrigin(1, 0.5);
          secret.setOrigin(1, 0.5);
          x = gameWidth - bankWidth;
          intel.x = x;

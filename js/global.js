@@ -1,12 +1,12 @@
 const devMotorVolume = 0;
-const developerMode = true; // use sound volumes in global.js
+const developerMode = false; // use sound volumes in global.js
 const testing = false; // jump into game & zone when true
 
-const test_zone = 0; // zone to test
+const test_zone = 1; // zone to test
 const test_no_colliders = true; // no need to navigate when false
 const test_river_speed = 100; // 20 makes access to riverbank easier
 const fuel_for_testing = 9999;
-const zone_quantity_for_test = 3;
+const zone_quantity_for_test = 7;
 
 const alwaysButtons = false;
 const displayWidth = 360;
@@ -23,6 +23,7 @@ const spawn_above_screen_Y = -100;
 const start_obstacles_n = 1;
 const bring_down_first_obstacle = 120;
 
+const minimumIntelAlpha = 0.2;
 const intelWidth = 70;
 const intelDepth = 50;
 
