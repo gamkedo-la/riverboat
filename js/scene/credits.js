@@ -10,8 +10,12 @@ class Credits extends Phaser.Scene {
          this.makeMenuButton();
       }
 
-      this.add.text(displayWidth / 2, 100, 'Credits', { font: '64px Arial', color: '#000000' })
+      this.add.text(220, 50, 'Credits', { font: '48px Arial', color: '#000000' })
          .setOrigin(0.5);
+
+
+      this.add.text(30, 100, 'Someone', { font: '20px Arial', color: '#000000' })
+         .setOrigin(0, 0);
 
       this.input.keyboard.on('keyup', this.anyKey, this);
    };
