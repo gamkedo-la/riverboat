@@ -8,7 +8,7 @@ const test_river_speed = 100; // 20 makes access to riverbank easier
 const fuel_for_testing = 9999;
 const zone_quantity_for_test = 3;
 
-const alwaysButtons = true;
+const alwaysButtons = false;
 const displayWidth = 360;
 const displayHeight = 600;
 let controlPanelHeight;

@@ -534,57 +534,6 @@ class Game extends Phaser.Scene {
          this.player.neitherFastOrSlow();
       });
       this.btnSlowRight.scrollFactorX = 0;
-
-      // this.btnLeft.setInteractive({ hitArea: new Phaser.Geom.Rectangle(this.btnLeft.width / 2 - hitAreaOffsetX, 0, this.btnLeft.width, this.btnLeft.height) });
-   }
-
-   makeArrowButtons() {
-      let top = 200;
-      let cameraCentreX = this.cameras.main.centerX;
-      this.cameras.main.on('camera.scroll', this.updateButtonHitAreas, this);
-
-      let gameCentreX = this.cameras.main.scrollX + displayWidth / 2;
-      let scrollFactorX = this.cameras.main.scrollX / (gameWidth - displayWidth);
-      let hitAreaOffsetX = scrollFactorX * displayWidth;
-
-      let buttonXoffset = 38;
-      let buttonYoffset = 60;
-      let leftBtnX = cameraCentreX - buttonXoffset; // was 100
-      let rightBtnX = cameraCentreX + buttonXoffset;
-
-      Object.assign(this, { cameraCentreX, gameCentreX, leftBtnX, rightBtnX });
-      // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
-
-      this.btnFast = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'up', () => {
-         this.player.motorForward();
-      }, () => {
-         this.player.neitherFastOrSlow();
-      });
-      this.btnFast.scrollFactorX = 0;
-
-      top += buttonYoffset;
-      this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '<', () => {
-         this.player.turnLeft();
-      }, () => { });
-      this.btnLeft.scrollFactorX = 0;
-
-      this.btnRight = new arrowButton(this, rightBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '>', () => {
-         this.player.turnRight();
-      }, () => { });
-      this.btnRight.scrollFactorX = 0;
-
-      top += buttonYoffset;
-      this.btnSlow = new arrowButton(this, cameraCentreX, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
-         this.driftSpeed = this.riverSpeed / this.player.backward_ratio;
-         this.player.engine = "backward";
-         this.player.setTint(0xff00ff); // was bae946
-         this.player.useFuel(this.player.backwardFuel);
-      }, () => {
-         this.player.neitherFastOrSlow();
-      });
-      this.btnSlow.scrollFactorX = 0;
-
-      // this.btnLeft.setInteractive({ hitArea: new Phaser.Geom.Rectangle(this.btnLeft.width / 2 - hitAreaOffsetX, 0, this.btnLeft.width, this.btnLeft.height) });
    }
 
    updateButtonHitAreas() {
@@ -1283,10 +1232,8 @@ class Game extends Phaser.Scene {
    setupInput() {
       this.input.scene.active = true;
       this.makeMenuButton();
+      this.makePauseButton();
       if (keyboard != 'likely' || alwaysButtons === true) {
-         this.makePauseButton();
-         //this.makeOldControlButtons();
-         // this.makeArrowButtons();
       }
       this.cursors = this.input.keyboard.createCursorKeys();
       // add W,A,S,D to cursors so they work in addition to the arrow keys
