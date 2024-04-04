@@ -696,8 +696,18 @@ class Game extends Phaser.Scene {
       milestone.id = makingZone;
       this.milestones.add(milestone);
       this.milestone = milestone;
+
+      let dangerOption = Math.random() < 0.5 ? 'wood' : 'rock';
+      let danger;
+      if (dangerOption === 'wood') {
+         danger = new Driftwood(this, 0, 0, "anim_driftwood", 0);
+         danger.play('splash_driftwood');
+      } else {
+         danger = new Rock(this, 0, 0, "rock", 0);
+      }
+      //this.milestones.add(danger);
       // console.log(`Milestone before zone ${makingZone}`);
-      return [milestone];
+      return [milestone, danger];
    }
 
    makeStrayRock() {
@@ -916,8 +926,10 @@ class Game extends Phaser.Scene {
       danger.x = bankWidth + Phaser.Math.Between(30, displayWidth - 30);
    }
 
-   placeMilestone(milestone) {
+   placeMilestone(milestone, danger) {
       // console.log('Milestone obstacle created!')
+      milestone.x = bankWidth;
+      danger.x = bankWidth + Phaser.Math.Between(30, displayWidth - 30);
    }
 
    // GameLoop or Events handling

@@ -239,8 +239,8 @@
          "huntSpeed": 100
       },
       "wood": {
-         "minQuantity": 1,
-         "maxQuantity": 2,
+         "minQuantity": 0,
+         "maxQuantity": 0,
          "minScale": 0.8,
          "maxScale": 1.5
       },
@@ -290,8 +290,8 @@
          "huntSpeed": 100
       },
       "rock": {
-         "minQuantity": 1,
-         "maxQuantity": 2,
+         "minQuantity": 0,
+         "maxQuantity": 0,
          "minScale": 0.8,
          "maxScale": 1.5
       },
