@@ -54,20 +54,6 @@ class Game extends Phaser.Scene {
             this.placeMilestone(...obstacleSprites);
          },
       };
-
-      this.controlFunctions = {
-         'up_left': () => {
-            // Function for up-left button
-         },
-         'up': () => {
-            console.log('up');
-            this.player.motorForward();
-         },
-         'up_right': () => {
-            // Function for up-right button
-         },
-         // ... (similarly define functions for other buttons)
-      };
    };
 
    create() {
@@ -78,14 +64,6 @@ class Game extends Phaser.Scene {
 
       this.makePlayer();
       this.makeHud();
-
-      // this.events.on('pauseMenuToggle', (isVisible) => {
-      //    this.menuButton.visible = isVisible;
-      // });
-      // this.scene.get('Pause').events.on('resumeGame', this.handleMenuVisibility, this);
-
-      //this.scene.launch("Controls");
-      //this.scene.launch('Controls', { player: this.player });
 
       if (keyboard != 'likely' || alwaysButtons === true) {
          this.makeControlPanel();
@@ -108,9 +86,6 @@ class Game extends Phaser.Scene {
 
       this.applyRiverDrift(this.driftSpeed);
       this.player.update(this.cursors);
-
-      // this.main_hull.setVelocity(this.player.body.velocity.x, this.player.body.velocity.y);
-      // this.outriggers.setVelocity(this.player.body.velocity.x, this.player.body.velocity.y);
 
       this.isIntelWithinRange();
 
@@ -183,7 +158,7 @@ class Game extends Phaser.Scene {
       }
    }
 
-   // new obstacle created at spawnY, and any in-between objects go above
+   // obstacle created at spawnY, and in-between objects go above
    makeInterval() {
       let chosenObstacleType = this.makeObstacle();
       // randomize new Y gap to next Obstacle
@@ -198,7 +173,6 @@ class Game extends Phaser.Scene {
       if (testing) this.labelObstacleAndZoneID();
 
       if (chosenObstacleType === "milestone") {
-         // increment makingZone
          // if zone exceeds limit stop creating obstacles 
          makingZone += 1;
          //console.log('Zone being made incremented to', makingZone);
@@ -238,11 +212,10 @@ class Game extends Phaser.Scene {
       // if Intel on screen
       if (this.intels) {
          let nearest_Intel_dist = 800;
-         let intelX; // to calculate which side of boat is nearest Intel
+         let intelX; // to calculate which side of boat is near secret
          let intelTopY;
 
          this.intels.getChildren().forEach(intel => {
-            // console.log(this.player.x, this.player.y, intel.x, intel.y)
             let dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, intel.x, intel.y);
             if (dist < nearest_Intel_dist) {
                nearest_Intel_dist = dist;
@@ -348,12 +321,9 @@ class Game extends Phaser.Scene {
       this.makeLifeDisplay(y);
       y += y_UI_spacing;
       this.makeFuelDisplay(y);
-      // y += y_UI_spacing;
-      // this.makeProgressDisplay(y);
       y += y_UI_spacing;
       this.makeIntelDisplay(y);
       y += y_UI_spacing;
-
       this.makeLocator();
    }
 
@@ -687,14 +657,6 @@ class Game extends Phaser.Scene {
       return [milestone];
    }
 
-   // getNextZone() {
-   //    makingZone += 1;
-   //    console.log('Zone incremented to', makingZone);
-   //    this.setZoneParameters(makingZone);
-   //    this.numObstaclesCreatedInZone = 0;
-   //    this.obstaclesInZone = this.zone.intervals;
-   // }
-
    makeStrayRock() {
       let rock = new Rock(this, 0, 0, "rock", 0);
       // let ratioSpacingY = randomBiasMiddle();
@@ -722,7 +684,6 @@ class Game extends Phaser.Scene {
       wood.setSize(18, 30, true); // set hitbox size, centred
       wood.play('splash_driftwood');
       this.woods.add(wood);
-      // console.log('placed wood at', Math.trunc(wood.x), Math.trunc(wood.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
    }
 
    makeBooms() {
@@ -781,25 +742,6 @@ class Game extends Phaser.Scene {
       // return [secret, intel, tower, light];
       //      return [secret, intel, light, tower, land_tower];
       return [secret, intel, light, lightBeam, tower, land_tower];
-   }
-
-   makeBridge() {
-      let leftBridge = new BridgeSide(this, 0, 0, "bridge");
-      let rightBridge = new BridgeSide(this, 0, 0, "bridge");
-      leftBridge.setOrigin(1, 0.5); // class default X origin 0
-
-      this.bank = Math.random() < 0.5 ? 'left' : 'right';
-      let van = new Van(this, 0, 0, "van");
-      if (this.bank === 'left') {
-         van.setOrigin(0, 0.5);
-      } else {
-         van.flipX = true;
-         van.setOrigin(1, 0.5);
-      }
-
-      this.bridges.add(leftBridge);
-      this.bridges.add(rightBridge);
-      return [leftBridge, rightBridge, van];
    }
 
    // will have tiles of fast & slow patches, and rocks
@@ -917,19 +859,6 @@ class Game extends Phaser.Scene {
       }
 
       lightBeam.update();
-   }
-
-   placeBridge(leftBridge, rightBridge, van) {
-      let gapSize = 100;
-      // left side of gap's X coordinate i.e. right edge of left boom
-      let xGapLeft = 130;
-      leftBridge.x = xGapLeft + bankWidth;
-      rightBridge.x = xGapLeft + gapSize + bankWidth;
-      // let y = this.y_locations[1]; // gallery
-      // leftBridge.y = y;
-      // rightBridge.y = y;
-      van.x = this.bank === 'left' ? 10 : displayWidth - 10;
-      van.x += bankWidth;
    }
 
    // do fast & slow patches within Rapids, and random variation
