@@ -1,5 +1,5 @@
 class Button extends Phaser.GameObjects.Container {
-   constructor(scene, x, y, key, hoverKey, text, targetCallback, releaseCallback, scaleX = 1, scaleY = 1, alpha = 1, fontSize = '24px', fontName = 'Arial', fontColour = '#000') {
+   constructor(scene, x, y, key, hoverKey, text, targetCallback, releaseCallback, scaleX = 1, scaleY = 1, alpha = 1, fontSize = '24px', fontName = 'Verdana', fontColour = '#000') {
       super(scene, x, y);
       Object.assign(this, { scene, x, y, key, hoverKey, text, targetCallback, releaseCallback, scaleX, scaleY, alpha, fontSize, fontName, fontColour });
       this.createButton();
@@ -15,7 +15,7 @@ class Button extends Phaser.GameObjects.Container {
 
       this.buttonText = this.scene.add.text(0, 0, this.text, { fontSize: this.fontSize, fontFamily: this.fontName, color: this.fontColour });
 
-      Phaser.Display.Align.In.Center(this.buttonText, this.button, 0, 0);
+      Phaser.Display.Align.In.Center(this.buttonText, this.button, 0, -3);
 
       this.add(this.button);
       this.add(this.buttonText);
