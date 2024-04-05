@@ -496,13 +496,13 @@ class Game extends Phaser.Scene {
       //controlPanel.setOrigin(0.5);
       // graphics don't have .setOrigin? always topLeft positioning?
       const panelMargin = 0;
-      const panelWidth = displayWidth - panelMargin * 2;
+      const panelWidth = displayWidth - panelMargin * 2 - 192;
       const panelHeight = controlPanelHeight;
-      const panelX = panelMargin; // bankWidth + 
-      const panelY = displayHeight - panelHeight - panelMargin + 1;
+      const panelLeft = bankWidth + 192 + panelMargin;
+      const panelTop = displayHeight - panelHeight - panelMargin + 1;
 
       controlPanel.fillStyle(0x000000, 0.3); // transparency
-      controlPanel.fillRect(panelX, panelY, panelWidth, panelHeight);
+      controlPanel.fillRect(panelLeft, panelTop, panelWidth, panelHeight);
       controlPanel.setInteractive();
    }
 
