@@ -13,7 +13,7 @@ class Scores extends Phaser.Scene {
          .setOrigin(0.5);
 
       allScores.forEach((score, index) => {
-         this.add.text(50, 130 + index * 60, `${index + 1} Intel: ${allScores[index].intel}`, { font: '36px Arial', fill: '#000000' });
+         this.add.text(30, 130 + index * 50, `${index + 1}. Intel: ${allScores[index].intel}  Progress: ${allScores[index].progress}`, { font: '24px Arial', fill: '#000000' });
       });
 
       this.makeMenuButton();

@@ -439,6 +439,7 @@ class Game extends Phaser.Scene {
 
    incrementObstacleCounter() {
       this.numObstaclesCreatedInZone += 1;
+      this.obstaclesPassedInThisRun += 1;
       // when 3rd obstacle created the 1st likely has exited or nearly so
       let x = this.numObstaclesCreatedInZone;
       this.estimatedProgressInZone = x <= 2 ? 0 : Math.abs(x - 2);
@@ -880,7 +881,7 @@ class Game extends Phaser.Scene {
    gotoHome() {
       this.spyingSound.stop();
       // this.player.intelScore = randomInteger(40, 100);
-      saveScores(this.player.intelScore, estimatedProgress);
+      saveScores(this.player.intelScore, this.obstaclesPassedInThisRun); //estimatedProgress);
       this.scene.start('Home');
    }
 
@@ -1253,6 +1254,7 @@ class Game extends Phaser.Scene {
       // this.numObstaclesCreatedInZone = Array(8).fill(0);
       this.numObstaclesCreatedInZone = 0;
       this.numObstaclesPassedInPreviousZones = 0;
+      this.obstaclesPassedInThisRun = 0;
 
       this.stopMakingObstacles = false;
       this.gameOver = false;
