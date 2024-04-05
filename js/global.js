@@ -1,5 +1,5 @@
-const devMotorVolume = 0;
-const developerMode = false; // use sound volumes in global.js
+const devMotorVolume = 0.01;
+const developerMode = true; // use sound volumes in global.js
 const testing = false; // jump into game & zone when true
 
 const test_zone = 1; // zone to test

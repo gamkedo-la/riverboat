@@ -432,7 +432,7 @@ class Game extends Phaser.Scene {
    };
    updateLocator() {
       this.zoneOfZonesProgress.setText(`Zone ${boatInZone}`);
-      this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimatePassed in Zone
+      this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimate Passed in Zone
       let percent = Math.floor(estimatedProgress / this.countObstaclesInZones(zones_quantity) * 100);
       this.obstacleGameProgress.setText(`Game: ${percent}%`);
    }
@@ -546,91 +546,6 @@ class Game extends Phaser.Scene {
       }
    }
 
-   // reposition existing buttons in low controlPanel
-   makeOldControlButtons() {
-      let top = displayHeight - controlPanelHeight + 35;
-      let cameraCentreX = this.cameras.main.centerX;
-      this.cameras.main.on('camera.scroll', this.updateButtonHitAreas, this);
-
-      let gameCentreX = this.cameras.main.scrollX + displayWidth / 2;
-      let scrollFactorX = this.cameras.main.scrollX / (gameWidth - displayWidth);
-      let hitAreaOffsetX = scrollFactorX * displayWidth;
-
-      let controlsXoffset = -70;
-      let buttonXoffset = 38;
-      let buttonYoffset = 60;
-      let leftBtnX = cameraCentreX - buttonXoffset + controlsXoffset; // was 100
-      let rightBtnX = cameraCentreX + buttonXoffset + controlsXoffset;
-
-      Object.assign(this, { cameraCentreX, gameCentreX, leftBtnX, rightBtnX });
-      // console.log(`scroll: ${this.cameras.main.scrollX}, cameraCentreX ${cameraCentreX}, gameCentreX ${gameCentreX}, leftBtnX ${leftBtnX}, rightBtnX ${rightBtnX}`);
-
-      this.btnFastLeft = new arrowButton(this, cameraCentreX + controlsXoffset - buttonXoffset - 30, top, 'placeholderButtonUp', 'placeholderButtonDown', 'NW', () => {
-         this.player.motorForward();
-         this.player.turnLeft();
-      }, () => {
-         this.player.neitherFastOrSlow();
-      });
-      this.btnFastLeft.scrollFactorX = 0;
-
-      this.btnFast = new arrowButton(this, cameraCentreX + controlsXoffset, top, 'placeholderButtonUp', 'placeholderButtonDown', 'up', () => {
-         this.player.motorForward();
-      }, () => {
-         this.player.neitherFastOrSlow();
-      });
-      this.btnFast.scrollFactorX = 0;
-
-      this.btnFastRight = new arrowButton(this, cameraCentreX + controlsXoffset + buttonXoffset + 30, top, 'placeholderButtonUp', 'placeholderButtonDown', 'NE', () => {
-         this.player.motorForward();
-         this.player.turnRight();
-      }, () => {
-         this.player.neitherFastOrSlow();
-      });
-      this.btnFastRight.scrollFactorX = 0;
-
-      top += buttonYoffset;
-      this.btnLeft = new arrowButton(this, leftBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '<', () => {
-         this.player.turnLeft();
-      }, () => { });
-      this.btnLeft.scrollFactorX = 0;
-
-      this.btnRight = new arrowButton(this, rightBtnX, top, 'placeholderButtonUp', 'placeholderButtonDown', '>', () => {
-         this.player.turnRight();
-      }, () => { });
-      this.btnRight.scrollFactorX = 0;
-
-      top += buttonYoffset;
-      this.btnSlowLeft = new arrowButton(this, cameraCentreX + controlsXoffset - buttonXoffset - 30, top, 'placeholderButtonUp', 'placeholderButtonDown', 'SW', () => {
-         this.player.slowAgainstFlow();
-         this.player.turnLeft();
-      }, () => {
-         this.player.neitherFastOrSlow();
-      });
-      this.btnSlowLeft.scrollFactorX = 0;
-
-      this.btnSlow = new arrowButton(this, cameraCentreX + controlsXoffset, top, 'placeholderButtonUp', 'placeholderButtonDown', 'v', () => {
-         this.player.slowAgainstFlow();
-      }, () => {
-         this.player.neitherFastOrSlow();
-      });
-      this.btnSlow.scrollFactorX = 0;
-
-      this.btnSlowRight = new arrowButton(this, cameraCentreX + controlsXoffset + buttonXoffset + 30, top, 'placeholderButtonUp', 'placeholderButtonDown', 'SE', () => {
-         this.player.slowAgainstFlow();
-         this.player.turnRight();
-      }, () => {
-         this.player.neitherFastOrSlow();
-      });
-      this.btnSlowRight.scrollFactorX = 0;
-   }
-
-   updateButtonHitAreas() {
-      let scrollFactorX = this.cameras.main.scrollX / (gameWidth - displayWidth);
-      let hitAreaOffsetX = scrollFactorX * displayWidth;
-      this.btnLeft.input.hitArea.x = this.btnLeft.x + hitAreaOffsetX;
-      this.btnRight.input.hitArea.x = this.btnRight.x + hitAreaOffsetX;
-   }
-
    clearNavButtonEvents() {
       // when lose life while button pressed, stop repeating event after respawn
       // clear events for all buttons except the 'pause' button
@@ -725,7 +640,6 @@ class Game extends Phaser.Scene {
    }
 
    makeDriftwood() {
-      //console.log('wood when making obstacle', this.numObstaclesCreatedInZone, 'at', this.spawnY);
       let wood = new Driftwood(this, 0, 0, "anim_driftwood", 0);
       // let ratioSpacingY = randomBiasMiddleLimited(0.25, 0.75);
       let ratioSpacingY = 0.5;
@@ -1218,9 +1132,9 @@ class Game extends Phaser.Scene {
    }
 
    labelObstacleAndZoneID() {
-      let idLabel = this.add.text(bankWidth + 12, this.spawnY, `${this.numObstaclesPassedInPreviousZones + this.numObstaclesCreatedInZone}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
-      this.idLabels.add(idLabel);
-      let zoneLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `z${makingZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
+      // let idLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `${this.numObstaclesPassedInPreviousZones + this.numObstaclesCreatedInZone}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      // this.idLabels.add(idLabel);
+      let zoneLabel = this.add.text(bankWidth + 100, this.spawnY, `z${makingZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
       this.idLabels.add(zoneLabel);
    }
 
@@ -1242,7 +1156,7 @@ class Game extends Phaser.Scene {
       return this.previousY - this.spawnY > this.ySpacing;
    }
 
-   isObstacleRemainingInZone() {
+   isObstacleRemainingInMakingZone() {
       return this.obstaclesInZone > this.numObstaclesCreatedInZone;
    }
 
@@ -1335,6 +1249,8 @@ class Game extends Phaser.Scene {
       this.obstacle_types = ['secret', 'boom', 'rapids'];
       this.spawnY = spawn_above_screen_Y;
 
+      // may fix bug in Testing where zone passed counter of boat passing flips to zero when makingZone increments, whereas it shouldn't happen until boatInZone increments.
+      // this.numObstaclesCreatedInZone = Array(8).fill(0);
       this.numObstaclesCreatedInZone = 0;
       this.numObstaclesPassedInPreviousZones = 0;
 
