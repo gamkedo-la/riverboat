@@ -33,7 +33,9 @@ class Game extends Phaser.Scene {
             onPress: () => {
                this.player.turnLeft();
             },
-            onRelease: () => { }
+            onRelease: () => {
+               this.player.straightenUp();
+            }
          },
          'pause': {
             onPress: () => {
@@ -45,7 +47,9 @@ class Game extends Phaser.Scene {
             onPress: () => {
                this.player.turnRight();
             },
-            onRelease: () => { }
+            onRelease: () => {
+               this.player.straightenUp();
+            }
          },
          'down_left': {
             onPress: () => {
@@ -54,6 +58,7 @@ class Game extends Phaser.Scene {
             },
             onRelease: () => {
                this.player.neitherFastOrSlow();
+               this.player.straightenUp();
             }
          },
          'down': {
@@ -71,6 +76,7 @@ class Game extends Phaser.Scene {
             },
             onRelease: () => {
                this.player.neitherFastOrSlow();
+               this.player.straightenUp();
             }
          }
       };
@@ -1057,6 +1063,9 @@ class Game extends Phaser.Scene {
 
       this.player.life -= 1;
       this.updateLifeDisplay();
+
+      this.player.setAngle(0);
+      this.player.setBoatVelocity(0, 0);
 
       this.cameras.main.shake(500);
       this.physics.pause();

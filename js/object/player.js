@@ -126,6 +126,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.outriggers.x = this.playerContainer.x;
       this.outriggers.y = this.playerContainer.y - 26;
 
+      this.playerContainer.setAngle(this.body.angle);
+      this.mainHull.setAngle(this.body.angle);
+      this.outriggers.setAngle(this.body.angle);
+
       // not returning to station looks out of control (which is appropriate)
       // if (this.y < this.start_y) {
       //    // boat is above its default position
@@ -169,6 +173,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          //this.play('turnRight');
          this.turnRight();
       }
+      else {
+         this.straightenUp();
+      }
 
       // forward power, wake behind boat 
       // disallow if boat near top of display
@@ -194,12 +201,18 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    turnLeft() {
       // this.body.setVelocityX(-1 * this.sideway_speed);
       this.setBoatVelocity(-1 * this.sideway_speed, null);
+      this.setAngle(-10);
       this.useFuel(this.sidewaysFuel);
    }
 
    turnRight() {
       this.body.setVelocityX(this.sideway_speed);
+      this.setAngle(10);
       this.useFuel(this.sidewaysFuel);
+   }
+
+   straightenUp() {
+      this.setAngle(0);
    }
 
    motorForward() {
