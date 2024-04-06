@@ -32,10 +32,15 @@ class Pause extends Phaser.Scene {
    }
 
    makeResumeButton() {
-      this.resumeButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
+      let x = displayWidth - 62;
+      let y = displayHeight - 72;
+      this.resumeButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
          //this.resumeButton.visible = false;
          this.resuming(this);
-      }, 1);
+      }, 0.7);
+      if (keyboard === 'likely') {
+         this.resumeButton.alpha = 0.4;
+      }
    }
 
    handlePauseButton() {
@@ -55,6 +60,6 @@ class Pause extends Phaser.Scene {
          this.scene.get('Game').spyingSound.play();
       }
       this.scene.get('Game').menuButton.visible = true;
-      //this.scene.get('Game').pauseButton.visible = true;
+      this.scene.get('Game').pauseButton.visible = true;
    }
 }

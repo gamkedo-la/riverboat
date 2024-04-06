@@ -417,7 +417,7 @@ class Game extends Phaser.Scene {
    makeLocator() {
       let y; // top of control panel
       if (keyboard === 'likely' && alwaysButtons === false) {
-         const x = 50;
+         const x = 40;
          y = displayHeight - controlPanelHeight + 20;
          this.zoneOfZonesProgress = this.add.text(x, y, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
          y += 30;
@@ -591,24 +591,25 @@ class Game extends Phaser.Scene {
 
    // Scene control buttons (menu, pause, replay)
    makeMenuButton() {
-      // x, y, key, hoverKey, text, targetCallback, releaseCallback, alpha = 1, marginX = 16, marginY = 12, fontSize = '24px', fontName = 'Verdana', fontColour = '#000'
-      // this.menuButton = new FitButton(this, displayWidth - 100, displayHeight - 40, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-      //    this.waterSound.stop();
-      //    this.gotoHome();
-      // }, null, 0.5, 8, 4, '16px');
-
-      this.menuButton = new hudButton(this, displayWidth - 62, displayHeight - 28, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+      let x = displayWidth - 62;
+      let y = displayHeight - 27;
+      this.menuButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          this.waterSound.stop();
          this.gotoHome();
-      }, 0.4); // final parameter is Alpha
+      }, 0.7); // final parameter is Alpha
       //this.menuButton.setScale(0.8, 0.8);
       if (keyboard === 'likely' && alwaysButtons === false) {
-         this.menuButton.alpha = 0.7;
+         this.menuButton.alpha = 0.4;
       }
    }
 
    makePauseButton() {
-      this.pauseButton = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => this.doPause(), 0.5);
+      let x = displayWidth - 62;
+      let y = displayHeight - 72;
+      this.pauseButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => this.doPause(), 0.7);
+      if (keyboard === 'likely' && alwaysButtons === false) {
+         this.pauseButton.alpha = 0.4;
+      }
    }
 
    doPause() {
