@@ -144,8 +144,8 @@ class Game extends Phaser.Scene {
       this.makePlayer();
       this.makeHud();
 
+      this.makeControlPanel();
       if (keyboard != 'likely' || alwaysButtons === true) {
-         this.makeControlPanel();
          this.makeControlButtons();
          //this.makeOldControlButtons();
       }
@@ -415,10 +415,22 @@ class Game extends Phaser.Scene {
    }
 
    makeLocator() {
-      const offsetX = 130;
-      this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      let y; // top of control panel
+      if (keyboard === 'likely' && alwaysButtons === false) {
+         const x = 50;
+         y = displayHeight - controlPanelHeight + 20;
+         this.zoneOfZonesProgress = this.add.text(x, y, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+         y += 30;
+         this.obstacleGameProgress = this.add.text(x, y, `All: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      }
+      else {
+         const offsetX = 130;
+         let y = displayHeight - controlPanelHeight + 20;
+         this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, y, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+         y += 30;
+         this.obstacleGameProgress = this.add.text(displayWidth - offsetX, y, `All: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      }
       // this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
-      this.obstacleGameProgress = this.add.text(displayWidth - offsetX, displayHeight - 20, `All: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
    }
 
    makeLifeDisplay(y) {
@@ -493,13 +505,17 @@ class Game extends Phaser.Scene {
    // Boat control buttons make & control
    makeControlPanel() {
       const controlPanel = this.add.graphics();
-      //controlPanel.setOrigin(0.5);
-      // graphics don't have .setOrigin? always topLeft positioning?
-      const panelMargin = 0;
-      const panelWidth = displayWidth - panelMargin * 2 - 192;
+      // Phaser graphics don't have .setOrigin? always topLeft positioning?
       const panelHeight = controlPanelHeight;
-      const panelLeft = bankWidth + 192 + panelMargin;
-      const panelTop = displayHeight - panelHeight - panelMargin + 1;
+      const panelTop = displayHeight - panelHeight;
+
+      // values for touch device
+      let panelLeft = bankWidth + touchControlXY;
+      let panelWidth = displayWidth - touchControlXY;
+      if (keyboard === 'likely' && alwaysButtons === false) {
+         panelLeft = 0;
+         panelWidth = displayWidth;
+      }
 
       controlPanel.fillStyle(0x000000, 0.3); // transparency
       controlPanel.fillRect(panelLeft, panelTop, panelWidth, panelHeight);
@@ -507,7 +523,7 @@ class Game extends Phaser.Scene {
    }
 
    makeControlButtons() {
-      this.arrows8way = this.add.image(0, displayHeight - 192, 'arrows_8_way');
+      this.arrows8way = this.add.image(0, displayHeight - touchControlXY, 'arrows_8_way');
       this.arrows8way.setOrigin(0, 0);
       this.arrows8way.setAlpha(0.5);
 
@@ -575,10 +591,20 @@ class Game extends Phaser.Scene {
 
    // Scene control buttons (menu, pause, replay)
    makeMenuButton() {
-      this.menuButton = new hudButton(this, 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+      // x, y, key, hoverKey, text, targetCallback, releaseCallback, alpha = 1, marginX = 16, marginY = 12, fontSize = '24px', fontName = 'Verdana', fontColour = '#000'
+      // this.menuButton = new FitButton(this, displayWidth - 100, displayHeight - 40, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
+      //    this.waterSound.stop();
+      //    this.gotoHome();
+      // }, null, 0.5, 8, 4, '16px');
+
+      this.menuButton = new hudButton(this, displayWidth - 62, displayHeight - 28, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          this.waterSound.stop();
          this.gotoHome();
-      }, 0.5); // final parameter is Alpha
+      }, 0.4); // final parameter is Alpha
+      //this.menuButton.setScale(0.8, 0.8);
+      if (keyboard === 'likely' && alwaysButtons === false) {
+         this.menuButton.alpha = 0.7;
+      }
    }
 
    makePauseButton() {

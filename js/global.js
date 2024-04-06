@@ -1,5 +1,5 @@
 const devMotorVolume = 0.01;
-const developerMode = false; // use sound volumes in global.js
+const developerMode = true; // use sound volumes in global.js
 const testing = false; // jump into game & zone when true
 
 const test_zone = 1; // zone to test
@@ -11,6 +11,7 @@ const zone_quantity_for_test = 7;
 const alwaysButtons = false;
 const displayWidth = 360;
 const displayHeight = 600;
+const touchControlXY = 192;
 let controlPanelHeight;
 
 // reduce bank Width to weaken button hitarea offset error

@@ -73,7 +73,7 @@ class Setup extends Phaser.Scene {
 
       this.load.image('placeholderButtonUp', 'public/art/placeholder_button_up.png');
       this.load.image('placeholderButtonDown', 'public/art/placeholder_button_down.png');
-      this.load.image('arrows_8_way', 'public/art/8_way_buttons.png');
+      this.load.image('arrows_8_way', 'public/art/grid_buttons.png');
       this.load.image('control_button_hitbox', 'public/art/hitbox_controlButton.png');
 
       this.load.spritesheet('anim_driftwood', 'public/art/splashy_driftwood2.png', {
