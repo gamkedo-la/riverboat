@@ -955,16 +955,25 @@ class Game extends Phaser.Scene {
          console.log(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id} and flags ${this.milestoneTriggered}`);
          boatInZone += 1;
          if (boatInZone > zones_quantity) {
-            // if (this.isZoneLastInGame() === true) {
-            console.log('Game Over');
+            this.victory();
             this.physics.pause();
             this.gameOver = true;
             saveScores(this.player.intelScore, estimatedProgress);
-            // this.gotoHome();
          }
       }
       else {
       }
+   }
+
+   victory() {
+      console.log('River spying all done!');
+      const style = {
+         fontFamily: 'verdana',
+         fontSize: '36px',
+         color: '#ffffff',
+         wordWrap: { width: 300 }
+      };
+      this.victoryText = this.add.text(gameWidth / 2, 190, 'Mission over! Your spy boat reached a place beyond the secrets!', style).setOrigin(0.5);
    }
 
    // Overlap & collision handling
