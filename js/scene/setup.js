@@ -95,6 +95,11 @@ class Setup extends Phaser.Scene {
          margin: 1
       });
 
+      this.load.spritesheet('howToSpy', 'public/art/spying_23_frames_286x321.png', {
+         frameWidth: 286,
+         frameHeight: 321
+      });
+
       this.load.audio('snd_searchProximity', ['public/sound/searchlight_near.mp3']);
       this.load.audio('snd_searchContact', ['public/sound/searchlight_contact_2.mp3']);
       this.load.audio('snd_landCollide', ['public/sound/land_hit_placeholder.mp3']);
