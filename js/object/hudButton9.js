@@ -1,4 +1,4 @@
-class hudButton extends Phaser.GameObjects.Container {
+class hudButton9 extends Phaser.GameObjects.Container {
    constructor(scene, x, y, key, hoverKey, text, targetCallback, alpha) {
       super(scene, x, y);
       Object.assign(this, { scene, x, y, key, hoverKey, text, targetCallback, alpha });
@@ -8,7 +8,7 @@ class hudButton extends Phaser.GameObjects.Container {
 
    createButton() {
       this.button = this.scene.add.image(0, 0, 'placeholderButtonUp')
-         .setScale(0.6, 1)
+         .setScale(1.05, 1)
          .setOrigin(0.5)
          .setAlpha(this.alpha)
          .setInteractive();

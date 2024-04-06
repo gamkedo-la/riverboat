@@ -54,7 +54,7 @@ class Scores extends Phaser.Scene {
    }
 
    makeToggleButton() {
-      this.buttonToggle = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', this.toggleLabel, () => {
+      this.buttonToggle = new hudButton9(this, displayWidth - 120, 30, 'placeholderButtonUp', 'placeholderButtonDown', this.toggleLabel, () => {
          this.showHighScores = !this.showHighScores;
          this.updateToggleLabel();
          this.buttonToggle.buttonText.setText(this.toggleLabel);
