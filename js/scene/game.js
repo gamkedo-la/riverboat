@@ -416,8 +416,8 @@ class Game extends Phaser.Scene {
 
    makeLocator() {
       const offsetX = 130;
-      this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, displayHeight - 80, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
-      this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      // this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
       this.obstacleGameProgress = this.add.text(displayWidth - offsetX, displayHeight - 20, `All: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
    }
 
@@ -438,7 +438,7 @@ class Game extends Phaser.Scene {
    };
    updateLocator() {
       this.zoneOfZonesProgress.setText(`Zone ${boatInZone}`);
-      this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimate Passed in Zone
+      // this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimate Passed in Zone
       let percent = Math.floor(estimatedProgress / this.countObstaclesInZones(zones_quantity) * 100);
       this.obstacleGameProgress.setText(`Game: ${percent}%`);
    }
