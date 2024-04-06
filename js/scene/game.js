@@ -437,7 +437,7 @@ class Game extends Phaser.Scene {
          this.obstacleGameProgress = this.add.text(x, y, `All: `, hudStyle).setOrigin(0, 0.5).setDepth(101);
       }
       else {
-         const offsetX = 135;
+         const offsetX = 105; //135
          let y = displayHeight - controlPanelHeight + 20;
          this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, y, `Zone ${boatInZone}/${zones_quantity}`, hudStyle).setOrigin(0, 0.5).setDepth(101);
          y += 30;
@@ -515,12 +515,12 @@ class Game extends Phaser.Scene {
       const panelTop = displayHeight - panelHeight;
 
       // values for touch device
-      let panelLeft = bankWidth + touchControlXY;
-      let panelWidth = displayWidth - touchControlXY;
-      if (keyboard === 'likely' && alwaysButtons === false) {
-         panelLeft = 0;
-         panelWidth = displayWidth;
-      }
+      // let panelLeft = bankWidth + touchControlXY;
+      // let panelWidth = displayWidth - touchControlXY;
+      // if (keyboard === 'likely' && alwaysButtons === false) {
+      let panelLeft = 0;
+      let panelWidth = displayWidth;
+      //}
 
       controlPanel.fillStyle(0x000000, 0.3); // transparency
       controlPanel.fillRect(panelLeft, panelTop, panelWidth, panelHeight);
@@ -529,9 +529,10 @@ class Game extends Phaser.Scene {
    }
 
    makeControlButtons() {
-      this.arrows8way = this.add.image(0, displayHeight - touchControlXY, 'arrows_8_way');
+      this.arrows8way = this.add.image(30, displayHeight - touchControlXY, 'arrows_8_way');
       this.arrows8way.setOrigin(0, 0);
       this.arrows8way.setAlpha(0.5);
+      this.arrows8way.setDepth(10);
 
       this.controlButtons = {};
 
@@ -597,7 +598,7 @@ class Game extends Phaser.Scene {
 
    // Scene control buttons (menu, pause, replay)
    makeMenuButton() {
-      let x = displayWidth - 62;
+      let x = displayWidth - this.panelOffsetButtonX;
       let y = displayHeight - 27;
       this.menuButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
          this.waterSound.stop();
@@ -610,7 +611,7 @@ class Game extends Phaser.Scene {
    }
 
    makePauseButton() {
-      let x = displayWidth - 62;
+      let x = displayWidth - this.panelOffsetButtonX;
       let y = displayHeight - this.panel2ndButtonY;
       this.pauseButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => this.doPause(), 0.7);
       if (keyboard === 'likely' && alwaysButtons === false) {
@@ -629,11 +630,17 @@ class Game extends Phaser.Scene {
       //this.events.emit('pauseMenuToggle', false);
    }
 
-   createGameOverButtons() {
+   showGameOverText() {
+      let x = gameWidth / 2;
+      let y = 150;
+      this.gameOverText = this.add.text(x, y, 'Game Over', { font: '40px Verdana', color: '#ffffff' }).setOrigin(0.5);
+   }
+
+   makeGameOverButtons() {
       if (keyboard != 'likely' || alwaysButtons === true) {
          this.pauseButton.destroy();
       }
-      let x = displayWidth - 62;
+      let x = displayWidth - this.panelOffsetButtonX;
       let y = displayHeight - this.panel2ndButtonY;
       this.buttonReplay = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
          // reset game (lives, fuel, position)
@@ -841,7 +848,8 @@ class Game extends Phaser.Scene {
    placeSecret(secret, intel, light, lightBeam, tower, land_tower) {
       let x;
       let distSecretFromRiver = 45;
-      let distTowerFromRiver = -20;
+      let distTowerFromRiver = 0;
+      let distSpurOnRiver = 60;
 
       if (this.bank === "left") {
          light.x = Phaser.Math.Between(bankWidth + light.width / 2, gameWidth + bankWidth - light.width / 2 - 80);
@@ -855,7 +863,7 @@ class Game extends Phaser.Scene {
          land_tower.setOrigin(1, 0.5);
          tower.setOrigin(1, 0.5);
          x = gameWidth - bankWidth + distTowerFromRiver;
-         land_tower.x = x + 20;
+         land_tower.x = x + distSpurOnRiver;
          tower.x = x + 20;
       }
       else if (this.bank === "right") {
@@ -870,7 +878,7 @@ class Game extends Phaser.Scene {
          land_tower.setOrigin(0, 0.5);
          tower.setOrigin(0, 0.5);
          x = bankWidth - distTowerFromRiver;
-         land_tower.x = x - 20;
+         land_tower.x = x - distSpurOnRiver;
          tower.x = x - 20;
       }
 
@@ -1099,8 +1107,8 @@ class Game extends Phaser.Scene {
 
       this.player.life -= 1;
       this.updateLifeDisplay();
+      this.fuelDisplay.setTint(0xffffff);
 
-      this.player.setAngle(0);
       this.player.setBoatVelocity(0, 0);
 
       this.cameras.main.shake(500);
@@ -1123,6 +1131,7 @@ class Game extends Phaser.Scene {
 
    newLife() {
       // console.log("New life - fuel restored")
+      this.player.setAngle(0);
       this.physics.resume();
       awaitRespawn = false;
       this.player.fuel = this.player.startFuel;
@@ -1151,7 +1160,9 @@ class Game extends Phaser.Scene {
          },
          loop: false
       });
-      this.createGameOverButtons();
+
+      this.showGameOverText();
+      this.makeGameOverButtons();
 
       this.time.addEvent({
          delay: 2500,
@@ -1311,6 +1322,7 @@ class Game extends Phaser.Scene {
       this.fontSize = 16;
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
+      this.panelOffsetButtonX = 50;  //78;
       this.panel2ndButtonY = 75;
    }
 

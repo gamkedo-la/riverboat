@@ -32,7 +32,7 @@ class Pause extends Phaser.Scene {
    }
 
    makeResumeButton() {
-      let x = displayWidth - 62;
+      let x = displayWidth - this.scene.get('Game').panelOffsetButtonX;
       let y = displayHeight - this.scene.get('Game').panel2ndButtonY;
       this.resumeButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
          //this.resumeButton.visible = false;
