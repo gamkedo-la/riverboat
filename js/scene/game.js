@@ -400,18 +400,30 @@ class Game extends Phaser.Scene {
    // UI HUD make & update
    makeHud() {
       // HUD centre at game centre, and don't scroll when river scroll sideways
-      this.hud = this.add.container(displayWidth / 2, 0);
+      this.hud = this.add.container(0, 0);
       this.hud.setDepth(99);
       this.hud.setScrollFactor(0);
+      this.makeStatusPanel();
       let y_UI_spacing = 35;
-      let y = 45;
+      let y = 17;
       this.makeLifeDisplay(y);
-      y += y_UI_spacing;
+      //y += y_UI_spacing;
       this.makeFuelDisplay(y);
-      y += y_UI_spacing;
+      //y += y_UI_spacing;
       this.makeIntelDisplay(y);
-      y += y_UI_spacing;
+      //y += y_UI_spacing;
       this.makeLocator();
+   }
+
+   makeStatusPanel() {
+      const controlPanel = this.add.graphics();
+      const panelHeight = 35;
+      const panelTop = 0;
+      let panelLeft = 0;
+      let panelWidth = displayWidth;
+      controlPanel.fillStyle(0x000000, 0.3); // transparency
+      controlPanel.fillRect(panelLeft, panelTop, panelWidth, panelHeight);
+      controlPanel.setInteractive();
    }
 
    makeLocator() {
@@ -434,20 +446,24 @@ class Game extends Phaser.Scene {
    }
 
    makeLifeDisplay(y) {
-      this.lifeDisplay = this.add.text(0, y, `Life: ${this.player.life}`, hudStyle);
-      this.lifeDisplay.setOrigin(0.5);
+      let x = 10;
+      this.lifeDisplay = this.add.text(x, y, `Life ${this.player.life}`, hudStyle);
+      this.lifeDisplay.setOrigin(0, 0.5);
       this.hud.add(this.lifeDisplay);
    };
-
-   makeProgressDisplay(y) {
-      this.progressDisplay = this.add.text(0, y, `Passed: ${estimatedProgress}`, hudStyle);
-      this.progressDisplay.setOrigin(0.5);
-      this.hud.add(this.progressDisplay);
+   makeFuelDisplay(y) {
+      let x = 85;
+      this.fuelDisplay = this.add.text(x, y, `Fuel ${this.player.fuel}`, hudStyle);
+      this.fuelDisplay.setOrigin(0, 0.5);
+      this.hud.add(this.fuelDisplay);
+   };
+   makeIntelDisplay(y) {
+      let x = 200;
+      this.intelDisplay = this.add.text(x, y, `Score ${this.player.intelScore}`, hudStyle);
+      this.intelDisplay.setOrigin(0, 0.5);
+      this.hud.add(this.intelDisplay);
    };
 
-   updateProgressDisplay() {
-      this.progressDisplay.setText(`Passed: ${estimatedProgress}`);
-   };
    updateLocator() {
       this.zoneOfZonesProgress.setText(`Zone ${boatInZone}`);
       // this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimate Passed in Zone
@@ -464,18 +480,6 @@ class Game extends Phaser.Scene {
       estimatedProgress = this.numObstaclesPassedInPreviousZones + this.estimatedProgressInZone;
    }
 
-   makeFuelDisplay(y) {
-      this.fuelDisplay = this.add.text(0, y, `Fuel: ${this.player.fuel}`, hudStyle);
-      this.fuelDisplay.setOrigin(0.5);
-      this.hud.add(this.fuelDisplay);
-   };
-
-   makeIntelDisplay(y) {
-      this.intelDisplay = this.add.text(0, y, `Score: ${this.player.intelScore}`, hudStyle);
-      this.intelDisplay.setOrigin(0.5);
-      this.hud.add(this.intelDisplay);
-   };
-
    updateFuelDisplay() {
       if (this.player.engine === 'forward') {
          this.fuelDisplay.setTint(0xff0000);
@@ -486,19 +490,19 @@ class Game extends Phaser.Scene {
       else {
          this.fuelDisplay.setTint(0xffffff);
       }
-      this.fuelDisplay.setText(`Fuel: ${this.player.fuel}`);
+      this.fuelDisplay.setText(`Fuel ${this.player.fuel}`);
       //}
    };
 
    updateIntelDisplay() {
       //if (this.player.health) {
-      this.intelDisplay.setText(`Score: ${this.player.intelScore}`);
+      this.intelDisplay.setText(`Score ${this.player.intelScore}`);
       //}
    };
 
    updateLifeDisplay() {
       //if (this.player.health) {
-      this.lifeDisplay.setText(`Life: ${this.player.life}`);
+      this.lifeDisplay.setText(`Life ${this.player.life}`);
       //}
    };
 
