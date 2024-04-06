@@ -437,7 +437,7 @@ class Game extends Phaser.Scene {
          this.obstacleGameProgress = this.add.text(x, y, `All: `, hudStyle).setOrigin(0, 0.5).setDepth(101);
       }
       else {
-         const offsetX = 130;
+         const offsetX = 135;
          let y = displayHeight - controlPanelHeight + 20;
          this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, y, `Zone ${boatInZone}/${zones_quantity}`, hudStyle).setOrigin(0, 0.5).setDepth(101);
          y += 30;
@@ -525,6 +525,7 @@ class Game extends Phaser.Scene {
       controlPanel.fillStyle(0x000000, 0.3); // transparency
       controlPanel.fillRect(panelLeft, panelTop, panelWidth, panelHeight);
       controlPanel.setInteractive();
+      controlPanel.setDepth(12);
    }
 
    makeControlButtons() {

@@ -5,7 +5,6 @@ class Home extends Phaser.Scene {
 
    init() {
       this.menu = [
-         { scene: 'Gallery', text: 'Gallery' },
          { scene: 'Game', text: 'Play game' },
          { scene: 'Credits', text: 'Credits' },
       ];
@@ -118,10 +117,14 @@ class Home extends Phaser.Scene {
       }
 
       top += 60;
-      this.buttonScore = new uiButton(this, gameWidth / 2, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Test (zone 0)', () => {
+      this.buttonZone0 = new hudButton9(this, left + 7, top, 'placeholderButtonUp', 'placeholderButtonDown', 'zone 0 test', () => {
          makingZone = 0;
          this.scene.start('Game');
-      });
+      }, 1);
+
+      this.buttonIntro = new hudButton(this, left + 170, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Intro', () => {
+         this.scene.start('Intro');
+      }, 1);
    };
 
    makeMenu(menu) {

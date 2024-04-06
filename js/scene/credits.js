@@ -10,16 +10,16 @@ class Credits extends Phaser.Scene {
       this.add.text(220, 35, 'Credits', { font: '48px Arial', color: '#000000' })
          .setOrigin(0.5);
 
-      let longText = "Patrick McKeown: project lead, core gameplay, level design, key/touch control, sensor on/off timing, spotlight, UI, scores, fuel, sounds(sensor on/off, river recording, searchlight warnings), bugfixes and gameplay tuning\n\nJason Timms: art (log, rock, boom unit, sensor-cone), animation (driftwood), chain crank sound & integration, rock collision box, closable boom & tuning adjustments, menu button improvement, dynamic beam for spotlight, sensor-cone alpha pulse, return-to-station on touch\n\nChrister \"McFunkypants\" Kaitila: wake particles vfx, WASD support, motor sound with pitch modulation, ambient stream sound\n\nRyan Malm: water background tile scroll\n\nKyle Knutson: boat art\n\nMarvin Chong: pause scene fix\n\nKlaim (A. Joël Lamotte), Stebs, Alex Joiner, Rodrigo Bonzerr Lopez, Elizabeth McMahill: testing";
+      let longText = "Patrick McKeown: project lead, core gameplay, level design, key/touch control, sensor on/off timing, spotlight, UI, score, fuel, sounds(sensor on/off, river recording, searchlight warning), fixes and tuning\n\nJason Timms: art (log, rock, boom-unit, sensor-cone), animation (driftwood), dynamic beam tracking searchlight, closable booms & tuning adjustments, chain crank sound & integration, rock collision box, in-game menu button improvement, sensor-cone alpha pulse, return-to-station on touch\n\nChrister \"McFunkypants\" Kaitila: wake particles animation, WASD support, motor sound with pitch modulation, ambient stream sound\n\nRyan Malm: water background tile scrolling\n\nKyle Knutson: boat art\n\nMarvin Chong: pause scene fix\n\nKlaim (A. Joël Lamotte), Stebs, Alex Joiner, Rodrigo Bonzerr Lopez, Elizabeth McMahill: testing";
 
       this.creditsText = [
-         "Patrick McKeown: Project lead",
+         "Patrick McKeown: project lead, core gameplay, level design, key/touch control, sensor on/off timing, spotlight, UI, scores, fuel, sounds(sensor on/off, river recording, searchlight warnings), bugfixes and gameplay tuning",
          "Jason Timms: art (log, rock, boom unit, sensor-cone), animation (driftwood), chain crank sound & integration, rock collision box, closable boom & tuning adjustments, menu button improvement, dynamic beam for spotlight, sensor-cone alpha pulse, return-to-station on touch",
-         "Christer \"McFunkypants\" Kaitila: Wake effect, WASD support, motor sound with pitch modulation, ambient stream sound",
-         "Ryan Malm: Scrolling water background",
-         "Kyle Knutson: Boat art",
-         "Marvin Chong: Pause scene",
-         "Klaim (A. Joël Lamotte), Stebs, Alex Joiner, Rodrigo Bonzerr Lopez, Elizabeth McMahill: Testing"
+         "Christer \"McFunkypants\" Kaitila: wake particles vfx, WASD support, motor sound with pitch modulation, ambient stream sound",
+         "Ryan Malm: water background tile scroll",
+         "Kyle Knutson: boat art",
+         "Marvin Chong: pause scene fix",
+         "Klaim (A. Joël Lamotte), Stebs, Alex Joiner, Rodrigo Bonzerr Lopez, Elizabeth McMahill: testing"
       ];
 
       const style = {
