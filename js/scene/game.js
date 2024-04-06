@@ -431,16 +431,17 @@ class Game extends Phaser.Scene {
       if (keyboard === 'likely' && alwaysButtons === false) {
          const x = 40;
          y = displayHeight - controlPanelHeight + 20;
-         this.zoneOfZonesProgress = this.add.text(x, y, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+         this.zoneOfZonesProgress = this.add.text(x, y, `Zone ${boatInZone}/${zones_quantity}`, hudStyle).setOrigin(0, 0.5).setDepth(101);
+         // this.zoneOfZonesProgress = this.add.text(x, y, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
          y += 30;
-         this.obstacleGameProgress = this.add.text(x, y, `All: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+         this.obstacleGameProgress = this.add.text(x, y, `All: `, hudStyle).setOrigin(0, 0.5).setDepth(101);
       }
       else {
          const offsetX = 130;
          let y = displayHeight - controlPanelHeight + 20;
-         this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, y, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+         this.zoneOfZonesProgress = this.add.text(displayWidth - offsetX, y, `Zone ${boatInZone}/${zones_quantity}`, hudStyle).setOrigin(0, 0.5).setDepth(101);
          y += 30;
-         this.obstacleGameProgress = this.add.text(displayWidth - offsetX, y, `All: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+         this.obstacleGameProgress = this.add.text(displayWidth - offsetX, y, `All: `, hudStyle).setOrigin(0, 0.5).setDepth(101);
       }
       // this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
    }
@@ -468,7 +469,7 @@ class Game extends Phaser.Scene {
       this.zoneOfZonesProgress.setText(`Zone ${boatInZone}`);
       // this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimate Passed in Zone
       let percent = Math.floor(estimatedProgress / this.countObstaclesInZones(zones_quantity) * 100);
-      this.obstacleGameProgress.setText(`Game: ${percent}%`);
+      this.obstacleGameProgress.setText(`Game ${percent}%`);
    }
 
    incrementObstacleCounter() {
@@ -609,7 +610,7 @@ class Game extends Phaser.Scene {
 
    makePauseButton() {
       let x = displayWidth - 62;
-      let y = displayHeight - 72;
+      let y = displayHeight - this.panel2ndButtonY;
       this.pauseButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Pause', () => this.doPause(), 0.7);
       if (keyboard === 'likely' && alwaysButtons === false) {
          this.pauseButton.alpha = 0.4;
@@ -631,8 +632,9 @@ class Game extends Phaser.Scene {
       if (keyboard != 'likely' || alwaysButtons === true) {
          this.pauseButton.destroy();
       }
-
-      this.buttonReplay = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
+      let x = displayWidth - 62;
+      let y = displayHeight - this.panel2ndButtonY;
+      this.buttonReplay = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
          // reset game (lives, fuel, position)
          this.player.health = this.player.initialHealth;
          this.player.fuel = this.player.initialFuel;
@@ -640,8 +642,10 @@ class Game extends Phaser.Scene {
          //this.obstacles.incY(-200);
          this.physics.resume();
          this.scene.restart();
-      }, 0.5);
-      //this.hud.add(this.buttonReplay);
+      }, 0.7);
+      if (keyboard === 'likely' && alwaysButtons === false) {
+         this.buttonReplay.alpha = 0.4;
+      }
    }
 
    // Making furniture/obstacles
@@ -1306,6 +1310,7 @@ class Game extends Phaser.Scene {
       this.fontSize = 16;
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
+      this.panel2ndButtonY = 75;
    }
 
    setupInput() {
