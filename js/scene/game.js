@@ -202,7 +202,9 @@ class Game extends Phaser.Scene {
       // when zone's quantity of obstacles have all been created; show milestone and increment "makingZone"      
       else {
          if (makingZone > zones_quantity) {
-            console.log(`makeInterval() should stop flow reaching here`);
+            if (developerMode || testing) {
+               console.log(`makeInterval() should stop flow reaching here`);
+            }
             this.stopMakingObstacles = true;
          }
          else {
@@ -592,7 +594,7 @@ class Game extends Phaser.Scene {
    }
 
    handleMenuVisibility(isVisible) {
-      console.log('menu button visibility', isVisible);
+      //console.log('menu button visibility', isVisible);
       this.menuButton.visible = isVisible;
    }
 
@@ -686,7 +688,9 @@ class Game extends Phaser.Scene {
       rock.y = this.spawnY - offsetY;
       rock.setVelocityY(this.driftSpeed);
       this.rocks.add(rock);
-      console.log('placed rock at', Math.trunc(rock.x), Math.trunc(rock.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
+      if (developerMode || testing) {
+         console.log('placed rock at', Math.trunc(rock.x), Math.trunc(rock.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
+      }
    }
 
    makeDriftwood() {
@@ -952,21 +956,32 @@ class Game extends Phaser.Scene {
    reachMilestone(player, milestone) {
       if (!this.milestoneTriggered[boatInZone] && milestone.id === boatInZone) {
          this.milestoneTriggered[boatInZone] = true;
-         console.log(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id} and flags ${this.milestoneTriggered}`);
+         if (developerMode || testing) {
+            console.log(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id} and flags ${this.milestoneTriggered}`);
+         }
+
          boatInZone += 1;
          if (boatInZone > zones_quantity) {
-            this.victory();
+            this.victoryText();
+            saveScores(this.player.intelScore, estimatedProgress);
             this.physics.pause();
             this.gameOver = true;
-            saveScores(this.player.intelScore, estimatedProgress);
+
+            // Aim to stop river scroll and allow boat to sail off top of screen
+            //  but failed (boat stuck at Rapids) and cause a bug Life = -1
+            // this.riverSpeed = 0;
+            // this.applyRiverDrift(0);
+            // this.player.setAngle(0);
+            // this.player.setBoatVelocity(0, -20);
+
          }
       }
       else {
       }
    }
 
-   victory() {
-      console.log('River spying all done!');
+   victoryText() {
+      //console.log('River spying all done!');
       const style = {
          fontFamily: 'verdana',
          fontSize: '36px',
@@ -1112,7 +1127,7 @@ class Game extends Phaser.Scene {
    loseLife() {
       this.player.invincible = true;
       awaitRespawn = true;
-      console.log(awaitRespawn);
+      // console.log(awaitRespawn);
 
       this.player.life -= 1;
       this.updateLifeDisplay();
@@ -1260,7 +1275,9 @@ class Game extends Phaser.Scene {
       } else {
          zones_quantity = zone_quantity_for_test;
       }
-      console.log(`${zones_quantity} zones in game`);
+      if (developerMode || testing) {
+         console.log(`${zones_quantity} zones in game`);
+      }
 
       // this.milestoneTriggered = [false, false, false, false, false, false, false, false, false, false, false, false, false];
       // extra element so zone ID can match array index
@@ -1271,7 +1288,9 @@ class Game extends Phaser.Scene {
       //let levelObjName = `Level_${ this.zoneNum }`;
       this.zone = this.data[numZone];
       this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
-      this.debugObstacleChances();
+      if (developerMode || testing) {
+         this.debugObstacleChances();
+      }
 
       // if zone was selected in menu
       if (makingZone > 1) {

@@ -29,7 +29,7 @@ const intelWidth = 70;
 const intelDepth = 50;
 
 const hudStyle = {
-   font: '18px Arial',
+   font: '20px Arial',
    color: '#FFFFFF',
    stroke: '#000000',
    strokeThickness: 2

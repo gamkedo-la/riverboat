@@ -5,7 +5,7 @@ class Setup extends Phaser.Scene {
 
    init() {
       allScores = loadScores();
-      console.log('allScores', allScores);
+      //console.log('allScores', allScores);
    }
 
    preload() {

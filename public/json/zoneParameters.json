@@ -5,7 +5,7 @@
          "name": "Testing Zone"
       },
       "riverSpeed": 80,
-      "intervals": 99,
+      "intervals": 20,
       "obstacle": {
          "secret": 1,
          "boom": 0,

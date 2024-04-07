@@ -22,7 +22,7 @@ class Boot extends Phaser.Scene {
       else {
          keyboard = "likely";
       }
-      console.log(`device=${deviceOS}, keyboard=${keyboard}`);
+      //console.log(`device=${deviceOS}, keyboard=${keyboard}`);
 
       if (keyboard === "likely" && alwaysButtons == false) {
          controlPanelHeight = 100;
