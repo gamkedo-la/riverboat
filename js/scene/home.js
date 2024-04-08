@@ -19,7 +19,7 @@ class Home extends Phaser.Scene {
       let titleTop = 60;
       let titleCentre = [gameWidth / 2, titleTop];
 
-      let text = this.add.text(...titleCentre, 'River Spy', { font: '36px Verdana', color: '#ffffff' })
+      let text = this.add.text(...titleCentre, 'Spy Boat', { font: '36px Verdana', color: '#ffffff' })
          .setOrigin(0.5)
          .setDepth(1);
 
@@ -94,10 +94,10 @@ class Home extends Phaser.Scene {
          this.scene.start('Help');
       }, 1);
 
-      this.buttonOptions = new hudButton7(this, left, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Options', () => {
-         makingZone = 1;
-         this.scene.start('Options');
-      }, 1);
+      // this.buttonOptions = new hudButton7(this, left, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Options', () => {
+      //    makingZone = 1;
+      //    this.scene.start('Options');
+      // }, 1);
 
       if (keyboard === 'likely') {
          top += 60;

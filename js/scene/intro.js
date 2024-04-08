@@ -14,7 +14,7 @@ class Intro extends Phaser.Scene {
 
       // this.title = new Title(this, 200, 20, 'River Spy');
 
-      let title = this.add.text(180, 35, 'River Spy', { font: '48px Verdana', color: '#000000' })
+      let title = this.add.text(180, 35, 'Spy Boat', { font: '48px Verdana', color: '#000000' })
          .setOrigin(0.5)
          .setDepth(103);
 
