@@ -33,11 +33,6 @@ class Home extends Phaser.Scene {
       left = 110;
       top += 60 + 60;
 
-      // this.buttonPlay = new Button(this, 40, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Play', () => {
-      //    makingZone = 1;
-      //    this.scene.start('Game');
-      // }, null, 0.6, 1, 1);
-
       this.buttonPlay = new hudButton(this, left, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Play', () => {
          makingZone = 1;
          this.scene.start('Game');
@@ -115,21 +110,5 @@ class Home extends Phaser.Scene {
          top += 45;
          this.add.text(gameWidth / 2, top, 'Exit by closing phone display.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
       }
-
-      top += 60;
-      this.buttonZone0 = new hudButton9(this, left + 7, top, 'placeholderButtonUp', 'placeholderButtonDown', 'zone 0 test', () => {
-         makingZone = 0;
-         this.scene.start('Game');
-      }, 1);
-
-      this.buttonIntro = new hudButton(this, left + 170, top, 'placeholderButtonUp', 'placeholderButtonDown', 'Intro', () => {
-         this.scene.start('Intro');
-      }, 1);
    };
-
-   makeMenu(menu) {
-      menu.forEach(menuItem => {
-
-      });
-   }
 }
