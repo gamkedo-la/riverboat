@@ -6,7 +6,7 @@ class Scores extends Phaser.Scene {
    init() {
       this.showHighScores = false;
       this.numScoresToShow = 9;
-      this.toggleLabel = 'show High';
+      this.toggleLabel = 'High';
    }
 
    create() {
@@ -23,6 +23,7 @@ class Scores extends Phaser.Scene {
 
       this.makeMenuButton();
       this.makeToggleButton();
+      this.makeClearButton();
       this.input.keyboard.on('keyup', this.anyKey, this);
    };
 
@@ -54,7 +55,7 @@ class Scores extends Phaser.Scene {
    }
 
    makeToggleButton() {
-      this.buttonToggle = new hudButton9(this, displayWidth - 120, 30, 'placeholderButtonUp', 'placeholderButtonDown', this.toggleLabel, () => {
+      this.buttonToggle = new hudButton(this, 180, 30, 'placeholderButtonUp', 'placeholderButtonDown', this.toggleLabel, () => {
          this.showHighScores = !this.showHighScores;
          this.updateToggleLabel();
          this.buttonToggle.buttonText.setText(this.toggleLabel);
@@ -62,19 +63,18 @@ class Scores extends Phaser.Scene {
       }, 1);
    }
 
-   // makeToggleButton() {
-   //    this.buttonToggle = new hudButton(this, displayWidth - 62, 30, 'placeholderButtonUp', 'placeholderButtonDown', this.toggleLabel, () => {
-   //       this.showHighScores = !this.showHighScores;
-   //       this.updateToggleLabel();
-   //       this.displayScores();
-   //    }, 1);
-   // }
+   makeClearButton() {
+      this.buttonToggle = new hudButton(this, 298, 30, 'placeholderButtonUp', 'placeholderButtonDown', "Clear", () => {
+         eraseScores();
+         this.displayScores();
+      }, 1);
+   }
 
    updateToggleLabel() {
       if (this.showHighScores) {
-         this.toggleLabel = 'show Recent';
+         this.toggleLabel = 'New';
       } else {
-         this.toggleLabel = 'show High';
+         this.toggleLabel = 'High';
       }
    }
 }
