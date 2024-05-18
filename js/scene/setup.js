@@ -116,6 +116,8 @@ class Setup extends Phaser.Scene {
       this.load.audio('snd_motorLoop', ['public/sound/motor_loop.mp3']);
       this.load.audio('snd_waterLoop', ['public/sound/flowing_stream_Argal.mp3']);
 
+      this.load.audio('snd_selfDestruct', ['public/sound/self_destruct_2.mp3']);
+
       if (testing) {
          this.load.json('zoneData', 'public/json/testzoneParams.json');
       } else {

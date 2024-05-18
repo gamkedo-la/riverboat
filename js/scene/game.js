@@ -352,6 +352,8 @@ class Game extends Phaser.Scene {
       this.intelOverlapSound = this.sound.add('snd_intelOverlap', { volume: 0 });
       this.spyingSound = this.sound.add('snd_spying', { volume: 0.1, loop: true });
 
+      this.selfDestructSound = this.sound.add('snd_selfDestruct', { volume: 0.5 });
+
       // this.sound.manager.maxSounds = 3;
    }
 
@@ -1179,6 +1181,7 @@ class Game extends Phaser.Scene {
             let y = this.player.y - 36;
             this.explosion = this.add.sprite(x, y, 'anim_placeholderExplosion', 0);
             this.explosion.play('explode');
+            this.selfDestructSound.play();
             // let text = this.add.text(100, 300, 'Level over', { font: '40px Arial', color: '#ffffff' }).setOrigin(0.5);
             //this.hud.add(text);
          },
