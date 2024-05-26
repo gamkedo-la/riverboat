@@ -100,6 +100,8 @@ class Setup extends Phaser.Scene {
          frameHeight: 321
       });
 
+      this.load.audio('snd_uiButton', ['public/sound/ui_button.mp3']);
+
       this.load.audio('snd_searchProximity', ['public/sound/searchlight_near.mp3']);
       this.load.audio('snd_searchContact', ['public/sound/searchlight_contact_2.mp3']);
       this.load.audio('snd_landCollide', ['public/sound/land_hit_placeholder.mp3']);

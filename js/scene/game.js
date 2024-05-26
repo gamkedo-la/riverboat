@@ -339,6 +339,8 @@ class Game extends Phaser.Scene {
       this.waterSound = this.sound.add('snd_waterLoop', { volume: 0.1, loop: true });
       this.waterSound.play();
 
+      this.uiButtonSound = this.sound.add('snd_uiButton', { volume: 0.3 });
+
       this.lightNearSound = this.sound.add('snd_searchProximity', { volume: 0.4, loop: false });
       this.searchContactSound = this.sound.add('snd_searchContact', { volume: 0.2 });
       this.landCollideSound = this.sound.add('snd_landCollide', { volume: 0 });

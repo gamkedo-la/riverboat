@@ -39,7 +39,11 @@ class Intro extends Phaser.Scene {
       });
       text.setOrigin(0.5, 0);
 
+      this.uiButtonSound = this.sound.add('snd_uiButton', { volume: 0.9 });
+
       let buttonContinue = new uiButton(this, 180, 560, 'placeholderButtonUp', 'placeholderButtonDown', 'Start', () => {
+         // this.scene.get('Game').uiButtonSound.play();
+         this.uiButtonSound.play();
          this.scene.start("Home");
       });
    }
