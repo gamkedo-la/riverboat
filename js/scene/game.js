@@ -491,9 +491,9 @@ class Game extends Phaser.Scene {
       if (this.player.engine === 'forward') {
          this.fuelDisplay.setTint(0xff0000);
       }
-      else if (this.player.engine === 'backward') {
-         this.fuelDisplay.setTint(0xff00ff);
-      }
+      // else if (this.player.engine === 'backward') {
+      //    this.fuelDisplay.setTint(0xff00ff);
+      // }
       else {
          this.fuelDisplay.setTint(0xffffff);
       }
