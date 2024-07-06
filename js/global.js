@@ -131,5 +131,8 @@ const developerModeSounds = function (game) {
    game.sensorOffSound = game.sound.add('snd_sensorOff', { volume: 0.2 });
    game.intelOverlapSound = game.sound.add('snd_intelOverlap', { volume: 0 });
    game.spyingSound = game.sound.add('snd_spying', { volume: 0.05, loop: true });
+
+   game.milestoneSound = game.sound.add('snd_reachedMilestone', { volume: 0.3, loop: true });
+
    // game.sound.manager.maxSounds = 3;
 };

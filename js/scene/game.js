@@ -960,6 +960,9 @@ class Game extends Phaser.Scene {
    reachMilestone(player, milestone) {
       if (!this.milestoneTriggered[boatInZone] && milestone.id === boatInZone) {
          this.milestoneTriggered[boatInZone] = true;
+
+         this.milestoneSound.play();
+
          if (developerMode || testing) {
             console.log(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id} and flags ${this.milestoneTriggered}`);
          }

@@ -120,6 +120,8 @@ class Setup extends Phaser.Scene {
 
       this.load.audio('snd_selfDestruct', ['public/sound/self_destruct_2.mp3']);
 
+      this.load.audio('snd_reachedMilestone', ['public/sound/milestone.mp3']);
+
       if (testing) {
          this.load.json('zoneData', 'public/json/testzoneParams.json');
       } else {
