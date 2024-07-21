@@ -40,39 +40,18 @@ class Home extends Phaser.Scene {
 
       this.add.text(240, top, 'goto zone:', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
 
-      // Zone choice - buttons that jump directto start of numbered zone
+      // Zone choice - buttons to jump direct to start of numbered zone
       top += 60;
       let incremX = 45;
       let x = left - 40;
-      this.buttonZone2 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '2', () => {
-         makingZone = 2;
-         this.scene.start('Game');
-      });
-      x += incremX;
-      this.buttonZone3 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '3', () => {
-         makingZone = 3;
-         this.scene.start('Game');
-      });
-      x += incremX;
-      this.buttonZone4 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '4', () => {
-         makingZone = 4;
-         this.scene.start('Game');
-      });
-      x += incremX;
-      this.buttonZone5 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '5', () => {
-         makingZone = 5;
-         this.scene.start('Game');
-      });
-      x += incremX;
-      this.buttonZone6 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '6', () => {
-         makingZone = 6;
-         this.scene.start('Game');
-      });
-      x += incremX + 1;
-      this.buttonZone7 = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', '7', () => {
-         makingZone = 7;
-         this.scene.start('Game');
-      });
+
+      for (let i = 2; i <= 7; i++) {
+         this[`buttonZone${i}`] = new zoneButton(this, x, top, 'placeholderButtonUp', 'placeholderButtonDown', i.toString(), () => {
+            makingZone = i;
+            this.scene.start('Game');
+         });
+         x += incremX;
+      }
 
       top += 70;
       // show personal High Scores to help player understand aim of game
