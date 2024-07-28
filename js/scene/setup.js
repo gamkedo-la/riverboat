@@ -5,14 +5,17 @@ class Setup extends Phaser.Scene {
 
    init() {
       allScores = loadScores();
-      //console.log('allScores', allScores);
    }
 
    preload() {
+      this.makeLoadingBar();
+      this.loadAssets();
+   }
+
+   makeLoadingBar() {
       let width = this.cameras.main.width;
       let height = this.cameras.main.height;
-      // this.sys.game.config.width is the same as this.cameras.main.width
-      // elsewhere using global const displayWidth but may revisit these
+      // this.sys.game.config.width is the same as this.cameras.main.width elsewhere using global const displayWidth
 
       const barW = 150;
       const barH = 30;
@@ -40,7 +43,9 @@ class Setup extends Phaser.Scene {
       this.load.on('fileprogress', function (file) {
          loadingFile.setText('Loading: ' + file.key);
       });
+   }
 
+   loadAssets() {
       this.load.image('boat', 'public/art/boat_cropfront_62.png');
       this.load.image('main_hull_hitbox', 'public/art/boat_hitbox_main_hull_60.png');
       this.load.image('outriggers_hitbox', 'public/art/boat_hitbox_outriggers.png');
@@ -141,7 +146,7 @@ class Setup extends Phaser.Scene {
          }
          this.textures.addCanvas('boomUnitChain', canvas);
       });
-   };
+   }
 
    create() {
       this.anims.create({
