@@ -1,48 +1,53 @@
+const PLAYER_CONFIG = {
+   START_FUEL: 3000,
+   FORWARD_FUEL: 4,
+   BACKWARD_FUEL: 0,
+   SIDEWAYS_FUEL: 0,
+   SIDEWAY_SPEED: 40,
+   SIDEWAY_DRAG: 120,
+   FORWARD_SPEED: 60,
+   BACKWARD_SPEED: -40,
+   FORWARD_RATIO: 2,
+   BACKWARD_RATIO: 3,
+   CONE_SHOW_DISTANCE: 180,
+   CONE_HIDE_DISTANCE: 30,
+   RATE_OF_RETURN_TO_STATION: 0.5
+};
+
 class Player extends Phaser.Physics.Arcade.Sprite {
    constructor(scene, x, y, key, frame) {
       super(scene, x, y, key, frame);
+      this.scene = scene;
       this.start_x = x;
       this.start_y = y;
-      this.key = key; // name of texture
-      if (testing) {
-         this.startFuel = fuel_for_testing;
-      } else {
-         this.startFuel = 3000;
-      }
+      this.key = key;
+      this.initializeProperties();
+      this.setupPhysics();
+      this.setupMotorSound();
+      scene.add.existing(this);
+   }
+
+   initializeProperties() {
+      this.startFuel = testing ? fuel_for_testing : PLAYER_CONFIG.START_FUEL;
       this.fuel = this.startFuel;
       this.life = 3;
-      this.invincible = false;
       this.health = 10;
       this.intelScore = 0;
-      this.forwardFuel = 4;
-      this.backwardFuel = 0;
-      this.sidewaysFuel = 0;
-      this.sideway_speed = 40;
-      this.sideway_drag = 120;  //35;
-      this.forward_speed = 60;
-      this.backward_speed = -40;
-      this.forward_ratio = 2;
-      this.backward_ratio = 3;
       this.engine = "off";
       this.spyingNow = false;
       this.invincible = false;
-      this.cone_show_distance = 180;
-      this.cone_hide_distance = 30;
-      this.rateOfReturnToStation = 0.5;
-      scene.physics.world.enable(this);
+      // ... initialize other properties using PLAYER_CONFIG
+   }
+
+   setupPhysics() {
+      this.scene.physics.world.enable(this);
       this.setImmovable(false);
       this.setOrigin(0.5, 1);
-      this.setDrag(this.sideway_drag);
+      this.setDrag(PLAYER_CONFIG.SIDEWAY_DRAG);
       this.setVelocity(0, 0);
       this.depth = 7;
-      this.coneYoffset = 35;
       this.body.setSize(9, 59, false);
       this.body.setOffset(11, 3);
-      this.mainHull = null;
-      this.outriggers = null;
-      this.setupMotorSound();
-      scene.add.existing(this);
-      this.scene = scene;
    }
 
    create() {
