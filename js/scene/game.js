@@ -22,6 +22,7 @@ class PlayerManager {
 class Game extends Phaser.Scene {
    constructor() {
       super('Game');
+      this.spawnY = CONSTANTS.SPAWN_ABOVE_SCREEN_Y;
       this.playerManager = null;
 
       this.controlFunctions = {
