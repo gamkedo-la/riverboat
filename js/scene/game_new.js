@@ -1,6 +1,29 @@
+class PlayerManager {
+   constructor(scene) {
+      this.scene = scene;
+      this.player = null;
+   }
+
+   createPlayer() {
+      const x = this.scene.game.config.width / 2;
+      const y = this.scene.game.config.height - 10;
+      this.player = new Player(this.scene, x, y, 'boat');
+      this.player.create();
+      return this.player;
+   }
+
+   updatePlayer(cursors) {
+      if (this.player) {
+         this.player.update(cursors);
+      }
+   }
+}
+
 class Game extends Phaser.Scene {
    constructor() {
       super('Game');
+      this.spawnY = CONSTANTS.SPAWN_ABOVE_SCREEN_Y;
+      this.playerManager = null;
 
       this.controlFunctions = {
          'up_left': {
@@ -141,7 +164,9 @@ class Game extends Phaser.Scene {
       this.physics.world.bounds.width = gameWidth; // works without these?
       this.physics.world.bounds.height = displayHeight;
 
-      this.makePlayer();
+      this.playerManager = new PlayerManager(this);
+      this.player = this.playerManager.createPlayer();
+
       this.makeHud();
 
       this.makeControlPanel();
