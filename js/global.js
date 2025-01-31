@@ -132,7 +132,7 @@ const developerModeSounds = function (game) {
    game.intelOverlapSound = game.sound.add('snd_intelOverlap', { volume: 0 });
    game.spyingSound = game.sound.add('snd_spying', { volume: 0.05, loop: true });
 
-   game.milestoneSound = game.sound.add('snd_reachedMilestone', { volume: 0.3, loop: true });
+   game.milestoneSound = game.sound.add('snd_reachedMilestone', { volume: 0.3, loop: false });
 
    // game.sound.manager.maxSounds = 3;
 };

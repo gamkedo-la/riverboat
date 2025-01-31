@@ -355,7 +355,7 @@ class Game extends Phaser.Scene {
       this.spyingSound = this.sound.add('snd_spying', { volume: 0.1, loop: true });
 
       this.selfDestructSound = this.sound.add('snd_selfDestruct', { volume: 0.5 });
-
+      this.milestoneSound = this.sound.add('snd_reachedMilestone', { volume: 0.3, loop: false });
       // this.sound.manager.maxSounds = 3;
    }
 
@@ -969,6 +969,11 @@ class Game extends Phaser.Scene {
 
          boatInZone += 1;
          if (boatInZone > zones_quantity) {
+            // Final milestone - end the game
+            this.milestoneSound.stop();
+            if (this.spyingSound.isPlaying) {
+                  this.spyingSound.stop();
+            }
             this.victoryText();
             saveScores(this.player.intelScore, estimatedProgress);
             this.physics.pause();
