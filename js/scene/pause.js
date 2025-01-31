@@ -1,4 +1,5 @@
-// This scene object should be unpaused whenever the object pauses the 'Game' scene, so that it can listen to when the user presses 'P' again and unpause the 'Game' scene.
+// This scene object should be unpaused whenever the object pauses the 'Game' scene, so that it can listen to
+// when the user presses 'P' again and unpause the 'Game' scene.
 class Pause extends Phaser.Scene {
    constructor() {
       super('Pause');
@@ -11,6 +12,8 @@ class Pause extends Phaser.Scene {
       });
 
       this.makeResumeButton();
+      //this.handlePauseButton();
+      //this.scene.get('Game').events.on('pauseMenuToggle', this.handleMenuVisibility, this);
    }
 
    anyKey(event) {
@@ -32,6 +35,7 @@ class Pause extends Phaser.Scene {
       let x = displayWidth - this.scene.get('Game').panelOffsetButtonX;
       let y = displayHeight - this.scene.get('Game').panel2ndButtonY;
       this.resumeButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Resume', () => {
+         //this.resumeButton.visible = false;
          this.resuming(this);
       }, 0.7);
       if (keyboard === 'likely') {

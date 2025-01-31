@@ -1,7 +1,4 @@
 js/phaser*
-js/config*
-js/object/player_release.js
-js/scene/game_release.js
 js/object/trimaran.js
 js/object/button_squash.js
 js/object/button_old.js

@@ -144,7 +144,7 @@ class Setup extends Phaser.Scene {
             context.drawImage(img, x, 0);
             x += img.width;
          }
-
+         this.textures.addCanvas('boomUnitChain', canvas);
       });
    }
 
