@@ -100,7 +100,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       }
 
       if (this.fuel < 1) {
-         // console.log('Fuel empty');
          this.setTint(0xffffff);
          this.stopWake(); // unsure why this needs calling here but it does
       }
@@ -118,17 +117,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.setVelocity(0, 0);
       }
 
-      this.playerContainer.x = this.x;
-      this.playerContainer.y = this.y;
-      // this.playerContainer.angle = this.angle;
-      this.mainHull.x = this.playerContainer.x;
-      this.mainHull.y = this.playerContainer.y - 29;
-      this.outriggers.x = this.playerContainer.x;
-      this.outriggers.y = this.playerContainer.y - 26;
-
-      this.playerContainer.setAngle(this.body.angle);
-      this.mainHull.setAngle(this.body.angle);
-      this.outriggers.setAngle(this.body.angle);
+      this.updateHitboxPositions();
 
       // not returning to station looks out of control (which is appropriate)
       // if (this.y < this.start_y) {
@@ -305,6 +294,24 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       //this.scene.obstacles.setVelocityY(this.scene.obstacleSpeed);
    }
 
+   updateHitboxPositions() {
+      this.playerContainer.x = this.x;
+      this.playerContainer.y = this.y;
+  
+      const offsets = [
+        {obj: this.mainHull, xOffset: 0, yOffset: -29},
+        {obj: this.outriggers, xOffset: 0, yOffset: -26}
+      ];
+  
+      offsets.forEach(({obj, xOffset, yOffset}) => {
+        obj.x = this.x + xOffset;
+        obj.y = this.y + yOffset;
+        obj.setAngle(this.body.angle);
+      });
+  
+      this.playerContainer.setAngle(this.body.angle);
+   }
+  
    updateHealth(damage) {
       this.health -= damage;
       this.scene.updateHealthDisplay();
