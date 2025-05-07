@@ -83,8 +83,10 @@ class Game extends Phaser.Scene {
    }
 
    init() {
-      this.initialiseVariables();
       this.getAllZonesData();
+      
+      this.initialiseVariables();
+      
       this.makeTiledRiverBackground();
       this.createPhysicsGroups();
 
@@ -265,6 +267,7 @@ class Game extends Phaser.Scene {
          } else {
             this.setZoneParameters(makingZone);
             this.numObstaclesCreatedInZone = 0;
+            this.estimatedProgressInZone = 0;
             this.obstaclesInZone = this.zone.intervals;
             //this.getNextZone();
          }
@@ -473,17 +476,44 @@ class Game extends Phaser.Scene {
 
    updateLocator() {
       this.zoneOfZonesProgress.setText(`Zone ${boatInZone}`);
-      // this.obstacleZoneProgress.setText(`Local: ${this.estimatedProgressInZone}/${this.obstaclesInZone}`); // estimate Passed in Zone
-      let percent = Math.floor(estimatedProgress / this.countObstaclesInZones(zones_quantity) * 100);
+      let totalObstacles = this.countObstaclesInZones(zones_quantity);
+      
+      // Show 100% when final zone is completed
+      let percent;
+      if (boatInZone > zones_quantity) {
+         percent = 100;
+      } else {
+         let progress = Math.min(estimatedProgress, totalObstacles);
+         percent = Math.floor((progress / totalObstacles) * 100);
+      }
+      
+      if (testing) {
+         console.log(`Progress: ${estimatedProgress}/${totalObstacles} = ${percent}%`);
+      }
+      
       this.obstacleGameProgress.setText(`Game ${percent}%`);
    }
 
    incrementObstacleCounter() {
       this.numObstaclesCreatedInZone += 1;
       this.obstaclesPassedInThisRun += 1;
-      // when 3rd obstacle created the 1st likely has exited or nearly so
-      let x = this.numObstaclesCreatedInZone;
-      this.estimatedProgressInZone = x <= 2 ? 0 : Math.abs(x - 2);
+      
+      // Simpler progress tracking - count actual obstacles passed
+      this.estimatedProgressInZone = Math.max(0, this.numObstaclesCreatedInZone - 2);
+      
+      // Include all obstacles from zones before the starting zone
+      let startingZoneProgress = this.countObstaclesInZones(makingZone - 1);
+      
+      // // Only count as 100% when actually reaching the final milestone
+      // if (boatInZone === zones_quantity) {
+      //    // Cap progress in final zone until milestone is reached
+      //    this.estimatedProgressInZone = Math.min(this.estimatedProgressInZone, this.obstaclesInZone);
+      // }
+      
+      let currentProgress = this.countObstaclesInZones(Math.min(boatInZone, zones_quantity) - 1);
+      this.numObstaclesPassedInPreviousZones = Math.max(startingZoneProgress, currentProgress);
+      
+      // Total progress is previous zones plus current zone progress
       estimatedProgress = this.numObstaclesPassedInPreviousZones + this.estimatedProgressInZone;
    }
 
@@ -960,35 +990,28 @@ class Game extends Phaser.Scene {
    reachMilestone(player, milestone) {
       if (!this.milestoneTriggered[boatInZone] && milestone.id === boatInZone) {
          this.milestoneTriggered[boatInZone] = true;
-
          this.milestoneSound.play();
 
          if (developerMode || testing) {
-            console.log(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id} and flags ${this.milestoneTriggered}`);
+            console.log(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id}`);
          }
 
          boatInZone += 1;
          if (boatInZone > zones_quantity) {
-            // Final milestone - end the game
+            // Final milestone - ensure 100% progress
+            estimatedProgress = this.countObstaclesInZones(zones_quantity);
+            this.updateLocator();
+            
+            // Rest of victory code...
             this.milestoneSound.stop();
             if (this.spyingSound.isPlaying) {
-                  this.spyingSound.stop();
+               this.spyingSound.stop();
             }
             this.victoryText();
             saveScores(this.player.intelScore, estimatedProgress);
             this.physics.pause();
             this.gameOver = true;
-
-            // Aim to stop river scroll and allow boat to sail off top of screen
-            //  but failed (boat stuck at Rapids) and cause a bug Life = -1
-            // this.riverSpeed = 0;
-            // this.applyRiverDrift(0);
-            // this.player.setAngle(0);
-            // this.player.setBoatVelocity(0, -20);
-
          }
-      }
-      else {
       }
    }
 
@@ -1139,7 +1162,6 @@ class Game extends Phaser.Scene {
    loseLife() {
       this.player.invincible = true;
       awaitRespawn = true;
-      // console.log(awaitRespawn);
 
       this.player.life -= 1;
       this.updateLifeDisplay();
@@ -1154,6 +1176,11 @@ class Game extends Phaser.Scene {
       }
 
       if (this.player.life > 0) {
+         // Adjust progress for moving back
+         this.estimatedProgressInZone = Math.max(0, this.estimatedProgressInZone - 1);
+         estimatedProgress = this.numObstaclesPassedInPreviousZones + this.estimatedProgressInZone;
+         this.updateLocator();
+
          this.time.addEvent({
             delay: 2000,
             callback: this.newLife,
@@ -1347,11 +1374,10 @@ class Game extends Phaser.Scene {
       this.obstacle_types = ['secret', 'boom', 'rapids'];
       this.spawnY = spawn_above_screen_Y;
 
-      // may fix bug in Testing where zone passed counter of boat passing flips to zero when makingZone increments, whereas it shouldn't happen until boatInZone increments.
-      // this.numObstaclesCreatedInZone = Array(8).fill(0);
+      // When starting from a later zone, count previous zones as completed
+      this.numObstaclesPassedInPreviousZones = this.countObstaclesInZones(makingZone - 1);
       this.numObstaclesCreatedInZone = 0;
-      this.numObstaclesPassedInPreviousZones = 0;
-      this.obstaclesPassedInThisRun = 0;
+      this.obstaclesPassedInThisRun = this.numObstaclesPassedInPreviousZones; // Start counting from previous zones
 
       this.stopMakingObstacles = false;
       this.gameOver = false;
