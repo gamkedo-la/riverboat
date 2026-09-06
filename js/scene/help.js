@@ -22,7 +22,7 @@ class Help extends Phaser.Scene {
          }
       };
       let top = 60;
-      this.add.text(gameWidth / 2, top, "You control a boat that is being pulled along by the river's flow. It can slow (down arrow), and steer to avoid obstacles. Motoring faster forward uses fuel. Spy by bringing your sensor cone over an INTEL icon, which means a secret is near on land. Slow to gain more 'Intel' score. The number of obstacles passed is also tracked.", { font: '24px Verdana', color: '#000000', wordWrap: { width: 280 } }).setOrigin(0.5, 0);
+      this.add.text(gameWidth / 2, top, "You control a boat that is drifting downstream with the river's flow. You can use its motor to go faster or, in reverse gear, to slow down. Motoring uses fuel: 4 for double speed; only 1 for slowing. You can steer left or right to avoid obstacles. Spy by bringing the sensor cone over an INTEL icon, which means a secret is near on the riverbank. Slow to gain more spying time.", { font: '24px Verdana', color: '#000000', wordWrap: { width: 280 } }).setOrigin(0.5, 0);
    };
 
    makeMenuButton() {
