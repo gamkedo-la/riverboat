@@ -15,14 +15,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.health = 10;
       this.intelScore = 0;
       this.forwardFuel = 4;
-      this.backwardFuel = 0;
+      this.backwardFuel = 1;
+      this.drogueOut = false;
+      this.drogue_ratio = 1.5;
       this.sidewaysFuel = 0;
       this.sideway_speed = 40;
       this.sideway_drag = 120;  //35;
       this.forward_speed = 60;
       this.backward_speed = -40;
       this.forward_ratio = 2;
-      this.backward_ratio = 3;
+      this.backward_ratio = 2.7;    // reverse only, 0.37
       this.engine = "off";
       this.spyingNow = false;
       this.invincible = false;
@@ -165,8 +167,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       else {
          this.straightenUp();
       }
+      // on hold - toggleDrogue calls scene.updateDrogueDisplay which does not exist yet
+      // if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
+      //    this.toggleDrogue();
+      // }
 
-      // forward power, wake behind boat 
+
+      // forward power, wake behind boat
       // disallow if boat near top of display
       if ((cursors.up.isDown || cursors.keyW.isDown)
          && this.body.y > this.body.height && this.fuel >= this.forwardFuel) {
@@ -209,15 +216,28 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setTint(0xff0000); // was 0xffb38a
       this.body.setVelocityY(this.forward_speed * -1);
       this.addWake();
-      this.scene.driftSpeed = this.scene.riverSpeed * this.forward_ratio;
+      this.setDriftSpeed(this.scene.riverSpeed * this.forward_ratio);
+      // this.scene.driftSpeed = this.scene.riverSpeed * this.forward_ratio;
       this.engine = "forward";
       this.useFuel(this.forwardFuel);
    }
 
+   toggleDrogue() {
+      this.drogueOut = !this.drogueOut;
+      this.scene.updateDrogueDisplay();
+   }
+
+
+   setDriftSpeed(baseSpeed) {
+      this.scene.driftSpeed = this.drogueOut ? baseSpeed / this.drogue_ratio : baseSpeed;
+   }
+
+
    slowAgainstFlow() {
       // tint same colour as Fuel display
       this.setTint(0x7FFFD4); // was ff00ff, bae946
-      this.scene.driftSpeed = this.scene.riverSpeed / this.backward_ratio;
+      this.setDriftSpeed(this.scene.riverSpeed / this.backward_ratio);
+      // this.scene.driftSpeed = this.scene.riverSpeed / this.backward_ratio;
       this.engine = "backward";
       this.useFuel(this.backwardFuel);
 
@@ -229,7 +249,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // fade in volume
       // this.motorSound.volume += this.motorVolumeChangeSpeed;
       // if (this.motorSound.volume > this.motorVolumeMax) this.motorSound.volume = this.motorVolumeMax;
-      // rev up sound loop      
+      // rev up sound loop
       this.motorSound.rate += this.motorSamplerateChangeSpeed;
       if (this.motorSound.rate > this.motorSamplerateMax) this.motorSound.rate = this.motorSamplerateMax;
 
@@ -240,7 +260,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // fade out volume
       // this.motorSound.volume -= this.motorVolumeChangeSpeed;
       // if (this.motorSound.volume < this.motorVolumeMin) this.motorSound.volume = this.motorVolumeMin;
-      // rev down sound loop      
+      // rev down sound loop
       this.motorSound.rate -= this.motorSamplerateChangeSpeed;
       if (this.motorSound.rate < this.motorSamplerateMin) this.motorSound.rate = this.motorSamplerateMin;
 
@@ -249,7 +269,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
    neitherFastOrSlow() {
       this.setTint(0xffffff);
-      this.scene.driftSpeed = this.scene.riverSpeed;
+      this.setDriftSpeed(this.scene.riverSpeed);
+      // this.scene.driftSpeed = this.scene.riverSpeed;
 
       if (this.engine === "backward") {
          this.motorSound.rate -= this.motorSamplerateChangeSpeed;
@@ -297,21 +318,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    updateHitboxPositions() {
       this.playerContainer.x = this.x;
       this.playerContainer.y = this.y;
-  
+
       const offsets = [
         {obj: this.mainHull, xOffset: 0, yOffset: -29},
         {obj: this.outriggers, xOffset: 0, yOffset: -26}
       ];
-  
+
       offsets.forEach(({obj, xOffset, yOffset}) => {
         obj.x = this.x + xOffset;
         obj.y = this.y + yOffset;
         obj.setAngle(this.body.angle);
       });
-  
+
       this.playerContainer.setAngle(this.body.angle);
    }
-  
+
    updateHealth(damage) {
       this.health -= damage;
       this.scene.updateHealthDisplay();
