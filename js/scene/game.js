@@ -162,6 +162,7 @@ class Game extends Phaser.Scene {
       this.player.create();
    };
 
+
    update() {
       if (this.gameOver) return;
 
@@ -195,6 +196,7 @@ class Game extends Phaser.Scene {
       }
    };
 
+
    makeObstacle() {
       let chosenObstacleType;
 
@@ -220,6 +222,8 @@ class Game extends Phaser.Scene {
       }
 
       const obstacleSprites = this.obstacleMaker[chosenObstacleType]();
+      obstacleSprites[0].leadsObstacle = true; // one spawn makes several sprites, so for counting purposes only the first stands for the whole
+
       this.placeObstaclesY(...obstacleSprites);
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
 
@@ -452,8 +456,20 @@ class Game extends Phaser.Scene {
          y += 30;
          this.obstacleGameProgress = this.add.text(displayWidth - offsetX, y, `All: `, hudStyle).setOrigin(0, 0.5).setDepth(101);
       }
+
+      if (testing) {
+         this.makePassedDisplay();
+      }
       // this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
    }
+
+
+   makePassedDisplay() {
+      let x = (keyboard === 'likely' && alwaysButtons === false) ? 40 : displayWidth - 105;
+      let y = displayHeight - controlPanelHeight + 80;
+      this.passedDisplay = this.add.text(x, y, 'Passed 0 of 0', hudStyle).setOrigin(0, 0.5).setDepth(101);
+   }
+
 
    makeLifeDisplay(y) {
       let x = 10;
@@ -945,13 +961,16 @@ class Game extends Phaser.Scene {
       danger.x = bankWidth + Phaser.Math.Between(30, displayWidth - 30);
    }
 
+
    // GameLoop or Events handling
    destroyPassedObject() {
       this.obstacles.getChildren().forEach(obstacle => {
          if (obstacle.getBounds().top > displayHeight) {
+            this.countPassedObstacle(obstacle);
             obstacle.destroy();
          }
       });
+
       this.rocks.getChildren().forEach(child => {
          if (child.getBounds().top > displayHeight) {
             child.destroy();
@@ -962,8 +981,21 @@ class Game extends Phaser.Scene {
             child.destroy();
          }
       });
-      // this.saveBestScore();
    };
+
+
+   countPassedObstacle(obstacle) {
+      if (!obstacle.leadsObstacle) {
+         return;
+      }
+      this.obstaclesPassedByBoat += 1;
+      let wording = `Passed ${this.obstaclesPassedByBoat} of ${this.countObstaclesInZones(zones_quantity)}`;
+      console.log(wording);
+      if (testing) {
+         this.passedDisplay.setText(wording);
+      }
+   }
+
 
    anyKey(event) {
       let code = event.keyCode;
@@ -975,6 +1007,7 @@ class Game extends Phaser.Scene {
       }
    };
 
+
    gotoHome() {
       this.spyingSound.stop();
       this.waterSound.stop();
@@ -982,6 +1015,7 @@ class Game extends Phaser.Scene {
       saveScores(this.player.intelScore, this.obstaclesPassedInThisRun); //estimatedProgress);
       this.scene.start('Home');
    }
+
 
    applyRiverDrift(speed) {
       this.driftSpeed = speed;
@@ -996,6 +1030,7 @@ class Game extends Phaser.Scene {
          }
       }
    }
+
 
    reachMilestone(player, milestone) {
       if (!this.milestoneTriggered[boatInZone] && milestone.id === boatInZone) {
@@ -1025,6 +1060,7 @@ class Game extends Phaser.Scene {
       }
    }
 
+
    victoryText() {
       //console.log('River spying all done!');
       const style = {
@@ -1035,6 +1071,7 @@ class Game extends Phaser.Scene {
       };
       this.victoryText = this.add.text(gameWidth / 2, 190, 'Mission over! Your spy boat reached a place beyond the secrets!', style).setOrigin(0.5);
    }
+
 
    // Overlap & collision handling
    setupColliders() {
@@ -1379,6 +1416,7 @@ class Game extends Phaser.Scene {
       return count;
    }
 
+
    initialiseVariables() {
       boatInZone = makingZone;
       this.obstacle_types = ['secret', 'boom', 'rapids'];
@@ -1388,6 +1426,7 @@ class Game extends Phaser.Scene {
       this.numObstaclesPassedInPreviousZones = this.countObstaclesInZones(makingZone - 1);
       this.numObstaclesCreatedInZone = 0;
       this.obstaclesPassedInThisRun = this.numObstaclesPassedInPreviousZones; // Start counting from previous zones
+      this.obstaclesPassedByBoat = 0;
 
       this.stopMakingObstacles = false;
       this.gameOver = false;
