@@ -1,6 +1,15 @@
 const devMotorVolume = 0.01;
-const developerMode = false; // use sound volumes in global.js
-const testing = false; // jump into game & zone when true
+
+const buildMode = 'release';
+// const buildMode = 'playtest';
+// const buildMode = 'develop';
+
+// options are 'develop' or 'playtest' or 'release'
+// in develop mode: use sound volumes from global.js
+// in playtest mode: jump to home menu scene
+
+const developMode = buildMode === 'develop';
+const playtestMode = buildMode === 'playtest';
 
 const test_zone = 1; // zone to test
 const test_no_colliders = false; // no need to navigate
@@ -72,6 +81,14 @@ const eraseScores = function () {
    allScores = [];
    localStorage.setItem('scores', JSON.stringify(allScores));
    return "Scores erased";
+};
+
+
+const devLog = function (...parts) {
+   if (buildMode === 'release') {
+      return;
+   }
+   console.log(...parts);
 };
 
 
