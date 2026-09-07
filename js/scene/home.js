@@ -77,7 +77,7 @@ class Home extends Phaser.Scene {
          top += 60;
          this.add.text(gameWidth / 2, top, 'Escape key return here.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
          top += 40;
-         this.add.text(gameWidth / 2, top, 'P key Pause or Resume.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
+         this.add.text(gameWidth / 2, top, 'P or Spacebar Pause/Resume.', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
          top += 40;
          this.add.text(gameWidth / 2, top, 'Arrow or WASD keys', { font: '20px Verdana', color: '#ffffff' }).setOrigin(0.5);
          top += 25;

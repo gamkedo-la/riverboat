@@ -637,8 +637,7 @@ class Game extends Phaser.Scene {
       let x = displayWidth - this.panelOffsetButtonX;
       let y = displayHeight - 27;
       this.menuButton = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Menu', () => {
-         this.waterSound.stop();
-         this.gotoHome();
+         this.askToQuit();
       }, 0.7); // final parameter is Alpha
       //this.menuButton.setScale(0.8, 0.8);
       if (keyboard === 'likely' && alwaysButtons === false) {
@@ -655,14 +654,24 @@ class Game extends Phaser.Scene {
       }
    }
 
-   doPause() {
+   // a live run is paused first, so the player answers the quit question with the river held still
+   askToQuit() {
+      if (this.gameOver) {
+         this.gotoHome();
+         return;
+      }
+      this.doPause(true);
+   }
+
+
+   doPause(askQuit = false) {
       if (this.player.spyingNow) {
          this.spyingSound.stop();
       }
       this.pauseButton.visible = false;
       this.menuButton.visible = false;
       this.scene.pause('Game');
-      this.scene.launch("Pause");
+      this.scene.launch("Pause", { askQuit: askQuit });
       //this.events.emit('pauseMenuToggle', false);
    }
 
@@ -959,15 +968,16 @@ class Game extends Phaser.Scene {
    anyKey(event) {
       let code = event.keyCode;
       if (code === Phaser.Input.Keyboard.KeyCodes.ESC) {
-         this.gotoHome();
+         this.askToQuit();
       }
-      else if (code === Phaser.Input.Keyboard.KeyCodes.P) {
+      else if (isPauseKey(code)) {
          this.doPause();
       }
    };
 
    gotoHome() {
       this.spyingSound.stop();
+      this.waterSound.stop();
       // this.player.intelScore = randomInteger(40, 100);
       saveScores(this.player.intelScore, this.obstaclesPassedInThisRun); //estimatedProgress);
       this.scene.start('Home');
@@ -1059,7 +1069,7 @@ class Game extends Phaser.Scene {
          // this.scene.time.addEvent({ delay: 1000, callback: this.loseLife, callbackScope: this });
       }
       else {
-         // this.thatWasClose.play(); 
+         // this.thatWasClose.play();
       }
       // console.log(`Light`, lightBounds.left, lightBounds.right, lightBounds.top, lightBounds.bottom);
       // console.log(`Boat`, boatBounds.left, boatBounds.right, boatBounds.top, boatBounds.bottom);
