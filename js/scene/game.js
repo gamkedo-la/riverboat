@@ -512,7 +512,7 @@ class Game extends Phaser.Scene {
 
    incrementObstacleCounter() {
       this.numObstaclesCreatedInZone += 1;
-      this.obstaclesPassedInThisRun += 1;
+      this.obstaclesSpawnedInThisRun += 1;
 
       // Simpler progress tracking - count actual obstacles passed
       this.estimatedProgressInZone = Math.max(0, this.numObstaclesCreatedInZone - 2);
@@ -527,10 +527,10 @@ class Game extends Phaser.Scene {
       // }
 
       let currentProgress = this.countObstaclesInZones(Math.min(boatInZone, zones_quantity) - 1);
-      this.numObstaclesPassedInPreviousZones = Math.max(startingZoneProgress, currentProgress);
+      this.numObstaclesInPreviousZones = Math.max(startingZoneProgress, currentProgress);
 
       // Total progress is previous zones plus current zone progress
-      estimatedProgress = this.numObstaclesPassedInPreviousZones + this.estimatedProgressInZone;
+      estimatedProgress = this.numObstaclesInPreviousZones + this.estimatedProgressInZone;
    }
 
    updateFuelDisplay() {
@@ -1012,7 +1012,7 @@ class Game extends Phaser.Scene {
       this.spyingSound.stop();
       this.waterSound.stop();
       // this.player.intelScore = randomInteger(40, 100);
-      saveScores(this.player.intelScore, this.obstaclesPassedInThisRun); //estimatedProgress);
+      saveScores(this.player.intelScore, this.obstaclesSpawnedInThisRun); //estimatedProgress);
       this.scene.start('Home');
    }
 
@@ -1225,7 +1225,7 @@ class Game extends Phaser.Scene {
       if (this.player.life > 0) {
          // Adjust progress for moving back
          this.estimatedProgressInZone = Math.max(0, this.estimatedProgressInZone - 1);
-         estimatedProgress = this.numObstaclesPassedInPreviousZones + this.estimatedProgressInZone;
+         estimatedProgress = this.numObstaclesInPreviousZones + this.estimatedProgressInZone;
          this.updateLocator();
 
          this.time.addEvent({
@@ -1300,7 +1300,7 @@ class Game extends Phaser.Scene {
    }
 
    labelObstacleAndZoneID() {
-      // let idLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `${this.numObstaclesPassedInPreviousZones + this.numObstaclesCreatedInZone}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
+      // let idLabel = this.add.text(bankWidth + displayWidth - 12, this.spawnY, `${this.numObstaclesInPreviousZones + this.numObstaclesCreatedInZone}`, { font: '36px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
       // this.idLabels.add(idLabel);
       let zoneLabel = this.add.text(bankWidth + 100, this.spawnY, `z${makingZone}-${this.numObstaclesCreatedInZone}`, { font: '36px Times', color: '#ffffff' }).setOrigin(1, 0.5).setDepth(101);
       this.idLabels.add(zoneLabel);
@@ -1382,11 +1382,11 @@ class Game extends Phaser.Scene {
       // if zone was selected in menu
       if (makingZone > 1) {
          // for (let i = 1; i < makingZone; i++) {
-         //    this.numObstaclesPassedInPreviousZones += this.data[i].intervals;
+         //    this.numObstaclesInPreviousZones += this.data[i].intervals;
          // }
-         this.numObstaclesPassedInPreviousZones = this.countObstaclesInZones(makingZone);
+         this.numObstaclesInPreviousZones = this.countObstaclesInZones(makingZone);
       }
-      estimatedProgress = this.numObstaclesPassedInPreviousZones;
+      estimatedProgress = this.numObstaclesInPreviousZones;
       // pre-placed obstacle at start of game must be accounted for
       this.obstaclesInZone = this.zone.intervals;
 
@@ -1423,10 +1423,10 @@ class Game extends Phaser.Scene {
       this.spawnY = spawn_above_screen_Y;
 
       // When starting from a later zone, count previous zones as completed
-      this.numObstaclesPassedInPreviousZones = this.countObstaclesInZones(makingZone - 1);
+      this.numObstaclesInPreviousZones = this.countObstaclesInZones(makingZone - 1);
       this.numObstaclesCreatedInZone = 0;
-      this.obstaclesPassedInThisRun = this.numObstaclesPassedInPreviousZones; // Start counting from previous zones
-      this.obstaclesPassedByBoat = 0;
+      this.obstaclesSpawnedInThisRun = this.numObstaclesInPreviousZones; // Start counting from previous zones
+      this.obstaclesPassedByBoat = this.numObstaclesInPreviousZones;
 
       this.stopMakingObstacles = false;
       this.gameOver = false;
