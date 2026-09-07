@@ -1,0 +1,13 @@
+not-yet-used
+raw
+docs
+types
+lib
+.vscode
+.gitignore
+jsconfig.json
+readme.md
+menu_music_when_not_in_game.mp3
+butler-ignore.txt
+deploy.sh
+*.wav
