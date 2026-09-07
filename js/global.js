@@ -52,11 +52,10 @@ let awaitRespawn = false;
 
 const loadScores = function () {
    let storedScores = localStorage.getItem(scores_key);
-   // if (!storedScores.length)
    if (storedScores) {
       allScores = JSON.parse(storedScores);
    } else {
-      allScores = [{ intel: 'N/A', progress: 'N/A' }];
+      allScores = [];
    }
    return allScores;
 };
