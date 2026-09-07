@@ -15,7 +15,7 @@ const touchControlXY = 192;
 let controlPanelHeight;
 
 // reduce bank Width to weaken button hitarea offset error
-const bankWidth = 0; // 100 
+const bankWidth = 0; // 100
 const gameWidth = displayWidth + bankWidth * 2;
 
 const waterColor = 0x0000ff;
@@ -52,7 +52,7 @@ let awaitRespawn = false;
 
 const loadScores = function () {
    let storedScores = localStorage.getItem(scores_key);
-   // if (!storedScores.length) 
+   // if (!storedScores.length)
    if (storedScores) {
       allScores = JSON.parse(storedScores);
    } else {
@@ -73,6 +73,11 @@ const eraseScores = function () {
    allScores = [];
    localStorage.setItem('scores', JSON.stringify(allScores));
    return "Scores erased";
+};
+
+
+const isPauseKey = function (code) {
+   return code === Phaser.Input.Keyboard.KeyCodes.P || code === Phaser.Input.Keyboard.KeyCodes.SPACE;
 };
 
 // generate number between 0 and 1 with distribution biased toward 0.5

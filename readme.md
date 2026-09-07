@@ -16,7 +16,7 @@ Use arrow keys or WASD to control the boat.
 - Down / S: slow down against the current
 - Left / A: steer left
 - Right / D: steer right
-- P, or on-screen button: pause
+- P or Spacebar, or on-screen button: pause
 - ESC: quit to the menu, saving score
 
 ## Files
