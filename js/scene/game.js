@@ -90,7 +90,7 @@ class Game extends Phaser.Scene {
       this.makeTiledRiverBackground();
       this.createPhysicsGroups();
 
-      if (developerMode) {
+      if (developMode) {
          developerModeSounds(this);
       } else {
          this.setupSounds();
@@ -206,9 +206,7 @@ class Game extends Phaser.Scene {
       // when zone's quantity of obstacles have all been created; show milestone and increment "makingZone"
       else {
          if (makingZone > zones_quantity) {
-            if (developerMode || testing) {
-               console.log(`makeInterval() should stop flow reaching here`);
-            }
+            devLog(`makeInterval() should stop flow reaching here`);
             this.stopMakingObstacles = true;
          }
          else {
@@ -227,9 +225,7 @@ class Game extends Phaser.Scene {
       this.placeObstaclesY(...obstacleSprites);
       this.placeObstaclesX[chosenObstacleType](obstacleSprites);
 
-      if (testing) {
-         //console.log(`obstacle ${this.numObstaclesCreatedInZone + 1} created in zone ${makingZone}`);
-      }
+      //devLog(`obstacle ${this.numObstaclesCreatedInZone + 1} created in zone ${makingZone}`);
       return chosenObstacleType;
    }
 
@@ -260,7 +256,7 @@ class Game extends Phaser.Scene {
       this.incrementObstacleCounter();
       // this.updateProgressDisplay();
       this.updateLocator();
-      if (testing) this.labelObstacleAndZoneID();
+      if (developMode) this.labelObstacleAndZoneID();
 
       if (chosenObstacleType === "milestone") {
          // if zone exceeds limit stop creating obstacles
@@ -292,7 +288,7 @@ class Game extends Phaser.Scene {
       this.obstacles.incY(y);
       this.woods.incY(y);
       this.rocks.incY(y);
-      if (testing) {
+      if (developMode) {
          this.idLabels.incY(y);
          // this.previousY = this.getPreviousObstacleY();
          // console.log('previousY:', this.previousY.toFixed(0), 'prev Yspacing:', this.ySpacing);
@@ -457,7 +453,7 @@ class Game extends Phaser.Scene {
          this.obstacleGameProgress = this.add.text(displayWidth - offsetX, y, `All: `, hudStyle).setOrigin(0, 0.5).setDepth(101);
       }
 
-      if (testing) {
+      if (developMode) {
          this.makePassedDisplay();
       }
       // this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
@@ -503,9 +499,7 @@ class Game extends Phaser.Scene {
          percent = Math.floor((progress / totalObstacles) * 100);
       }
 
-      if (testing) {
-         console.log(`Progress: ${estimatedProgress}/${totalObstacles} = ${percent}%`);
-      }
+      devLog(`Progress: ${estimatedProgress}/${totalObstacles} = ${percent}%`);
 
       this.obstacleGameProgress.setText(`Game ${percent}%`);
    }
@@ -747,9 +741,7 @@ class Game extends Phaser.Scene {
       rock.y = this.spawnY - offsetY;
       rock.setVelocityY(this.driftSpeed);
       this.rocks.add(rock);
-      if (developerMode || testing) {
-         console.log('placed rock at', Math.trunc(rock.x), Math.trunc(rock.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
-      }
+      devLog('placed rock at', Math.trunc(rock.x), Math.trunc(rock.y), 'after offset_X', offsetX.toFixed(2), '& offset_Y', ratioSpacingY.toFixed(2), Math.trunc(offsetY), 'of', this.ySpacing);
    }
 
    makeDriftwood() {
@@ -990,8 +982,8 @@ class Game extends Phaser.Scene {
       }
       this.obstaclesPassedByBoat += 1;
       let wording = `Passed ${this.obstaclesPassedByBoat} of ${this.countObstaclesInZones(zones_quantity)}`;
-      console.log(wording);
-      if (testing) {
+      devLog(wording);
+      if (developMode) {
          this.passedDisplay.setText(wording);
       }
    }
@@ -1025,7 +1017,7 @@ class Game extends Phaser.Scene {
       // console.log(this, this.player);
       if (awaitRespawn === false) {
          this.waterBG.tilePositionY -= speed / 60;
-         if (testing) {
+         if (developMode) {
             this.idLabels.incY(speed / 60);
          }
       }
@@ -1037,9 +1029,7 @@ class Game extends Phaser.Scene {
          this.milestoneTriggered[boatInZone] = true;
          this.milestoneSound.play();
 
-         if (developerMode || testing) {
-            console.log(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id}`);
-         }
+         devLog(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id}`);
 
          boatInZone += 1;
          if (boatInZone > zones_quantity) {
@@ -1077,7 +1067,7 @@ class Game extends Phaser.Scene {
    setupColliders() {
       this.physics.add.overlap(this.boatHitbox, this.milestones, this.reachMilestone, null, this);
       // quick test of milestone trigger zones, without bumping into obstacles
-      if (!testing) {
+      if (!developMode) {
          // this.physics.add.overlap(this.sensors, this.secrets, this.senseSecret, null, this);
          this.physics.add.overlap(this.sensors, this.intels, this.senseIntel, null, this);
          this.physics.add.overlap(this.boatHitbox, this.obstacles, this.hitObstacle, null, this);
@@ -1357,14 +1347,12 @@ class Game extends Phaser.Scene {
    // Initialise game and zones
    getAllZonesData() {
       this.data = this.cache.json.get('zoneData');
-      if (!testing) {
+      if (!developMode) {
          zones_quantity = this.data.length - 1;
       } else {
          zones_quantity = zone_quantity_for_test;
       }
-      if (developerMode || testing) {
-         console.log(`${zones_quantity} zones in game`);
-      }
+      devLog(`${zones_quantity} zones in game`);
 
       // this.milestoneTriggered = [false, false, false, false, false, false, false, false, false, false, false, false, false];
       // extra element so zone ID can match array index
@@ -1375,7 +1363,7 @@ class Game extends Phaser.Scene {
       //let levelObjName = `Level_${ this.zoneNum }`;
       this.zone = this.data[numZone];
       this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
-      if (developerMode || testing) {
+      if (developMode || developMode) {
          this.debugObstacleChances();
       }
 
@@ -1390,7 +1378,7 @@ class Game extends Phaser.Scene {
       // pre-placed obstacle at start of game must be accounted for
       this.obstaclesInZone = this.zone.intervals;
 
-      if (testing) {
+      if (developMode) {
          this.riverSpeed = test_river_speed; // global test speed
       } else {
          this.riverSpeed = this.zone.riverSpeed;

@@ -127,7 +127,7 @@ class Setup extends Phaser.Scene {
 
       this.load.audio('snd_reachedMilestone', ['public/sound/milestone.mp3']);
 
-      if (testing) {
+      if (developMode) {
          this.load.json('zoneData', 'public/json/testZoneParams.json');
       } else {
          this.load.json('zoneData', 'public/json/zoneParameters.json');
@@ -181,12 +181,11 @@ class Setup extends Phaser.Scene {
          repeat: 1
       });
 
-      if (testing) {
+      if (developMode) {
          makingZone = test_zone;
          this.scene.start('Game');
       }
-      else if (developerMode) {
-         makingZone = test_zone;
+      else if (playtestMode) {
          this.scene.start('Home');
       }
       else {
