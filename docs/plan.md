@@ -3,6 +3,9 @@
 Percentage progress align to passed obstacles
 updateLocator call inside countPassedObstacle is key, since without it the display would still only refresh on spawn. - see docs/progress_obstacles_count.md
 
+Console: Boat in zone 2 reached milestoneID:2
+change to boat "leaving" zone X ...
+
 End-game tune 100% progress delay to ending message
 
 Decide title and harmonize e.g. River Boat or Spy Boat

@@ -1,7 +1,7 @@
 const devMotorVolume = 0.01;
 
-const buildMode = 'release';
-// const buildMode = 'playtest';
+// const buildMode = 'release';
+const buildMode = 'playtest';
 // const buildMode = 'develop';
 
 // options are 'develop' or 'playtest' or 'release'

@@ -495,13 +495,15 @@ class Game extends Phaser.Scene {
       if (boatInZone > zones_quantity) {
          percent = 100;
       } else {
-         let progress = Math.min(estimatedProgress, totalObstacles);
+         let progress = Math.min(this.obstaclesPassedByBoat, totalObstacles);
+         // let progress = Math.min(estimatedProgress, totalObstacles);
          percent = Math.floor((progress / totalObstacles) * 100);
       }
 
-      devLog(`Progress: ${estimatedProgress}/${totalObstacles} = ${percent}%`);
+      // devLog(`Progress: ${this.obstaclesPassedByBoat}/${totalObstacles} = ${percent}%`);
 
       this.obstacleGameProgress.setText(`Game ${percent}%`);
+      return percent
    }
 
    incrementObstacleCounter() {
@@ -982,10 +984,11 @@ class Game extends Phaser.Scene {
       }
       this.obstaclesPassedByBoat += 1;
       let wording = `Passed ${this.obstaclesPassedByBoat} of ${this.countObstaclesInZones(zones_quantity)}`;
-      devLog(wording);
       if (developMode) {
          this.passedDisplay.setText(wording);
       }
+      let percent = this.updateLocator();
+      devLog(`${wording} = ${percent}%`);
    }
 
 
