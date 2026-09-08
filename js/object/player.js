@@ -80,11 +80,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    setupMotorSound() {
+      this.motorVolumeForward = 0.5;
+      this.motorVolumeReverse = 0.15;
+      this.motorVolumeIdle = 0.04;
+
       // fade in and out
-      // note: currently unused - it sounded better without it
-      this.motorVolumeMin = 0.07;  // 0.1 or 0.25; devMotorVolume
-      this.motorVolumeMax = 0.5;
-      this.motorVolumeChangeSpeed = 0.01;
+      this.motorFadeInTime = 80;
+      this.motorFadeOutTime = 150;
+      this.motorRevDownTime = 500;
 
       // vroom vroom the pitch
       this.motorSamplerateMin = 0.75;
@@ -92,9 +95,98 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.motorSamplerateChangeSpeed = 0.015;
 
       // init
-      this.motorSound = this.scene.sound.add('snd_motorLoop', { volume: this.motorVolumeMin, loop: true });
+      this.motorSound = this.scene.sound.add('snd_motorLoop', { volume: this.motorVolumeIdle, loop: true });
+      this.motorSound.rate = this.motorSamplerateMin;
       this.motorSound.play();
+      this.motorVolumeTarget = this.motorVolumeIdle;
+
+      this.scene.events.on('pause', this.silenceMotorSound, this);
+      this.scene.events.on('resume', this.resumeMotorSound, this);
+      this.scene.events.once('shutdown', this.clearMotorSound, this);
    }
+
+
+   runMotorSound(volume) {
+      if (this.motorVolumeTarget === volume) {
+         return;
+      }
+      this.motorVolumeTarget = volume;
+      this.scene.tweens.killTweensOf(this.motorSound);
+      if (!this.motorSound.isPlaying) {
+         this.motorSound.play();
+      }
+      this.scene.tweens.add({
+         targets: this.motorSound,
+         volume: volume,
+         duration: this.motorFadeInTime
+      });
+   }
+
+
+   idleMotorSound() {
+      if (this.fuel < 1) {
+         this.stopMotorSound();
+         return;
+      }
+      if (this.motorVolumeTarget === this.motorVolumeIdle) {
+         return;
+      }
+      this.motorVolumeTarget = this.motorVolumeIdle;
+      this.scene.tweens.killTweensOf(this.motorSound);
+      this.scene.tweens.add({
+         targets: this.motorSound,
+         rate: this.motorSamplerateMin,
+         volume: this.motorVolumeIdle,
+         duration: this.motorRevDownTime
+      });
+   }
+
+
+   stopMotorSound() {
+      if (this.motorVolumeTarget === 0) {
+         return;
+      }
+      this.motorVolumeTarget = 0;
+      this.scene.tweens.killTweensOf(this.motorSound);
+      this.scene.tweens.add({
+         targets: this.motorSound,
+         rate: this.motorSamplerateMin,
+         duration: this.motorRevDownTime
+      });
+      this.scene.tweens.add({
+         targets: this.motorSound,
+         volume: 0,
+         delay: this.motorRevDownTime - this.motorFadeOutTime,
+         duration: this.motorFadeOutTime,
+         onComplete: () => this.motorSound.stop()
+      });
+   }
+
+
+   silenceMotorSound() {
+      this.scene.tweens.killTweensOf(this.motorSound);
+      this.motorSound.stop();
+      this.motorVolumeTarget = null;
+   }
+
+
+   resumeMotorSound() {
+      if (this.fuel < 1 || this.scene.gameOver) {
+         return;
+      }
+      this.motorSound.rate = this.motorSamplerateMin;
+      this.motorSound.setVolume(this.motorVolumeIdle);
+      this.motorSound.play();
+      this.motorVolumeTarget = this.motorVolumeIdle;
+   }
+
+
+   clearMotorSound() {
+      this.scene.events.off('pause', this.silenceMotorSound, this);
+      this.scene.events.off('resume', this.resumeMotorSound, this);
+      this.silenceMotorSound();
+   }
+
 
    update(cursors) {
       if (keyboard === "likely") {
@@ -219,6 +311,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setDriftSpeed(this.scene.riverSpeed * this.forward_ratio);
       // this.scene.driftSpeed = this.scene.riverSpeed * this.forward_ratio;
       this.engine = "forward";
+      this.runMotorSound(this.motorVolumeForward);
       this.useFuel(this.forwardFuel);
    }
 
@@ -239,6 +332,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setDriftSpeed(this.scene.riverSpeed / this.backward_ratio);
       // this.scene.driftSpeed = this.scene.riverSpeed / this.backward_ratio;
       this.engine = "backward";
+      this.runMotorSound(this.motorVolumeReverse);
       this.useFuel(this.backwardFuel);
 
       this.motorSound.rate += this.motorSamplerateChangeSpeed;
@@ -257,27 +351,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
    stopWake() {
-      // fade out volume
-      // this.motorSound.volume -= this.motorVolumeChangeSpeed;
-      // if (this.motorSound.volume < this.motorVolumeMin) this.motorSound.volume = this.motorVolumeMin;
-      // rev down sound loop
-      this.motorSound.rate -= this.motorSamplerateChangeSpeed;
-      if (this.motorSound.rate < this.motorSamplerateMin) this.motorSound.rate = this.motorSamplerateMin;
-
       this.scene.playerWake.frequency = 200;
    }
+
 
    neitherFastOrSlow() {
       this.setTint(0xffffff);
       this.setDriftSpeed(this.scene.riverSpeed);
       // this.scene.driftSpeed = this.scene.riverSpeed;
 
-      if (this.engine === "backward") {
-         this.motorSound.rate -= this.motorSamplerateChangeSpeed;
-         if (this.motorSound.rate < 0) this.motorSound.rate = 0;
-      }
-
       this.engine = "off";
+      this.idleMotorSound();
 
       if (this.scene.playerWake.visible) {
          this.stopWake();
