@@ -1363,7 +1363,7 @@ class Game extends Phaser.Scene {
       //let levelObjName = `Level_${ this.zoneNum }`;
       this.zone = this.data[numZone];
       this.obstacle_chances = [this.zone.obstacle.secret, this.zone.obstacle.boom, this.zone.obstacle.rapids];
-      if (developMode || developMode) {
+      if (developMode) {
          this.debugObstacleChances();
       }
 

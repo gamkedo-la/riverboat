@@ -3,6 +3,11 @@ js/object/trimaran.js
 js/object/button_squash.js
 js/object/button_old.js
 
+docs/*
+!docs/plan.md
+
+not-yet-used/
+
 .DS_Store
 .idea/
 .vscode/
