@@ -14,7 +14,7 @@ const playtestMode = buildMode === 'playtest';
 const test_zone = 1; // zone to test
 const test_no_colliders = false; // no need to navigate
 const test_river_speed = 100; // 20 makes access to riverbank easier
-const fuel_for_testing = 9999;
+const fuel_for_testing = 240;
 const zone_quantity_for_test = 1;
 
 const alwaysButtons = false;

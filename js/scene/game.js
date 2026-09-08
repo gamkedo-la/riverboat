@@ -677,6 +677,9 @@ class Game extends Phaser.Scene {
 
 
    doPause(askQuit = false) {
+      if (this.gameOver) {
+         return;
+      }
       if (this.player.spyingNow) {
          this.spyingSound.stop();
       }
@@ -694,9 +697,10 @@ class Game extends Phaser.Scene {
    }
 
    makeGameOverButtons() {
-      if (keyboard != 'likely' || alwaysButtons === true) {
-         this.pauseButton.destroy();
-      }
+      this.pauseButton.visible = false;
+      // if (keyboard != 'likely' || alwaysButtons === true) {
+      //    this.pauseButton.destroy();
+      // }
       let x = displayWidth - this.panelOffsetButtonX;
       let y = displayHeight - this.panel2ndButtonY;
       this.buttonReplay = new hudButton(this, x, y, 'placeholderButtonUp', 'placeholderButtonDown', 'Replay', () => {
@@ -1432,16 +1436,15 @@ class Game extends Phaser.Scene {
       this.fontSize = 16;
       this.lineHeight = 70;
       this.fontOptions = { fontSize: `${this.fontSize}px`, color: '#999' };
-      this.panelOffsetButtonX = 50;  //78;
-      this.panel2ndButtonY = 75;
+      this.panelOffsetButtonX = 50;
+      this.panel2ndButtonY = 78;
    }
 
    setupInput() {
       this.input.scene.active = true;
       this.makeMenuButton();
       this.makePauseButton();
-      if (keyboard != 'likely' || alwaysButtons === true) {
-      }
+
       this.cursors = this.input.keyboard.createCursorKeys();
       // add W,A,S,D to cursors so they work in addition to the arrow keys
       this.cursors.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);

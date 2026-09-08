@@ -1,16 +1,6 @@
 ## Next steps
 
-on life loss game-over the Replay button overlays another button, and Menu button also looks misaligned overlaid
-
 Game Over is obscured by a booms graphic
-
-Passed 24 of 67 <obstacles> ~ 35%
-
-Percentage progress align to passed obstacles
-updateLocator call inside countPassedObstacle is key, since without it the display would still only refresh on spawn. - see docs/progress_obstacles_count.md
-
-Console: Boat in zone 2 reached milestoneID:2
-change to boat "leaving" zone X ...
 
 End-game tune 100% progress delay to ending message
 
@@ -89,6 +79,14 @@ Motor soundfx only while engine running
 Pause and Menu should not play sound of motor
 
 Volume increase for motor, especially when forward
+
+on life loss game-over the Replay button overlays another button, and Menu button also looks misaligned overlaid
+
+console text make: Passed 24 of 67 <obstacles> ~ 35%
+
+Percentage progress align to passed obstacles
+
+Console: Boat in zone 2 reached milestoneID:2 change to boat "leaving" zone X ...
 
 ## Museum display
 
