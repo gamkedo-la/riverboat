@@ -5,6 +5,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.start_y = y;
       this.key = key; // name of texture
       if (developMode) {
+      // if (developMode || playtestMode) {
          this.startFuel = fuel_for_testing;
       } else {
          this.startFuel = 3000;
@@ -86,11 +87,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
       // fade in and out
       this.motorFadeInTime = 80;
-      this.motorFadeOutTime = 150;
-      this.motorRevDownTime = 500;
+      this.motorFadeOutTime = 400;
+      this.motorRevDownTime = 700;
+
+      // engine cuts when fuel gone
+      this.motorVolumeSplutter = 0.02;
 
       // vroom vroom the pitch
-      this.motorSamplerateMin = 0.75;
+      this.motorSamplerateMin = 0.55;
       this.motorSamplerateMax = 1.5;
       this.motorSamplerateChangeSpeed = 0.015;
 
@@ -123,43 +127,73 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    }
 
 
+   fallMotorSound(volume, whenDone) {
+      this.scene.tweens.killTweensOf(this.motorSound);
+      this.scene.tweens.add({
+         targets: this.motorSound,
+         rate: this.motorSamplerateMin,
+         duration: this.motorRevDownTime,
+         ease: 'Sine.easeIn'
+      });
+      this.scene.tweens.add({
+         targets: this.motorSound,
+         volume: volume,
+         delay: this.motorRevDownTime - this.motorFadeOutTime,
+         duration: this.motorFadeOutTime,
+         onComplete: whenDone
+      });
+   }
+
+
    idleMotorSound() {
       if (this.fuel < 1) {
-         this.stopMotorSound();
+         this.splutterMotorSound();
          return;
       }
       if (this.motorVolumeTarget === this.motorVolumeIdle) {
          return;
       }
       this.motorVolumeTarget = this.motorVolumeIdle;
-      this.scene.tweens.killTweensOf(this.motorSound);
-      this.scene.tweens.add({
-         targets: this.motorSound,
-         rate: this.motorSamplerateMin,
-         volume: this.motorVolumeIdle,
-         duration: this.motorRevDownTime
-      });
+      this.fallMotorSound(this.motorVolumeIdle);
    }
 
 
-   stopMotorSound() {
+   cutMotorSound() {
       if (this.motorVolumeTarget === 0) {
          return;
       }
       this.motorVolumeTarget = 0;
+      this.fallMotorSound(0, () => this.motorSound.stop());
+   }
+
+
+   splutterMotorSound() {
+      if (this.motorVolumeTarget === 0 || !this.motorSound.isPlaying) {
+         return;
+      }
+      this.motorVolumeTarget = 0;
       this.scene.tweens.killTweensOf(this.motorSound);
-      this.scene.tweens.add({
+      this.scene.tweens.chain({
          targets: this.motorSound,
-         rate: this.motorSamplerateMin,
-         duration: this.motorRevDownTime
-      });
-      this.scene.tweens.add({
-         targets: this.motorSound,
-         volume: 0,
-         delay: this.motorRevDownTime - this.motorFadeOutTime,
-         duration: this.motorFadeOutTime,
+         tweens: this.makeSplutterSteps(),
          onComplete: () => this.motorSound.stop()
       });
+   }
+
+
+   makeSplutterSteps() {
+      const coughs = [
+         { peak: 0.9, rate: 1.15 },
+         { peak: 0.6, rate: 0.95 },
+         { peak: 0.35, rate: 0.8 }
+      ];
+      let steps = [];
+      coughs.forEach(cough => {
+         steps.push({ volume: this.motorVolumeSplutter, rate: cough.rate * 0.5, duration: 90 });
+         steps.push({ volume: this.motorVolumeForward * cough.peak, rate: cough.rate, duration: 60 });
+      });
+      steps.push({ volume: 0, rate: 0.3, duration: 400 });
+      return steps;
    }
 
 

@@ -1049,7 +1049,7 @@ class Game extends Phaser.Scene {
             saveScores(this.player.intelScore, estimatedProgress);
             this.physics.pause();
             this.gameOver = true;
-            this.player.stopMotorSound();
+            this.player.cutMotorSound();
 
          }
       }
@@ -1248,7 +1248,7 @@ class Game extends Phaser.Scene {
 
    endLevel() {
       this.gameOver = true;
-      this.player.stopMotorSound();
+      this.player.cutMotorSound();
       saveScores(this.player.intelScore, estimatedProgress);
       this.player.setTint(0xff0000);
       this.physics.pause();
