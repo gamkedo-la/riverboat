@@ -358,7 +358,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
    neitherFastOrSlow() {
       this.setTint(0xffffff);
       this.setDriftSpeed(this.scene.riverSpeed);
-      // this.scene.driftSpeed = this.scene.riverSpeed;
 
       this.engine = "off";
       this.idleMotorSound();
@@ -375,7 +374,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
          this.moveBackToStation();
       }
       else {
-         // boat is at bottom of playarea
+         // boat is at bottom of game scene
          this.whenOnStation();
       }
    }

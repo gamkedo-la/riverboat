@@ -441,7 +441,6 @@ class Game extends Phaser.Scene {
          const x = 40;
          y = displayHeight - controlPanelHeight + 20;
          this.zoneOfZonesProgress = this.add.text(x, y, `Zone ${boatInZone}/${zones_quantity}`, hudStyle).setOrigin(0, 0.5).setDepth(101);
-         // this.zoneOfZonesProgress = this.add.text(x, y, `Zone ${boatInZone}/${zones_quantity}`, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
          y += 30;
          this.obstacleGameProgress = this.add.text(x, y, `All: `, hudStyle).setOrigin(0, 0.5).setDepth(101);
       }
@@ -456,14 +455,13 @@ class Game extends Phaser.Scene {
       if (developMode) {
          this.makePassedDisplay();
       }
-      // this.obstacleZoneProgress = this.add.text(displayWidth - offsetX, displayHeight - 50, `Local: `, { font: '20px Verdana', color: '#ffffff' }).setOrigin(0, 0.5).setDepth(101);
    }
 
 
    makePassedDisplay() {
       let x = (keyboard === 'likely' && alwaysButtons === false) ? 40 : displayWidth - 105;
       let y = displayHeight - controlPanelHeight + 80;
-      this.passedDisplay = this.add.text(x, y, 'Passed 0 of 0', hudStyle).setOrigin(0, 0.5).setDepth(101);
+      this.passedDisplay = this.add.text(x, y, 'Passed 0 of 0 obstacles', hudStyle).setOrigin(0, 0.5).setDepth(101);
    }
 
 
@@ -473,18 +471,23 @@ class Game extends Phaser.Scene {
       this.lifeDisplay.setOrigin(0, 0.5);
       this.hud.add(this.lifeDisplay);
    };
+
+
    makeFuelDisplay(y) {
       let x = 85;
       this.fuelDisplay = this.add.text(x, y, `Fuel ${this.player.fuel}`, hudStyle);
       this.fuelDisplay.setOrigin(0, 0.5);
       this.hud.add(this.fuelDisplay);
    };
+
+
    makeIntelDisplay(y) {
       let x = 200;
       this.intelDisplay = this.add.text(x, y, `Score ${this.player.intelScore}`, hudStyle);
       this.intelDisplay.setOrigin(0, 0.5);
       this.hud.add(this.intelDisplay);
    };
+
 
    updateLocator() {
       this.zoneOfZonesProgress.setText(`Zone ${boatInZone}`);
@@ -496,14 +499,11 @@ class Game extends Phaser.Scene {
          percent = 100;
       } else {
          let progress = Math.min(this.obstaclesPassedByBoat, totalObstacles);
-         // let progress = Math.min(estimatedProgress, totalObstacles);
          percent = Math.floor((progress / totalObstacles) * 100);
       }
 
-      // devLog(`Progress: ${this.obstaclesPassedByBoat}/${totalObstacles} = ${percent}%`);
-
       this.obstacleGameProgress.setText(`Game ${percent}%`);
-      return percent
+      return percent;
    }
 
    incrementObstacleCounter() {
@@ -983,12 +983,12 @@ class Game extends Phaser.Scene {
          return;
       }
       this.obstaclesPassedByBoat += 1;
-      let wording = `Passed ${this.obstaclesPassedByBoat} of ${this.countObstaclesInZones(zones_quantity)}`;
+      let wording = `Passed ${this.obstaclesPassedByBoat} of ${this.countObstaclesInZones(zones_quantity)} obstacles`;
       if (developMode) {
          this.passedDisplay.setText(wording);
       }
       let percent = this.updateLocator();
-      devLog(`${wording} = ${percent}%`);
+      devLog(`${wording} ~ ${percent}%`);
    }
 
 
@@ -1032,7 +1032,7 @@ class Game extends Phaser.Scene {
          this.milestoneTriggered[boatInZone] = true;
          this.milestoneSound.play();
 
-         devLog(`Boat in zone ${boatInZone} reached milestoneID:${milestone.id}`);
+         devLog(`Boat reached milestone ${milestone.id} while leaving zone ${boatInZone}`);
 
          boatInZone += 1;
          if (boatInZone > zones_quantity) {

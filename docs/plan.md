@@ -1,5 +1,11 @@
 ## Next steps
 
+on life loss game-over the Replay button overlays another button, and Menu button also looks misaligned overlaid
+
+Game Over is obscured by a booms graphic
+
+Passed 24 of 67 <obstacles> ~ 35%
+
 Percentage progress align to passed obstacles
 updateLocator call inside countPassedObstacle is key, since without it the display would still only refresh on spawn. - see docs/progress_obstacles_count.md
 
@@ -9,12 +15,6 @@ change to boat "leaving" zone X ...
 End-game tune 100% progress delay to ending message
 
 Decide title and harmonize e.g. River Boat or Spy Boat
-
-Motor soundfx only while engine running
-
-Pause and Menu should not play sound of motor
-
-Volume increase for motor, especially when forward
 
 Wake animation only when motor on
 
@@ -83,6 +83,12 @@ Progress fixed to count destroyed obstacle, and 1 piece only
 Testing mode show obstacles passed count in-game
 
 Butler deploy.sh latest version to Itch.io
+
+Motor soundfx only while engine running
+
+Pause and Menu should not play sound of motor
+
+Volume increase for motor, especially when forward
 
 ## Museum display
 
